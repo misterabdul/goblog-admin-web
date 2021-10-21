@@ -1,0 +1,52 @@
+@use "../../../../styles/constants";
+
+mat-toolbar {
+  padding-left: constants.$content-sides-width;
+  padding-right: constants.$content-sides-width;
+}
+
+mat-toolbar.dark-mode {
+  background-color: #37474f;
+}
+
+button {
+  text-transform: uppercase;
+}
+
+.spacer {
+  flex: 1 1 auto;
+  height: 30px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.material-icons {
+  vertical-align: middle;
+  text-align: center;
+}
+
+a.nav-item {
+  text-transform: uppercase;
+}
+
+@media (max-width: constants.$small-breakpoint-width) {
+  mat-toolbar {
+    padding-left: constants.$content-sides-width-sm;
+    padding-right: constants.$content-sides-width-sm;
+  }
+}
+
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  mat-toolbar {
+    padding-left: unset;
+    padding-right: unset;
+  }
+
+  .btn-home {
+    margin-left: 10px;
+  }
+
+  .btn-menu {
+    margin-right: 10px;
+  }
+}

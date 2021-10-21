@@ -1,0 +1,37 @@
+.notfound-content {
+  max-width: 600px;
+  margin-left: auto;
+  .search-content {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .notfound {
+    height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: 500;
+  }
+
+  .notfound.dark-mode {
+    color: #fff;
+  }
+
+  margin-right: auto;
+}
+
+.notfound {
+  height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  font-weight: 500;
+}
+
+.notfound.dark-mode {
+  color: #fff;
+}
