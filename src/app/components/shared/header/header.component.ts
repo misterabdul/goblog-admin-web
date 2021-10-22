@@ -10,7 +10,6 @@ export class SharedHeaderComponent {
   private _darkModeService: DarkModeService;
   private _isDarkMode: boolean = false;
   private _navItems: Array<Menu>;
-  public searchQuery: string | undefined;
 
   constructor(darkModeService: DarkModeService) {
     this._navItems = [new Menu('posts', '/post')];

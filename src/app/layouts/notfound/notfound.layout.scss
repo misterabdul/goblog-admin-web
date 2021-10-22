@@ -1,0 +1,47 @@
+@use '../../../styles/constants';
+
+app-component-shared-header-notfound {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+mat-sidenav-container {
+  min-height: 100vh;
+}
+
+mat-sidenav-container > mat-sidenav-content {
+  margin-left: constants.$content-sides-width;
+  margin-right: constants.$content-sides-width;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+mat-sidenav-container.dark-mode {
+  background: constants.$darkmode-background-color;
+  background-color: constants.$darkmode-background-color;
+}
+
+@media (max-width: constants.$small-breakpoint-width) {
+  mat-sidenav-container > mat-sidenav-content {
+    margin-left: constants.$content-sides-width-sm;
+    margin-right: constants.$content-sides-width-sm;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: constants.$extra-small-breakpoint-width) {
+  mat-sidenav-container > mat-sidenav-content {
+    margin-left: 10px;
+    margin-right: 10px;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 600px) {
+  mat-sidenav-container > mat-sidenav-content {
+    margin-top: 64px;
+  }
+}

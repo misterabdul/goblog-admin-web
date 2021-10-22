@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DefaultLayout } from 'src/app/layouts/layouts.module';
+import { NotFoundLayout } from '../layouts/layouts.module';
+
 import { NotFoundPage } from './notfound/notfound.page';
 
 const routes: Routes = [
   {
     path: '**',
     pathMatch: 'full',
-    component: DefaultLayout,
+    component: NotFoundLayout,
     children: [{ path: '', component: NotFoundPage }],
   },
 ];

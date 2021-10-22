@@ -14,13 +14,15 @@ import { MarkdownModule } from '@misterabdul/ngx-markdown';
 
 import { SharedHeaderComponent } from './shared/header/header.component';
 import { SharedHeaderLoginComponent } from './shared/header-login/header-login.component';
+import { SharedHeaderNotFoundComponent } from './shared/header-notfound/header-notfound.component';
 import { SharedContentMarkdownComponent } from './shared/content-markdown/content-markdown.component';
 
 @NgModule({
   declarations: [
     SharedHeaderComponent,
-    SharedContentMarkdownComponent,
     SharedHeaderLoginComponent,
+    SharedHeaderNotFoundComponent,
+    SharedContentMarkdownComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +42,7 @@ import { SharedContentMarkdownComponent } from './shared/content-markdown/conten
   exports: [
     SharedHeaderComponent,
     SharedHeaderLoginComponent,
+    SharedHeaderNotFoundComponent,
     SharedContentMarkdownComponent,
   ],
 })
