@@ -4,10 +4,11 @@ import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { DefaultLayout } from './default/default.layout';
+import { LoginLayout } from './login/login.layout';
 import { ComponentModule } from '../components/components.module';
 
 @NgModule({
-  declarations: [DefaultLayout],
+  declarations: [DefaultLayout, LoginLayout],
   imports: [
     CommonModule,
     RouterModule,
@@ -17,4 +18,4 @@ import { ComponentModule } from '../components/components.module';
 })
 export class LayoutModule {}
 
-export { DefaultLayout };
+export { DefaultLayout, LoginLayout };

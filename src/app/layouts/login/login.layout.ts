@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
 @Component({
-  selector: 'app-layout-default',
-  templateUrl: './default.layout.html',
-  styleUrls: ['./default.layout.scss'],
+  selector: 'app-layout-login',
+  templateUrl: './login.layout.html',
+  styleUrls: ['./login.layout.scss'],
 })
-export class DefaultLayout {
+export class LoginLayout {
   private _isDarkMode: boolean = false;
 
   constructor(darkmodeService: DarkModeService) {

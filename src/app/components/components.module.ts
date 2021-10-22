@@ -13,10 +13,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MarkdownModule } from '@misterabdul/ngx-markdown';
 
 import { SharedHeaderComponent } from './shared/header/header.component';
+import { SharedHeaderLoginComponent } from './shared/header-login/header-login.component';
 import { SharedContentMarkdownComponent } from './shared/content-markdown/content-markdown.component';
 
 @NgModule({
-  declarations: [SharedHeaderComponent, SharedContentMarkdownComponent],
+  declarations: [
+    SharedHeaderComponent,
+    SharedContentMarkdownComponent,
+    SharedHeaderLoginComponent,
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -32,6 +37,10 @@ import { SharedContentMarkdownComponent } from './shared/content-markdown/conten
     MatButtonModule,
     MatIconModule,
   ],
-  exports: [SharedHeaderComponent, SharedContentMarkdownComponent],
+  exports: [
+    SharedHeaderComponent,
+    SharedHeaderLoginComponent,
+    SharedContentMarkdownComponent,
+  ],
 })
 export class ComponentModule {}
