@@ -1,8 +1,4 @@
-<mat-toolbar
-  color="primary"
-  class="mat-elevation-z6"
-  [class]="isDarkMode ? 'dark-mode' : ''"
->
+<mat-toolbar color="primary" class="mat-elevation-z6">
   <a mat-icon-button class="btn-home" routerLink="/">
     <mat-icon>home</mat-icon>
   </a>
@@ -10,11 +6,7 @@
   <button class="btn-menu" mat-icon-button [matMenuTriggerFor]="navMenuMobile">
     <mat-icon>menu</mat-icon>
   </button>
-  <mat-menu
-    #navMenuMobile="matMenu"
-    xPosition="before"
-    [class]="isDarkMode ? 'dark-mode' : ''"
-  >
+  <mat-menu #navMenuMobile="matMenu" xPosition="before">
     <a
       class="nav-item"
       mat-menu-item

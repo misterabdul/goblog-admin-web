@@ -1,9 +1,20 @@
+@use "~@angular/material" as mat;
+
+$darkModeTextColor: mat.get-color-from-palette(
+  mat.$dark-theme-foreground-palette,
+  "text"
+);
+$darkModeBackgroundColor: mat.get-color-from-palette(
+  mat.$dark-theme-background-palette,
+  "background"
+);
+
 .mat-menu-panel.dark-mode {
-  color: #fff;
-  background-color: #303030;
+  color: $darkModeTextColor;
+  background-color: $darkModeBackgroundColor;
 
   .mat-menu-item,
   .mat-icon {
-    color: #fff;
+    color: $darkModeTextColor;
   }
 }

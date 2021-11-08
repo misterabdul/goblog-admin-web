@@ -1,8 +1,8 @@
-<ng-container>
+<div [class]="isDarkMode ? 'dark-mode' : ''">
   <app-component-shared-header-notfound></app-component-shared-header-notfound>
   <mat-sidenav-container [class]="isDarkMode ? 'dark-mode' : ''">
     <mat-sidenav-content>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</ng-container>
+</div>
