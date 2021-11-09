@@ -12,13 +12,15 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MarkdownModule } from '@misterabdul/ngx-markdown';
 
 import { SharedHeaderComponent } from './shared/header/header.component';
 import { SharedHeaderLoginComponent } from './shared/header-login/header-login.component';
 import { SharedHeaderNotFoundComponent } from './shared/header-notfound/header-notfound.component';
 import { SharedContentMarkdownComponent } from './shared/content-markdown/content-markdown.component';
+import { SharedCloakComponent } from './shared/cloak/cloak.component';
 import { LoginLoginFormComponent } from './login/login-form/login-form.component';
 
 @NgModule({
@@ -27,6 +29,7 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
     SharedHeaderLoginComponent,
     SharedHeaderNotFoundComponent,
     SharedContentMarkdownComponent,
+    SharedCloakComponent,
     LoginLoginFormComponent,
   ],
   imports: [
@@ -45,13 +48,15 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     SharedHeaderComponent,
     SharedHeaderLoginComponent,
     SharedHeaderNotFoundComponent,
     SharedContentMarkdownComponent,
+    SharedCloakComponent,
     LoginLoginFormComponent,
   ],
 })

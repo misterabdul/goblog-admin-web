@@ -11,14 +11,37 @@ import { MarkdownModule, MarkedOptions } from '@misterabdul/ngx-markdown';
 
 import { AppRoutingModule } from './app-routing.module';
 import { markedOptionsFactory } from './configs/marked.config';
+import { ComponentModule } from './components/components.module';
 import { PageModule } from './pages/pages.module';
 import { MsgPackInterceptor } from './utils/http.util';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>',
+  template: `<div>
+    <app-component-shared-cloak
+      *ngIf="isCloakVisible"
+    ></app-component-shared-cloak>
+    <router-outlet></router-outlet>
+  </div>`,
 })
-class AppComponent {}
+class AppComponent {
+  private _isCloakVisible: boolean;
+
+  constructor(authService: AuthService) {
+    this._isCloakVisible = true;
+
+    authService.checkForToken().finally(() => {
+      setTimeout(() => {
+        this._isCloakVisible = false;
+      }, 400);
+    });
+  }
+
+  get isCloakVisible(): boolean {
+    return this._isCloakVisible;
+  }
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,6 +59,7 @@ class AppComponent {}
       },
     }),
     AppRoutingModule,
+    ComponentModule,
     PageModule,
   ],
   providers: [

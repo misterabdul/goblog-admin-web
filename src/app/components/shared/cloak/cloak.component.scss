@@ -1,0 +1,16 @@
+@use "../../../../styles/others" as others;
+
+div.full-body {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div.dark-mode {
+  color: others.$darkModeTextColor;
+  background-color: others.$darkModeBackgroundColor;
+}

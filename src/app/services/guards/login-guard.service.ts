@@ -14,15 +14,14 @@ export class LoginGuardService implements CanActivate, CanActivateChild {
     this._router = router;
   }
 
-  canActivate(): boolean {
-    if (this._auth.isAuthenticated) {
-      this._router.navigate(['']);
-      return false;
-    }
-    return true;
+  async canActivate(): Promise<boolean> {
+    if (!this._auth.isAuthenticated) await this._auth.checkForToken();
+    if (this._auth.isAuthenticated) await this._router.navigate(['']);
+
+    return !this._auth.isAuthenticated;
   }
 
-  canActivateChild(): boolean {
-    return this.canActivate();
+  async canActivateChild(): Promise<boolean> {
+    return await this.canActivate();
   }
 }
