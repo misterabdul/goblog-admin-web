@@ -14,9 +14,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MarkdownModule } from '@misterabdul/ngx-markdown';
 
-import { SharedHeaderComponent } from './shared/header/header.component';
+import {
+  SharedHeaderComponent,
+  InnerLogoutDialogComponent,
+} from './shared/header/header.component';
 import { SharedHeaderLoginComponent } from './shared/header-login/header-login.component';
 import { SharedHeaderNotFoundComponent } from './shared/header-notfound/header-notfound.component';
 import { SharedContentMarkdownComponent } from './shared/content-markdown/content-markdown.component';
@@ -26,6 +30,7 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
 @NgModule({
   declarations: [
     SharedHeaderComponent,
+    InnerLogoutDialogComponent,
     SharedHeaderLoginComponent,
     SharedHeaderNotFoundComponent,
     SharedContentMarkdownComponent,
@@ -50,6 +55,7 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
     MatSnackBarModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   exports: [
     SharedHeaderComponent,

@@ -17,9 +17,9 @@
         [formControl]="formControl.email"
         placeholder="Ex. pat@example.com"
       />
-      <mat-error *ngIf="formControl.email.invalid">{{
-        formControl.emailError
-      }}</mat-error>
+      <mat-error *ngIf="formControl.email.invalid">
+        {{ formControl.emailError }}
+      </mat-error>
     </mat-form-field>
     <mat-form-field class="form-full-width text-center" appearance="fill">
       <mat-label>Password</mat-label>
@@ -30,9 +30,9 @@
         [formControl]="formControl.password"
         placeholder="Password"
       />
-      <mat-error *ngIf="formControl.password.invalid">{{
-        formControl.passwordError
-      }}</mat-error>
+      <mat-error *ngIf="formControl.password.invalid">
+        {{ formControl.passwordError }}
+      </mat-error>
     </mat-form-field>
     <button
       type="submit"

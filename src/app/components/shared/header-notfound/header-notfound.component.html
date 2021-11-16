@@ -9,6 +9,7 @@
   <mat-menu #navMenuMobile="matMenu" xPosition="before">
     <button mat-menu-item (click)="toggleDarkMode()">
       <mat-icon>{{ isDarkMode ? "light_mode" : "dark_mode" }}</mat-icon>
+      {{ isDarkMode ? "Light Mode" : "Dark Mode" }}
     </button>
   </mat-menu>
 </mat-toolbar>

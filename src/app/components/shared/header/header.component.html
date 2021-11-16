@@ -7,16 +7,21 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #navMenuMobile="matMenu" xPosition="before">
-    <a
+    <!-- <a
       class="nav-item"
       mat-menu-item
       *ngFor="let item of navItems"
       [routerLink]="item.link"
     >
       {{ item.label }}
-    </a>
+    </a> -->
     <button mat-menu-item (click)="toggleDarkMode()">
       <mat-icon>{{ isDarkMode ? "light_mode" : "dark_mode" }}</mat-icon>
+      {{ isDarkMode ? "Light Mode" : "Dark Mode" }}
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Log Out
     </button>
   </mat-menu>
 </mat-toolbar>

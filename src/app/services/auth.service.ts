@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import HttpConfig from '../configs/http.config';
 import URL from '../configs/url.config';
 import AuthResponse from '../types/auth-response';
+import Response from '../types/response.type';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,14 @@ export class AuthService {
     this._accessToken = authResult.accessToken!;
     this._tokenType = authResult.tokenType!;
     return authResult;
+  }
+
+  public async deauthenticate(): Promise<void> {
+    const logoutResult = await this._http
+      .post<Response<any>>(URL.logout, null, HttpConfig.getDefaultOptions())
+      .toPromise();
+    this._accessToken = null;
+    this._tokenType = null;
   }
 
   public async refreshToken(): Promise<AuthResponse> {
