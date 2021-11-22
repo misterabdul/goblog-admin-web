@@ -1,4 +1,4 @@
-@use '../../../styles/constants';
+@use "../../../styles/constants";
 
 app-component-shared-header-notfound {
   position: fixed;
@@ -13,8 +13,6 @@ mat-sidenav-container {
 }
 
 mat-sidenav-container > mat-sidenav-content {
-  margin-left: constants.$content-sides-width;
-  margin-right: constants.$content-sides-width;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -26,16 +24,12 @@ mat-sidenav-container.dark-mode {
 
 @media (max-width: constants.$small-breakpoint-width) {
   mat-sidenav-container > mat-sidenav-content {
-    margin-left: constants.$content-sides-width-sm;
-    margin-right: constants.$content-sides-width-sm;
     overflow-y: visible;
   }
 }
 
 @media (max-width: constants.$extra-small-breakpoint-width) {
   mat-sidenav-container > mat-sidenav-content {
-    margin-left: 10px;
-    margin-right: 10px;
     overflow-y: visible;
   }
 }

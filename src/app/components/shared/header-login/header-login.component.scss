@@ -1,10 +1,5 @@
 @use "../../../../styles/constants";
 
-mat-toolbar {
-  padding-left: constants.$content-sides-width;
-  padding-right: constants.$content-sides-width;
-}
-
 button {
   text-transform: uppercase;
 }
@@ -23,18 +18,4 @@ button {
 
 a.nav-item {
   text-transform: uppercase;
-}
-
-@media (max-width: constants.$small-breakpoint-width) {
-  mat-toolbar {
-    padding-left: constants.$content-sides-width-sm;
-    padding-right: constants.$content-sides-width-sm;
-  }
-}
-
-@media (max-width: constants.$extra-small-breakpoint-width) {
-  mat-toolbar {
-    padding-left: unset;
-    padding-right: unset;
-  }
 }

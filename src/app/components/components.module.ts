@@ -6,6 +6,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -23,6 +24,7 @@ import {
 } from './shared/header/header.component';
 import { SharedHeaderLoginComponent } from './shared/header-login/header-login.component';
 import { SharedHeaderNotFoundComponent } from './shared/header-notfound/header-notfound.component';
+import { SharedSidenavLeftComponent } from './shared/sidenav-left/sidenav-left.component';
 import { SharedContentMarkdownComponent } from './shared/content-markdown/content-markdown.component';
 import { SharedCloakComponent } from './shared/cloak/cloak.component';
 import { LoginLoginFormComponent } from './login/login-form/login-form.component';
@@ -33,6 +35,7 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
     InnerLogoutDialogComponent,
     SharedHeaderLoginComponent,
     SharedHeaderNotFoundComponent,
+    SharedSidenavLeftComponent,
     SharedContentMarkdownComponent,
     SharedCloakComponent,
     LoginLoginFormComponent,
@@ -47,6 +50,7 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
     MatToolbarModule,
     MatMenuModule,
     MatFormFieldModule,
+    MatListModule,
     MatInputModule,
     MatCardModule,
     MatChipsModule,
@@ -61,6 +65,7 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
     SharedHeaderComponent,
     SharedHeaderLoginComponent,
     SharedHeaderNotFoundComponent,
+    SharedSidenavLeftComponent,
     SharedContentMarkdownComponent,
     SharedCloakComponent,
     LoginLoginFormComponent,

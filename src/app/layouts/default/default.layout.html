@@ -1,6 +1,9 @@
 <div [class]="isDarkMode ? 'dark-mode' : ''">
   <app-component-shared-header></app-component-shared-header>
   <mat-sidenav-container>
+    <mat-sidenav mode="side" opened>
+      <app-component-shared-sidenav-left></app-component-shared-sidenav-left>
+    </mat-sidenav>
     <mat-sidenav-content>
       <router-outlet></router-outlet>
     </mat-sidenav-content>

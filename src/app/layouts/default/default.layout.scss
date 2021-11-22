@@ -1,4 +1,4 @@
-@use '../../../styles/constants';
+@use "../../../styles/constants";
 
 app-component-shared-header {
   position: fixed;
@@ -12,12 +12,19 @@ mat-sidenav-container {
   min-height: 100vh;
 }
 
-mat-sidenav-container > mat-sidenav-content {
-  margin-top: 72px;
-  margin-left: constants.$content-sides-width;
-  margin-right: constants.$content-sides-width;
+mat-sidenav-container > mat-sidenav,
+mat-sidenav-content {
+  padding-top: 72px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+mat-sidenav-container > mat-sidenav {
+  width: 300px;
+}
+
+mat-sidenav-container > mat-sidenav-content {
+  padding-left: 10px;
 }
 
 mat-sidenav-container.dark-mode {
@@ -26,23 +33,22 @@ mat-sidenav-container.dark-mode {
 }
 
 @media (max-width: constants.$small-breakpoint-width) {
-  mat-sidenav-container > mat-sidenav-content {
-    margin-left: constants.$content-sides-width-sm;
-    margin-right: constants.$content-sides-width-sm;
+  mat-sidenav-container > mat-sidenav,
+  mat-sidenav-content {
     overflow-y: visible;
   }
 }
 
 @media (max-width: constants.$extra-small-breakpoint-width) {
-  mat-sidenav-container > mat-sidenav-content {
-    margin-left: 10px;
-    margin-right: 10px;
+  mat-sidenav-container > mat-sidenav,
+  mat-sidenav-content {
     overflow-y: visible;
   }
 }
 
 @media (max-width: 600px) {
-  mat-sidenav-container > mat-sidenav-content {
-    margin-top: 64px;
+  mat-sidenav-container > mat-sidenav,
+  mat-sidenav-content {
+    padding-top: 64px;
   }
 }
