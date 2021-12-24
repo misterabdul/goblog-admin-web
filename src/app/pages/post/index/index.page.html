@@ -1,1 +1,48 @@
-<p>Posts list</p>
+<h1>Posts</h1>
+<div class="table-content">
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <span>Draft</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-component-post-tab-draft
+          [isLoading]="isLoadingDraft"
+          [posts]="draft"
+        ></app-component-post-tab-draft>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <span (click)="loadPublished()">Published</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-component-post-tab-published
+          [isLoading]="isLoadingPublished"
+          [posts]="published"
+        ></app-component-post-tab-published>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <span (click)="loadTrash()">Trash</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-component-post-tab-trash
+          [isLoading]="isLoadingTrash"
+          [posts]="trash"
+        ></app-component-post-tab-trash>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<div class="fab-container">
+  <button
+    mat-fab
+    color="primary"
+    matTooltip="Create new post"
+    routerLink="/post/create"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

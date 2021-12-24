@@ -9,6 +9,7 @@ import { PostCreatePage } from './create/create.page';
 import { PostShowPage } from './show/show.page';
 import { PostUpdatePage } from './update/update.page';
 import { PostDeletePage } from './delete/delete.page';
+import { PostRestorePage } from './restore/restore.page';
 
 const routes: Routes = [
   {
@@ -31,6 +32,11 @@ const routes: Routes = [
       {
         path: ':id/delete',
         component: PostDeletePage,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: ':id/restore',
+        component: PostRestorePage,
         canActivate: [AuthGuardService],
       },
     ],
