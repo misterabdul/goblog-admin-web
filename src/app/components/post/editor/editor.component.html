@@ -1,0 +1,50 @@
+<form>
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input matInput type="text" [formControl]="formModel.title" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Slug</mat-label>
+    <input matInput type="text" [formControl]="formModel.slug" name="slug" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <mat-select [formControl]="formModel.categories" name="categories">
+      <mat-option *ngFor="let category of categories" [value]="category">
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="input-tags-container">
+    <app-component-post-input-tags
+      matInput
+      [separator]="formModel.tagSeparator"
+      [formControl]="formModel.tags"
+      name="tags"
+    ></app-component-post-input-tags>
+  </div>
+  <div class="input-markdown-container">
+    <app-component-post-input-markdown
+      [formControl]="formModel.content"
+      name="content"
+    ></app-component-post-input-markdown>
+  </div>
+  <div class="submit-container">
+    <button
+      class="inner-button"
+      mat-raised-button
+      (click)="saveDraft()"
+      [disabled]="formModel.isSubmitting"
+    >
+      Save Draft
+    </button>
+    <button
+      class="inner-button"
+      mat-raised-button
+      (click)="savePublish()"
+      [disabled]="formModel.isSubmitting"
+    >
+      Publish
+    </button>
+  </div>
+</form>

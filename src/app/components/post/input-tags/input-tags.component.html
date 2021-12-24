@@ -1,0 +1,19 @@
+<mat-form-field appearance="fill">
+  <mat-label>Tags</mat-label>
+  <mat-chip-list #tagList>
+    <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
+      {{ tag }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+    <input
+      placeholder="{{ placeholder }}"
+      autocomplete="off"
+      [matChipInputFor]="tagList"
+      [matChipInputSeparatorKeyCodes]="separator"
+      [matChipInputAddOnBlur]="true"
+      (matChipInputTokenEnd)="add($event)"
+    />
+  </mat-chip-list>
+</mat-form-field>

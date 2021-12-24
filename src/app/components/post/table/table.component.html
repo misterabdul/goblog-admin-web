@@ -1,0 +1,83 @@
+<table mat-table [dataSource]="posts">
+  <ng-container matColumnDef="no">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>No.</th>
+    <td class="text-center" mat-cell *matCellDef="let post; let i = index">
+      {{ i + 1 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="title">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Title</th>
+    <td class="text-center" mat-cell *matCellDef="let post">
+      {{ post.title }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="category">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let post">
+      <ul>
+        <li *ngFor="let category of post.categories">
+          <a [routerLink]="'/category/' + category.slug">{{ category.name }}</a>
+        </li>
+      </ul>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="created-at">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Created At</th>
+    <td class="text-center" mat-cell *matCellDef="let post">
+      {{ properTime(post.createdAt) }} <br />
+      {{ properDate(post.createdAt) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="published-at">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Published At</th>
+    <td class="text-center" mat-cell *matCellDef="let post">
+      {{ properTime(post.publishedAt) }} <br />
+      {{ properDate(post.publishedAt) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Actions</th>
+    <td class="text-center" mat-cell *matCellDef="let post">
+      <button mat-icon-button [matMenuTriggerFor]="actions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #actions="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="'/post/' + post.uid"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>visibility</mat-icon>
+          <span>View Post</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/post/' + post.uid + '/update'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>edit</mat-icon>
+          <span>Edit Post</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/post/' + post.uid + '/delete'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>delete</mat-icon>
+          <span>Delete Post</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/post/' + post.uid + '/restore'"
+          *ngIf="isTrash"
+        >
+          <mat-icon>restore_from_trash</mat-icon>
+          <span>Restore Post</span>
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

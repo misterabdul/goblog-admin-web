@@ -1,0 +1,43 @@
+<div class="markdown-label">
+  <mat-label class="markdown-label-left">Content</mat-label>
+  <div>
+    <button
+      class="markdown-button-right"
+      mat-raised-button
+      (click)="toggleEditorMode()"
+      tabindex="-1"
+    >
+      {{ editorMode }} Keymap
+    </button>
+    <button
+      class="markdown-button-right"
+      mat-raised-button
+      (click)="toggleEditorPreview()"
+      tabindex="-1"
+    >
+      {{ showPreview ? "Hide Preview" : "Show Preview" }}
+    </button>
+  </div>
+</div>
+<div class="markdown-container">
+  <div
+    class="markdown-item markdown-editor"
+    [class]="isDarkMode ? 'darkmode' : ''"
+  >
+    <app-component-shared-editor-markdown
+      [keyMap]="editorMode"
+      [ngModel]="markdownString"
+      (ngModelChange)="writeValue($event)"
+      [disabled]="isDisabled"
+    ></app-component-shared-editor-markdown>
+  </div>
+  <div
+    class="markdown-item markdown-preview"
+    [class]="isDarkMode ? 'darkmode' : ''"
+    *ngIf="showPreview"
+  >
+    <app-component-shared-content-markdown
+      [content]="markdownString!"
+    ></app-component-shared-content-markdown>
+  </div>
+</div>
