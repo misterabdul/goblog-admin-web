@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./index.page.css'],
 })
 export class HomeIndexPage {
-  public content = `# Simple Blog App Admin\nAdmin portion of my simple blog web app. Built with Angular.
-  Backend built with Gin Gonic & MongoDB database.`;
+  public content =
+    new String(`# Simple Blog App Admin\nAdmin portion of my simple blog web app. Built with Angular.
+  Backend built with Gin Gonic & MongoDB database.`);
 }

@@ -11,8 +11,8 @@ import { MarkedRendererHelpers } from 'src/app/utils/marked-renderer.util';
 export class SharedContentMarkdownComponent {
   public isDarkMode: boolean;
   public isSrcMode: boolean;
-  private _src: string | undefined;
-  private _content: string | undefined;
+  private _src: String | undefined;
+  private _content: String | undefined;
 
   constructor(
     darkModeService: DarkModeService,
@@ -43,23 +43,23 @@ export class SharedContentMarkdownComponent {
   }
 
   @Input()
-  set src(value: string | undefined) {
+  set src(value: String | undefined) {
     this._src = value;
     this.isSrcMode = true;
     this._content = undefined;
   }
-  get src(): string | undefined {
+  get src(): String | undefined {
     return this._src;
   }
 
   @Input()
-  set content(value: string | undefined) {
+  set content(value: String | undefined) {
     if (!this.isSrcMode) {
       this._content = value;
       this._src = undefined;
     }
   }
-  get content(): string | undefined {
+  get content(): String | undefined {
     return this._content;
   }
 }
