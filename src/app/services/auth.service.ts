@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { ThisReceiver } from '@angular/compiler';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import HttpConfig from '../configs/http.config';
 import URL from '../configs/url.config';
-import AuthResponse from '../types/auth-response';
+import AuthResponse from '../types/auth-response.type';
 import Response from '../types/response.type';
 
 @Injectable({
