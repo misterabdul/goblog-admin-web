@@ -3,6 +3,7 @@
 @use "./styles/themes";
 @use "./styles/general";
 @use "./styles/markdowns";
+@use "./styles/codemirror";
 @use "./styles/shimmer";
 @use "./styles/others";
 
@@ -11,5 +12,8 @@ $roboto-font-path: "~roboto-fontface/fonts" !default;
 
 $material-icons-font-path: "~material-icons/iconfont/";
 @import "~material-icons/iconfont/material-icons";
+
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/theme/material-darker";
 
 @include mat.core();
