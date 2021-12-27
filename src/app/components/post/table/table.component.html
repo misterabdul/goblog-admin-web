@@ -14,11 +14,16 @@
   <ng-container matColumnDef="category">
     <th class="text-center" mat-header-cell *matHeaderCellDef>Category</th>
     <td mat-cell *matCellDef="let post">
-      <ul>
-        <li *ngFor="let category of post.categories">
-          <a [routerLink]="'/category/' + category.slug">{{ category.name }}</a>
-        </li>
-      </ul>
+      <mat-list>
+        <mat-list-item *ngFor="let category of post.categories">
+          <span
+            [routerLink]="'/category/' + category.slug"
+            class="w100 text-center"
+          >
+            {{ category.name }}
+          </span>
+        </mat-list-item>
+      </mat-list>
     </td>
   </ng-container>
   <ng-container matColumnDef="created-at">

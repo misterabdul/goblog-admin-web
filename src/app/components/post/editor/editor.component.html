@@ -9,7 +9,11 @@
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Category</mat-label>
-    <mat-select [formControl]="formModel.categories" name="categories">
+    <mat-select
+      [formControl]="formModel.categories"
+      name="categories"
+      [compareWith]="categorySelectComparator"
+    >
       <mat-option *ngFor="let category of categories" [value]="category">
         {{ category.name }}
       </mat-option>
@@ -35,14 +39,25 @@
       mat-raised-button
       (click)="saveDraft()"
       [disabled]="formModel.isSubmitting"
+      *ngIf="mode === 'create'"
     >
       Save Draft
     </button>
     <button
       class="inner-button"
       mat-raised-button
+      (click)="saveUpdate()"
+      [disabled]="formModel.isSubmitting"
+      *ngIf="mode === 'update'"
+    >
+      Update
+    </button>
+    <button
+      class="inner-button"
+      mat-raised-button
       (click)="savePublish()"
       [disabled]="formModel.isSubmitting"
+      *ngIf="mode === 'create' || formModel.canPublish"
     >
       Publish
     </button>

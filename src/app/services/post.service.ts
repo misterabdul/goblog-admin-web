@@ -63,4 +63,15 @@ export class PostService {
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
+
+  public submitUpdatePost(
+    postId: string,
+    formData: PostFormData
+  ): Observable<void> {
+    return this._http.put<void>(
+      URL.submitPost + '/' + postId,
+      formData,
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
 }
