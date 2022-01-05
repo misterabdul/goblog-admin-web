@@ -6,6 +6,7 @@
       mat-raised-button
       (click)="toggleEditorMode()"
       tabindex="-1"
+      *ngIf="!disabled"
     >
       {{ editorMode }} Keymap
     </button>
@@ -28,7 +29,7 @@
       [keyMap]="editorMode"
       [ngModel]="markdownString"
       (ngModelChange)="writeValue($event)"
-      [disabled]="isDisabled"
+      [disabled]="disabled"
     ></app-component-shared-editor-markdown>
   </div>
   <div

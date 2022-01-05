@@ -1,6 +1,6 @@
 <mat-form-field appearance="fill">
   <mat-label>Tags</mat-label>
-  <mat-chip-list #tagList>
+  <mat-chip-list #tagList [disabled]="disabled">
     <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
       {{ tag }}
       <button matChipRemove>

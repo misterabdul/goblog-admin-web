@@ -10,27 +10,26 @@ import { CategoryService } from 'src/app/services/category.service';
 import { PostService } from 'src/app/services/post.service';
 import { CategoryData } from 'src/app/types/category.type';
 import PostDetailed, {
-  Post,
   PostCategory,
   PostFormData,
 } from 'src/app/types/post.type';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PostViewerComponent } from '../viewer/viewer.component';
 
 @Component({
   selector: 'app-component-post-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class PostEditorComponent implements AfterViewInit {
-  private _routerService: Router;
-  private _snackBarService: MatSnackBar;
+export class PostEditorComponent
+  extends PostViewerComponent
+  implements AfterViewInit
+{
   private _categoryService: CategoryService;
-  private _postService: PostService;
 
   private _categories: Array<CategoryData>;
   private _formModel: FormModel;
   private _mode: 'create' | 'update';
-  private _post: Post | null;
 
   constructor(
     routerService: Router,
@@ -38,12 +37,10 @@ export class PostEditorComponent implements AfterViewInit {
     categoryService: CategoryService,
     postService: PostService
   ) {
-    this._routerService = routerService;
-    this._snackBarService = snackBarService;
+    super(routerService, snackBarService, postService);
+
     this._categoryService = categoryService;
-    this._postService = postService;
     this._mode = 'create';
-    this._post = null;
 
     this._categories = new Array();
     this._formModel = new FormModel();
@@ -72,13 +69,6 @@ export class PostEditorComponent implements AfterViewInit {
     );
   }
 
-  public categorySelectComparator(
-    category1: CategoryData,
-    category2: CategoryData
-  ): boolean {
-    return category1.slug === category2.slug;
-  }
-
   public saveDraft() {
     if (!this._formModel.isSubmitting) {
       this._formModel.submitting();
@@ -91,6 +81,9 @@ export class PostEditorComponent implements AfterViewInit {
         )
         .subscribe(
           (post) => {
+            this._snackBarService.open('Draft saved.', undefined, {
+              duration: 3000,
+            });
             this._routerService.navigate(['/post']);
           },
           (error) => {
@@ -138,6 +131,9 @@ export class PostEditorComponent implements AfterViewInit {
         )
         .subscribe(
           () => {
+            this._snackBarService.open('Post updated.', undefined, {
+              duration: 3000,
+            });
             this._routerService.navigate(['/post']);
           },
           (error) => {
@@ -172,7 +168,7 @@ export class PostEditorComponent implements AfterViewInit {
   }
 
   @Input()
-  set post(post: Post | null) {
+  set post(post: PostDetailed | null) {
     this._post = post;
     if (this._post !== null) {
       this._formModel.fillFormData(this._post);
@@ -181,6 +177,10 @@ export class PostEditorComponent implements AfterViewInit {
       this._formModel.emptyFormData();
       this._mode = 'create';
     }
+  }
+
+  get post(): PostDetailed {
+    return this._post!;
   }
 }
 
@@ -215,10 +215,11 @@ class FormModel {
     this.content.setValue(null);
   }
 
-  public fillFormData(post: Post) {
+  public fillFormData(post: PostDetailed) {
     this.title.setValue(post.title!);
     this.slug.setValue(post.slug!);
-    this.categories.setValue(post.categories![0]);
+    this.categories.setValue(post.categories?.[0], { onlySelf: true });
+    console.log(post.tags);
     this.tags.setValue(post.tags!);
     this.content.setValue(post.content!);
 

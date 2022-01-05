@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -7,6 +7,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { CanDisable } from '@angular/material/core';
 
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
@@ -27,7 +28,9 @@ import { DarkModeService } from 'src/app/services/darkmode.service';
     },
   ],
 })
-export class PostInputMarkdownComponent implements ControlValueAccessor, Validator {
+export class PostInputMarkdownComponent
+  implements CanDisable, ControlValueAccessor, Validator
+{
   private _isDarkMode: boolean;
   private _isDisabled: boolean;
   private _editorMode: 'Default' | 'Vim';
@@ -81,6 +84,16 @@ export class PostInputMarkdownComponent implements ControlValueAccessor, Validat
     this._showPreview = !this._showPreview;
   }
 
+  @Input()
+  set disabled(isDisabled: boolean) {
+    this.setDisabledState(isDisabled);
+  }
+
+  @Input()
+  set value(value: String | null) {
+    this.writeValue(value);
+  }
+
   set markdownString(markdownString: String | undefined) {
     this._markdownString = markdownString;
   }
@@ -89,7 +102,7 @@ export class PostInputMarkdownComponent implements ControlValueAccessor, Validat
     return this._isDarkMode;
   }
 
-  get isDisabled(): boolean {
+  get disabled(): boolean {
     return this._isDisabled;
   }
 

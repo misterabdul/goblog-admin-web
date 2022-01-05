@@ -9,6 +9,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { CanDisable } from '@angular/material/core';
 
 @Component({
   selector: 'app-component-post-input-tags',
@@ -27,7 +28,9 @@ import { MatChipInputEvent } from '@angular/material/chips';
     },
   ],
 })
-export class PostInputTagsComponent implements ControlValueAccessor, Validator {
+export class PostInputTagsComponent
+  implements CanDisable, ControlValueAccessor, Validator
+{
   private _isDisabled: boolean;
   private _placeholder: string;
   private _separator: any;
@@ -83,7 +86,36 @@ export class PostInputTagsComponent implements ControlValueAccessor, Validator {
 
   public registerOnValidatorChange(fn: () => void): void {}
 
-  get isDisabled(): boolean {
+  @Input()
+  set placeholder(placeholder: string) {
+    this._placeholder = placeholder;
+  }
+
+  @Input()
+  set disabled(isDisabled: boolean) {
+    this.setDisabledState(isDisabled);
+  }
+
+  @Input()
+  set separator(separator: any) {
+    this._separator = separator;
+    this._separatorChars = (separator as number[]).map<string>(
+      (value: number): string => {
+        return String.fromCharCode(value);
+      }
+    );
+  }
+
+  @Input()
+  set value(tags: String[] | null) {
+    this.writeValue(tags);
+  }
+
+  set tags(tags: string[]) {
+    this._tags = tags;
+  }
+
+  get disabled(): boolean {
     return this._isDisabled;
   }
 
@@ -97,24 +129,5 @@ export class PostInputTagsComponent implements ControlValueAccessor, Validator {
 
   get tags(): string[] {
     return this._tags;
-  }
-
-  @Input()
-  set placeholder(placeholder: string) {
-    this._placeholder = placeholder;
-  }
-
-  @Input()
-  set separator(separator: any) {
-    this._separator = separator;
-    this._separatorChars = (separator as number[]).map<string>(
-      (value: number): string => {
-        return String.fromCharCode(value);
-      }
-    );
-  }
-
-  set tags(tags: string[]) {
-    this._tags = tags;
   }
 }
