@@ -1,0 +1,57 @@
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="post?.title ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Slug</mat-label>
+    <input
+      matInput
+      type="text"
+      [ngModel]="post?.slug ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <mat-select
+      [disabled]="true"
+      [value]="selectedCategory"
+      [compareWith]="categorySelectComparator"
+    >
+      <mat-option
+        *ngFor="let category of post?.categories ?? []"
+        [value]="category ?? null"
+      >
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="input-tags-container">
+    <app-component-post-input-tags
+      matInput
+      [value]="post?.tags ?? []"
+      [disabled]="true"
+    ></app-component-post-input-tags>
+  </div>
+  <div class="input-markdown-container">
+    <app-component-post-input-markdown
+      [value]="post?.content ?? null"
+      [disabled]="true"
+    ></app-component-post-input-markdown>
+  </div>
+  <div class="submit-container">
+    <a
+      class="inner-button"
+      mat-raised-button
+      [routerLink]="'/post/' + (post?.uid ?? null) + '/update'"
+    >
+      Edit
+    </a>
+  </div>
+</div>
