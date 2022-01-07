@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
@@ -43,7 +44,6 @@ export class SharedHeaderComponent {
       .open(InnerLogoutDialogComponent)
       .afterClosed()
       .subscribe((dialogResult) => {
-        console.log(dialogResult);
         if (dialogResult === InnerLogoutDialogComponent.RESULT_YES) {
           this._routerService.navigate(['/login']);
         }
@@ -89,28 +89,39 @@ export class InnerLogoutDialogComponent {
   }
 
   public sureLogout(): void {
-    this._authService
-      .deauthenticate()
-      .then(() => {
-        this._snackBar.open('Logged out', undefined, { duration: 500 });
-        this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
-      })
-      .catch((reason) => {
-        if (reason instanceof HttpErrorResponse) {
-          this._snackBar.open(
-            reason.error?.message ?? 'Unknown error.',
-            undefined,
-            {
-              duration: 3000,
+    if (!this._isLoggingOut) {
+      this._isLoggingOut = true;
+
+      this._authService
+        .deauthenticate()
+        .pipe(
+          finalize(() => {
+            this._isLoggingOut = false;
+          })
+        )
+        .subscribe(
+          (logoutResponse) => {
+            this._snackBar.open('Logged out', undefined, { duration: 500 });
+            this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
+          },
+          (errorResponse) => {
+            if (errorResponse instanceof HttpErrorResponse) {
+              this._snackBar.open(
+                errorResponse.error?.message ?? 'Unknown error.',
+                undefined,
+                {
+                  duration: 3000,
+                }
+              );
+            } else {
+              this._snackBar.open('Unknown error.', undefined, {
+                duration: 3000,
+              });
             }
-          );
-        } else {
-          this._snackBar.open('Unknown error.', undefined, {
-            duration: 3000,
-          });
-        }
-        this._dialogRef.close(InnerLogoutDialogComponent.RESULT_ERROR);
-      });
+            this._dialogRef.close(InnerLogoutDialogComponent.RESULT_ERROR);
+          }
+        );
+    }
   }
 
   get isLoggingOut(): boolean {

@@ -6,10 +6,15 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, filter, mergeMap, switchMap, take } from 'rxjs/operators';
 import { decode } from '@msgpack/msgpack';
 
+import { AuthService } from '../services/auth.service';
+import HttpConfig from '../configs/http.config';
+import { Injectable } from '@angular/core';
+
+@Injectable()
 export class MsgPackInterceptor implements HttpInterceptor {
   constructor() {}
 
@@ -17,11 +22,9 @@ export class MsgPackInterceptor implements HttpInterceptor {
     httpRequest: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (httpRequest.headers.get('Accept') === 'application/msgpack') {
+    if (httpRequest.headers.get('Accept') === 'application/msgpack')
       return this.handleMsgPackRequest(httpRequest, next);
-    } else {
-      return next.handle(httpRequest);
-    }
+    return next.handle(httpRequest);
   }
 
   protected handleMsgPackRequest(
@@ -57,5 +60,83 @@ export class MsgPackInterceptor implements HttpInterceptor {
       return event.clone({ body: decode(arrayBuffer) });
     }
     return event;
+  }
+}
+
+@Injectable()
+export class RefreshAuthInterceptor implements HttpInterceptor {
+  private _refreshTokenSubject: BehaviorSubject<Boolean>;
+  private _isRefreshing: boolean;
+  private _authService: AuthService;
+
+  constructor(authService: AuthService) {
+    this._refreshTokenSubject = new BehaviorSubject<Boolean>(false);
+    this._isRefreshing = false;
+
+    this._authService = authService;
+  }
+
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    if (request.headers.has('Authorization'))
+      return this.handleAuthorizedRequest(request, next);
+    return next.handle(request);
+  }
+
+  private handleAuthorizedRequest(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    return next.handle(request).pipe(
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 401)
+          return this.handleTokenExpiredError(request, next);
+        return throwError(error);
+      })
+    );
+  }
+
+  private handleTokenExpiredError(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    if (!this._isRefreshing) {
+      this._isRefreshing = true;
+      this._refreshTokenSubject.next(false);
+
+      return this._authService.refreshToken().pipe(
+        switchMap(() => {
+          this._isRefreshing = false;
+          this._refreshTokenSubject.next(true);
+
+          return next.handle(this.newRequest(request));
+        }),
+        catchError((error) => {
+          this._isRefreshing = false;
+          this._authService.deauthenticate();
+
+          return throwError(error);
+        })
+      );
+    }
+
+    return this._refreshTokenSubject.pipe(
+      filter((isRefreshed) => isRefreshed !== false),
+      take(1),
+      switchMap(() => {
+        return next.handle(this.newRequest(request));
+      })
+    );
+  }
+
+  private newRequest(request: HttpRequest<any>): HttpRequest<any> {
+    const authorizationToken =
+      this._authService.tokenType + ' ' + this._authService.accessToken;
+
+    return request.clone(
+      HttpConfig.getDefaultAuthenticatedOptions(authorizationToken)
+    );
   }
 }

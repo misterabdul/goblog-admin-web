@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import HttpConfig from '../configs/http.config';
 import URL from '../configs/url.config';
 import AuthResponse from '../types/auth-response.type';
@@ -21,41 +23,51 @@ export class AuthService {
     this._checkForTokenRequest = null;
   }
 
-  public async authenticate(
+  public authenticate(
     username: string,
     password: string
-  ): Promise<AuthResponse> {
-    const authResult = await this._http
+  ): Observable<AuthResponse> {
+    return this._http
       .post<AuthResponse>(
         URL.login,
         { username: username, password: password },
         HttpConfig.getDefaultOptions()
       )
-      .toPromise();
-    this._accessToken = authResult.accessToken!;
-    this._tokenType = authResult.tokenType!;
-    return authResult;
+      .pipe(
+        map((authResponse) => {
+          this._accessToken = authResponse.accessToken!;
+          this._tokenType = authResponse.tokenType!;
+          return authResponse;
+        })
+      );
   }
 
-  public async deauthenticate(): Promise<void> {
-    const logoutResult = await this._http
+  public deauthenticate(): Observable<Response<any>> {
+    return this._http
       .post<Response<any>>(URL.logout, null, HttpConfig.getDefaultOptions())
-      .toPromise();
-    this._accessToken = null;
-    this._tokenType = null;
+      .pipe(
+        map((response) => {
+          this._accessToken = null;
+          this._tokenType = null;
+          return response;
+        })
+      );
   }
 
-  public async refreshToken(): Promise<AuthResponse> {
-    const refreshTokenResult = await this._http
+  public refreshToken(): Observable<AuthResponse> {
+    return this._http
       .post<AuthResponse>(
         URL.refreshToken,
         null,
         HttpConfig.getDefaultOptions()
       )
-      .toPromise();
-    this._accessToken = refreshTokenResult.accessToken!;
-    this._tokenType = refreshTokenResult.tokenType!;
-    return refreshTokenResult;
+      .pipe(
+        map((authResponse) => {
+          this._accessToken = authResponse.accessToken!;
+          this._tokenType = authResponse.tokenType!;
+          return authResponse;
+        })
+      );
   }
 
   public async checkForToken(): Promise<boolean> {
@@ -66,7 +78,7 @@ export class AuthService {
 
   private async checkForTokenRequest(): Promise<boolean> {
     try {
-      if (!this.isAuthenticated) await this.refreshToken();
+      if (!this.isAuthenticated) await this.refreshToken().toPromise();
     } finally {
       return this.isAuthenticated;
     }

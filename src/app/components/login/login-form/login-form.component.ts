@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
@@ -42,28 +43,32 @@ export class LoginLoginFormComponent {
     this._formControl.disableAll();
     this._authService
       .authenticate(username, password)
-      .then((response) => {
-        this._routerService.navigate(['/']);
-      })
-      .catch((reason) => {
-        if (reason instanceof HttpErrorResponse) {
-          this._snackBarService.open(
-            reason.error?.message ?? 'Unknown error.',
-            undefined,
-            {
+      .pipe(
+        finalize(() => {
+          this._isLoading = false;
+          this._formControl.enableAll();
+        })
+      )
+      .subscribe(
+        (authResponse) => {
+          this._routerService.navigate(['/']);
+        },
+        (errorResponse) => {
+          if (errorResponse instanceof HttpErrorResponse) {
+            this._snackBarService.open(
+              errorResponse.error?.message ?? 'Unknown error.',
+              undefined,
+              {
+                duration: 3000,
+              }
+            );
+          } else {
+            this._snackBarService.open('Unknown error.', undefined, {
               duration: 3000,
-            }
-          );
-        } else {
-          this._snackBarService.open('Unknown error.', undefined, {
-            duration: 3000,
-          });
+            });
+          }
         }
-      })
-      .finally(() => {
-        this._isLoading = false;
-        this._formControl.enableAll();
-      });
+      );
   }
 
   get isDarkMode(): boolean {

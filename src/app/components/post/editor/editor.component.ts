@@ -30,6 +30,7 @@ export class PostEditorComponent
   private _categories: Array<CategoryData>;
   private _formModel: FormModel;
   private _mode: 'create' | 'update';
+  private _commonHttpErrorHandler: (error: any) => void;
 
   constructor(
     routerService: Router,
@@ -44,6 +45,21 @@ export class PostEditorComponent
 
     this._categories = new Array();
     this._formModel = new FormModel();
+    this._commonHttpErrorHandler = (error: any): void => {
+      if (error instanceof HttpErrorResponse) {
+        this._snackBarService.open(
+          error.error?.message ?? 'Unknown error.',
+          undefined,
+          {
+            duration: 3000,
+          }
+        );
+      } else {
+        this._snackBarService.open('Unknown error.', undefined, {
+          duration: 3000,
+        });
+      }
+    };
   }
 
   ngAfterViewInit(): void {
@@ -58,14 +74,16 @@ export class PostEditorComponent
     });
   }
 
-  private submitForm(): Observable<PostDetailed> {
-    return this._postService.submitDraftPost(this._formModel.getFormData());
+  private submitForm(publishNow?: boolean): Observable<PostDetailed> {
+    return this._postService.submitDraftPost(
+      this._formModel.getFormData(publishNow)
+    );
   }
 
-  private submitFormUpdate(): Observable<void> {
+  private submitFormUpdate(publishNow?: boolean): Observable<void> {
     return this._postService.submitUpdatePost(
       this._post?.uid!,
-      this._formModel.getFormData()
+      this._formModel.getFormData(publishNow)
     );
   }
 
@@ -79,43 +97,37 @@ export class PostEditorComponent
             this._formModel.submitDone();
           })
         )
-        .subscribe(
-          (post) => {
-            this._snackBarService.open('Draft saved.', undefined, {
-              duration: 3000,
-            });
-            this._routerService.navigate(['/post']);
-          },
-          (error) => {
-            if (error instanceof HttpErrorResponse) {
-              this._snackBarService.open(
-                error.error?.message ?? 'Unknown error.',
-                undefined,
-                {
-                  duration: 3000,
-                }
-              );
-            } else {
-              this._snackBarService.open('Unknown error.', undefined, {
-                duration: 3000,
-              });
-            }
-          }
-        );
+        .subscribe((post) => {
+          this._snackBarService.open('Draft saved.', undefined, {
+            duration: 3000,
+          });
+          this._routerService.navigate(['/post']);
+        }, this._commonHttpErrorHandler);
     }
   }
 
   public savePublish() {
-    if (!this.formModel.isSubmitting) {
-      if (this.mode === 'create') {
-        this._snackBarService.open('Not implemented yet', undefined, {
-          duration: 3000,
-        });
-      } else {
-        this._snackBarService.open('Not implemented yet', undefined, {
-          duration: 3000,
-        });
-      }
+    if (this.formModel.canPublish && !this.formModel.isSubmitting) {
+      let submitObservable: Observable<PostDetailed | void>;
+      if (this._mode === 'create') submitObservable = this.submitForm(true);
+      else submitObservable = this.submitFormUpdate(true);
+
+      submitObservable
+        .pipe(
+          finalize(() => {
+            this._formModel.submitDone();
+          })
+        )
+        .subscribe((post) => {
+          this._snackBarService.open('Post published.', undefined, {
+            duration: 3000,
+          });
+          this._routerService.navigate(['/post']);
+        }, this._commonHttpErrorHandler);
+    } else {
+      this._snackBarService.open('Not implemented yet', undefined, {
+        duration: 3000,
+      });
     }
   }
 
@@ -129,29 +141,12 @@ export class PostEditorComponent
             this._formModel.submitDone();
           })
         )
-        .subscribe(
-          () => {
-            this._snackBarService.open('Post updated.', undefined, {
-              duration: 3000,
-            });
-            this._routerService.navigate(['/post']);
-          },
-          (error) => {
-            if (error instanceof HttpErrorResponse) {
-              this._snackBarService.open(
-                error.error?.message ?? 'Unknown error.',
-                undefined,
-                {
-                  duration: 3000,
-                }
-              );
-            } else {
-              this._snackBarService.open('Unknown error.', undefined, {
-                duration: 3000,
-              });
-            }
-          }
-        );
+        .subscribe(() => {
+          this._snackBarService.open('Post updated.', undefined, {
+            duration: 3000,
+          });
+          this._routerService.navigate(['/post']);
+        }, this._commonHttpErrorHandler);
     }
   }
 
@@ -219,7 +214,6 @@ class FormModel {
     this.title.setValue(post.title!);
     this.slug.setValue(post.slug!);
     this.categories.setValue(post.categories?.[0], { onlySelf: true });
-    console.log(post.tags);
     this.tags.setValue(post.tags!);
     this.content.setValue(post.content!);
 
@@ -230,13 +224,14 @@ class FormModel {
     }
   }
 
-  public getFormData(): PostFormData {
+  public getFormData(publishNow?: boolean): PostFormData {
     return new PostFormData(
       this.title.value,
       this.categories.value,
       this.slug.value,
       this.tags.value,
-      this.content.value
+      this.content.value,
+      publishNow
     );
   }
 

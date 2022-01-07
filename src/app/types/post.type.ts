@@ -47,13 +47,15 @@ export class PostFormData {
   public slug: string | undefined;
   public tags: Array<string> | undefined;
   public content: string | undefined;
+  public publishNow: boolean | undefined;
 
   constructor(
     title: string,
     categories: Array<CategoryData> | CategoryData,
     slug?: string,
     tags?: Array<string>,
-    content?: string
+    content?: string,
+    publishNow?: boolean
   ) {
     this.title = title;
     this.categories = new Array();
@@ -61,5 +63,6 @@ export class PostFormData {
     this.slug = slug;
     this.tags = tags;
     this.content = content;
+    this.publishNow = publishNow;
   }
 }

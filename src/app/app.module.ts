@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { markedOptionsFactory } from './configs/marked.config';
 import { ComponentModule } from './components/components.module';
 import { PageModule } from './pages/pages.module';
-import { MsgPackInterceptor } from './utils/http.util';
+import { MsgPackInterceptor, RefreshAuthInterceptor } from './utils/http.util';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -63,7 +63,18 @@ class AppComponent {
     PageModule,
   ],
   providers: [
-    [{ provide: HTTP_INTERCEPTORS, useClass: MsgPackInterceptor, multi: true }],
+    [
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: MsgPackInterceptor,
+        multi: true,
+      },
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: RefreshAuthInterceptor,
+        multi: true,
+      },
+    ],
   ],
   bootstrap: [AppComponent],
 })
