@@ -1,27 +1,37 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { Observable, of } from 'rxjs';
+import { catchError, filter, map } from 'rxjs/operators';
+import { AuthService, TokenCheckStatus } from '../auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginGuardService implements CanActivate, CanActivateChild {
-  private _auth: AuthService;
-  private _router: Router;
+  private _authService: AuthService;
+  private _routerService: Router;
 
-  constructor(auth: AuthService, router: Router) {
-    this._auth = auth;
-    this._router = router;
+  constructor(authService: AuthService, routerService: Router) {
+    this._authService = authService;
+    this._routerService = routerService;
   }
 
-  async canActivate(): Promise<boolean> {
-    if (!this._auth.isAuthenticated) await this._auth.checkForToken();
-    if (this._auth.isAuthenticated) await this._router.navigate(['']);
+  canActivate(): Observable<boolean> {
+    return this._authService.checkForToken().pipe(
+      filter((status) => status !== TokenCheckStatus.CHECKING),
+      map((status) => {
+        if (status === TokenCheckStatus.CHECK)
+          this._routerService.navigate(['']);
 
-    return !this._auth.isAuthenticated;
+        return status === TokenCheckStatus.NO_TOKEN;
+      }),
+      catchError(() => {
+        return of(false);
+      })
+    );
   }
 
-  async canActivateChild(): Promise<boolean> {
-    return await this.canActivate();
+  canActivateChild(): Observable<boolean> {
+    return this.canActivate();
   }
 }

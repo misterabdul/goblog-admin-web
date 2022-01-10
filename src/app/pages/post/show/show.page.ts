@@ -2,8 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+
+import { SnackBarConfig } from 'src/app/configs/snackbar.config';
+
 import { PostService } from 'src/app/services/post.service';
-import PostDetailed from 'src/app/types/post.type';
+import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
   selector: 'app-page-post-show',
@@ -45,7 +48,7 @@ export class PostShowPage implements AfterViewInit {
                   (error.error?.message ?? 'Unknown error.'),
                 undefined,
                 {
-                  duration: 3000,
+                  duration: SnackBarConfig.ERROR_DURATIONS,
                 }
               );
             } else {
@@ -53,7 +56,7 @@ export class PostShowPage implements AfterViewInit {
                 'Failed to fetch post.\nUnknown error.',
                 undefined,
                 {
-                  duration: 3000,
+                  duration: SnackBarConfig.ERROR_DURATIONS,
                 }
               );
             }

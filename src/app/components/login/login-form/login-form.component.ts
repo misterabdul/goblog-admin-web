@@ -4,8 +4,11 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth.service';
+
+import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { DarkModeService } from 'src/app/services/darkmode.service';
+
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-component-login-login-form',
@@ -50,8 +53,11 @@ export class LoginLoginFormComponent {
         })
       )
       .subscribe(
-        (authResponse) => {
+        () => {
           this._routerService.navigate(['/']);
+          this._snackBarService.open('Logged in.', undefined, {
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
+          });
         },
         (errorResponse) => {
           if (errorResponse instanceof HttpErrorResponse) {
@@ -59,12 +65,12 @@ export class LoginLoginFormComponent {
               errorResponse.error?.message ?? 'Unknown error.',
               undefined,
               {
-                duration: 3000,
+                duration: SnackBarConfig.ERROR_DURATIONS,
               }
             );
           } else {
             this._snackBarService.open('Unknown error.', undefined, {
-              duration: 3000,
+              duration: SnackBarConfig.ERROR_DURATIONS,
             });
           }
         }

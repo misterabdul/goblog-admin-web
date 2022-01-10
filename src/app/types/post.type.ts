@@ -18,7 +18,7 @@ export class Post implements ResponseMessage {
   public message: string | undefined;
 }
 
-export default class PostDetailed extends Post implements TimeMeta {
+export class PostDetailed extends Post implements TimeMeta {
   public createdAt: Time | undefined;
   public updatedAt: Time | undefined;
   public deletedAt: Time | null | undefined;

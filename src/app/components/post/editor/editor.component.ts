@@ -6,10 +6,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
+import { SnackBarConfig } from 'src/app/configs/snackbar.config';
+
 import { CategoryService } from 'src/app/services/category.service';
 import { PostService } from 'src/app/services/post.service';
 import { CategoryData } from 'src/app/types/category.type';
-import PostDetailed, {
+import {
+  PostDetailed,
   PostCategory,
   PostFormData,
 } from 'src/app/types/post.type';
@@ -51,12 +54,12 @@ export class PostEditorComponent
           error.error?.message ?? 'Unknown error.',
           undefined,
           {
-            duration: 3000,
+            duration: SnackBarConfig.ERROR_DURATIONS,
           }
         );
       } else {
         this._snackBarService.open('Unknown error.', undefined, {
-          duration: 3000,
+          duration: SnackBarConfig.ERROR_DURATIONS,
         });
       }
     };
@@ -99,7 +102,7 @@ export class PostEditorComponent
         )
         .subscribe((post) => {
           this._snackBarService.open('Draft saved.', undefined, {
-            duration: 3000,
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
           });
           this._routerService.navigate(['/post']);
         }, this._commonHttpErrorHandler);
@@ -120,13 +123,13 @@ export class PostEditorComponent
         )
         .subscribe((post) => {
           this._snackBarService.open('Post published.', undefined, {
-            duration: 3000,
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
           });
           this._routerService.navigate(['/post']);
         }, this._commonHttpErrorHandler);
     } else {
       this._snackBarService.open('Not implemented yet', undefined, {
-        duration: 3000,
+        duration: SnackBarConfig.ERROR_DURATIONS,
       });
     }
   }
@@ -143,7 +146,7 @@ export class PostEditorComponent
         )
         .subscribe(() => {
           this._snackBarService.open('Post updated.', undefined, {
-            duration: 3000,
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
           });
           this._routerService.navigate(['/post']);
         }, this._commonHttpErrorHandler);

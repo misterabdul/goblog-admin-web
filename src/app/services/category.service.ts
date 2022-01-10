@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import HttpConfig from '../configs/http.config';
-import URL from '../configs/url.config';
-import CategoryDetailed from '../types/category.type';
-import Response from '../types/response.type';
+import { HttpConfig } from '../configs/http.config';
+import { UrlConfig } from '../configs/url.config';
 
+import { CategoryDetailed } from '../types/category.type';
+import { Response } from '../types/response.type';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -25,14 +25,14 @@ export class CategoryService {
 
   public getCategories(): Observable<Response<Array<CategoryDetailed>>> {
     return this._httpClient.get<Response<Array<CategoryDetailed>>>(
-      URL.categories,
+      UrlConfig.categories,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
   public getCategory(id: string): Observable<CategoryDetailed> {
     return this._httpClient.get<CategoryDetailed>(
-      URL.category + '/' + id,
+      UrlConfig.category + '/' + id,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }

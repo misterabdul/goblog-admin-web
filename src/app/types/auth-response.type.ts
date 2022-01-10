@@ -1,6 +1,6 @@
 import { ResponseMessage } from './response.type';
 
-export default class AuthResponse implements ResponseMessage {
+export class AuthResponse implements ResponseMessage {
   public tokenType: string | undefined;
   public accessToken: string | undefined;
 

@@ -1,18 +1,19 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
+
 import { PostService } from 'src/app/services/post.service';
-import Post from 'src/app/types/post.type';
+import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
   selector: 'app-page-post-index',
   templateUrl: './index.page.html',
   styleUrls: ['./index.page.scss'],
 })
-export class PostIndexPage {
-  private _draft: Array<Post> | null;
+export class PostIndexPage implements AfterViewInit {
+  private _draft: Array<PostDetailed> | null;
   private _isLoadingDraft: boolean;
-  private _published: Array<Post> | null;
+  private _published: Array<PostDetailed> | null;
   private _isLoadingPublished: boolean;
-  private _trash: Array<Post> | null;
+  private _trash: Array<PostDetailed> | null;
   private _isLoadingTrash: boolean;
   private _postService: PostService;
 
@@ -24,7 +25,9 @@ export class PostIndexPage {
     this._trash = null;
     this._isLoadingTrash = true;
     this._postService = postService;
+  }
 
+  ngAfterViewInit(): void {
     this.loadDraft();
   }
 
@@ -73,7 +76,7 @@ export class PostIndexPage {
     }
   }
 
-  get draft(): Array<Post> {
+  get draft(): Array<PostDetailed> {
     return this._draft!;
   }
 
@@ -81,7 +84,7 @@ export class PostIndexPage {
     return this._isLoadingDraft;
   }
 
-  get published(): Array<Post> {
+  get published(): Array<PostDetailed> {
     return this._published!;
   }
 
@@ -89,7 +92,7 @@ export class PostIndexPage {
     return this._isLoadingPublished;
   }
 
-  get trash(): Array<Post> {
+  get trash(): Array<PostDetailed> {
     return this._trash!;
   }
 

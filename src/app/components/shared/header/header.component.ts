@@ -101,7 +101,7 @@ export class InnerLogoutDialogComponent {
         )
         .subscribe(
           (logoutResponse) => {
-            this._snackBar.open('Logged out', undefined, { duration: 500 });
+            this._snackBar.open('Logged out', undefined, { duration: 3000 });
             this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
           },
           (errorResponse) => {

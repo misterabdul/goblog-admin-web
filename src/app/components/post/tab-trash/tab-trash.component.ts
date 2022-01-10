@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import Post from 'src/app/types/post.type';
+
+import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
   selector: 'app-component-post-tab-trash',
@@ -8,7 +9,7 @@ import Post from 'src/app/types/post.type';
 })
 export class PostTabTrashComponent {
   private _isLoading: boolean;
-  private _posts: Array<Post> | null;
+  private _posts: Array<PostDetailed> | null;
 
   constructor() {
     this._isLoading = false;
@@ -21,7 +22,7 @@ export class PostTabTrashComponent {
   }
 
   @Input()
-  set posts(posts: Array<Post>) {
+  set posts(posts: Array<PostDetailed>) {
     this._posts = posts;
   }
 
@@ -29,7 +30,7 @@ export class PostTabTrashComponent {
     return this._isLoading;
   }
 
-  get posts(): Array<Post> {
+  get posts(): Array<PostDetailed> {
     return this._posts!;
   }
 

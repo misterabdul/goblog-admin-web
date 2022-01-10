@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import * as dayjs from 'dayjs';
 
-import Post from 'src/app/types/post.type';
+import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
   selector: 'app-component-post-table',
@@ -10,7 +10,7 @@ import Post from 'src/app/types/post.type';
 })
 export class PostTableComponent {
   private _isTrash: boolean;
-  private _posts: Array<Post> | null;
+  private _posts: Array<PostDetailed> | null;
   private _displayedColumns: Array<String>;
 
   constructor() {
@@ -55,7 +55,7 @@ export class PostTableComponent {
   }
 
   @Input()
-  set posts(posts: Array<Post>) {
+  set posts(posts: Array<PostDetailed>) {
     this._posts = posts;
   }
 
@@ -63,7 +63,7 @@ export class PostTableComponent {
     return this._isTrash;
   }
 
-  get posts(): Array<Post> {
+  get posts(): Array<PostDetailed> {
     return this._posts!;
   }
 

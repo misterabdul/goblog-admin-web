@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+
 import { PostService } from 'src/app/services/post.service';
 import { CategoryData } from 'src/app/types/category.type';
-import PostDetailed from 'src/app/types/post.type';
+import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
   selector: 'app-component-post-viewer',

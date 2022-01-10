@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 
-export default class HttpConfig {
+export class HttpConfig {
   public static getDefaultOptions(extraHeaders: HttpHeaders | null = null) {
     let _headers = extraHeaders ?? new HttpHeaders();
     _headers = _headers.append('Accept', 'application/msgpack');

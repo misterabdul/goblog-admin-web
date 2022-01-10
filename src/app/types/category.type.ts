@@ -14,7 +14,7 @@ export class Category implements CategoryData, ResponseMessage {
   public message: string | undefined;
 }
 
-export default class CategoryDetailed extends Category implements TimeMeta {
+export class CategoryDetailed extends Category implements TimeMeta {
   public createdAt: Time | undefined;
   public updatedAt: Time | undefined;
   public deletedAt: Time | null | undefined;

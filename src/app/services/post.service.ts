@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import URL from '../configs/url.config';
-import Response from '../types/response.type';
-import PostDetailed, { PostFormData } from '../types/post.type';
-import HttpConfig from '../configs/http.config';
+import { UrlConfig } from '../configs/url.config';
+import { HttpConfig } from '../configs/http.config';
 
 import { AuthService } from './auth.service';
+import { Response } from '../types/response.type';
+import { PostDetailed, PostFormData } from '../types/post.type';
 
 @Injectable({
   providedIn: 'root',
@@ -23,42 +23,42 @@ export class PostService {
 
   public getPosts(): Observable<Response<Array<PostDetailed>>> {
     return this._http.get<Response<Array<PostDetailed>>>(
-      URL.posts,
+      UrlConfig.posts,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
   public getDrafts(): Observable<Response<Array<PostDetailed>>> {
     return this._http.get<Response<Array<PostDetailed>>>(
-      URL.posts + '?type=draft',
+      UrlConfig.posts + '?type=draft',
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
   public getPublished(): Observable<Response<Array<PostDetailed>>> {
     return this._http.get<Response<Array<PostDetailed>>>(
-      URL.posts + '?type=published',
+      UrlConfig.posts + '?type=published',
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
   public getTrashed(): Observable<Response<Array<PostDetailed>>> {
     return this._http.get<Response<Array<PostDetailed>>>(
-      URL.posts + '?type=trash',
+      UrlConfig.posts + '?type=trash',
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
   public getPost(id: string): Observable<PostDetailed> {
     return this._http.get<PostDetailed>(
-      URL.post + '/' + id,
+      UrlConfig.post + '/' + id,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
   public submitDraftPost(formData: PostFormData): Observable<PostDetailed> {
     return this._http.post<PostDetailed>(
-      URL.submitPost,
+      UrlConfig.submitPost,
       formData,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
@@ -69,7 +69,7 @@ export class PostService {
     formData: PostFormData
   ): Observable<void> {
     return this._http.put<void>(
-      URL.submitPost + '/' + postId,
+      UrlConfig.submitPost + '/' + postId,
       formData,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { DarkModeCookie } from '../configs/darkmode.config';
+import { DarkModeConfig } from '../configs/darkmode.config';
+
 import { CookieHelpers } from '../utils/cookie.util';
 
 @Injectable({
@@ -14,8 +15,8 @@ export class DarkModeService {
     this._darkModeSubject = new BehaviorSubject<boolean>(false);
 
     if (
-      (CookieHelpers.readCookie(DarkModeCookie.NAME)?.indexOf(
-        DarkModeCookie.SET
+      (CookieHelpers.readCookie(DarkModeConfig.Cookie.NAME)?.indexOf(
+        DarkModeConfig.Cookie.SET
       ) ?? -1) == 0
     ) {
       this._darkModeSubject.next(true);
@@ -29,16 +30,16 @@ export class DarkModeService {
   public toggleDarkMode(): void {
     if (this._darkModeSubject.value) {
       CookieHelpers.createCookie(
-        DarkModeCookie.NAME,
-        DarkModeCookie.UNSET,
-        DarkModeCookie.EXPIRES
+        DarkModeConfig.Cookie.NAME,
+        DarkModeConfig.Cookie.UNSET,
+        DarkModeConfig.Cookie.EXPIRES
       );
       this._darkModeSubject.next(false);
     } else {
       CookieHelpers.createCookie(
-        DarkModeCookie.NAME,
-        DarkModeCookie.SET,
-        DarkModeCookie.EXPIRES
+        DarkModeConfig.Cookie.NAME,
+        DarkModeConfig.Cookie.SET,
+        DarkModeConfig.Cookie.EXPIRES
       );
       this._darkModeSubject.next(true);
     }

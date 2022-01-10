@@ -6,13 +6,21 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, filter, mergeMap, switchMap, take } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  finalize,
+  mergeMap,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 import { decode } from '@msgpack/msgpack';
 
+import { HttpConfig } from '../configs/http.config';
+
 import { AuthService } from '../services/auth.service';
-import HttpConfig from '../configs/http.config';
-import { Injectable } from '@angular/core';
 
 @Injectable()
 export class MsgPackInterceptor implements HttpInterceptor {
@@ -108,16 +116,15 @@ export class RefreshAuthInterceptor implements HttpInterceptor {
 
       return this._authService.refreshToken().pipe(
         switchMap(() => {
-          this._isRefreshing = false;
           this._refreshTokenSubject.next(true);
-
           return next.handle(this.newRequest(request));
         }),
         catchError((error) => {
-          this._isRefreshing = false;
           this._authService.deauthenticate();
-
           return throwError(error);
+        }),
+        finalize(() => {
+          this._isRefreshing = false;
         })
       );
     }
@@ -132,11 +139,9 @@ export class RefreshAuthInterceptor implements HttpInterceptor {
   }
 
   private newRequest(request: HttpRequest<any>): HttpRequest<any> {
-    const authorizationToken =
+    const token =
       this._authService.tokenType + ' ' + this._authService.accessToken;
 
-    return request.clone(
-      HttpConfig.getDefaultAuthenticatedOptions(authorizationToken)
-    );
+    return request.clone(HttpConfig.getDefaultAuthenticatedOptions(token));
   }
 }
