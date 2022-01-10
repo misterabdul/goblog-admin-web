@@ -1,4 +1,10 @@
-import { Component, Input } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
@@ -6,13 +12,20 @@ import { PostDetailed } from 'src/app/types/post.type';
   templateUrl: './tab-draft.component.html',
   styleUrls: ['./tab-draft.component.scss'],
 })
-export class PostTabDraftComponent {
+export class PostTabDraftComponent implements AfterViewInit {
   private _isLoading: boolean;
   private _posts: Array<PostDetailed> | null;
+
+  @Output()
+  public isDisplayed = new EventEmitter<boolean>();
 
   constructor() {
     this._isLoading = false;
     this._posts = null;
+  }
+
+  ngAfterViewInit(): void {
+    this.isDisplayed.emit(true);
   }
 
   @Input()

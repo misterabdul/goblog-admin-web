@@ -1,6 +1,6 @@
 <h1>Posts</h1>
 <div class="table-content">
-  <mat-tab-group>
+  <mat-tab-group [selectedIndex]="selectedTabIndex">
     <mat-tab>
       <ng-template matTabLabel>
         <span>Draft</span>
@@ -9,28 +9,31 @@
         <app-component-post-tab-draft
           [isLoading]="isLoadingDraft"
           [posts]="draft"
+          (isDisplayed)="loadDraft($event)"
         ></app-component-post-tab-draft>
       </ng-template>
     </mat-tab>
     <mat-tab>
       <ng-template matTabLabel>
-        <span (click)="loadPublished()">Published</span>
+        <span>Published</span>
       </ng-template>
       <ng-template matTabContent>
         <app-component-post-tab-published
           [isLoading]="isLoadingPublished"
           [posts]="published"
+          (isDisplayed)="loadPublished($event)"
         ></app-component-post-tab-published>
       </ng-template>
     </mat-tab>
     <mat-tab>
       <ng-template matTabLabel>
-        <span (click)="loadTrash()">Trash</span>
+        <span>Trash</span>
       </ng-template>
       <ng-template matTabContent>
         <app-component-post-tab-trash
           [isLoading]="isLoadingTrash"
           [posts]="trash"
+          (isDisplayed)="loadTrash($event)"
         ></app-component-post-tab-trash>
       </ng-template>
     </mat-tab>

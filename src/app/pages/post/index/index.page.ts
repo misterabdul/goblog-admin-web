@@ -1,4 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 
 import { PostService } from 'src/app/services/post.service';
 import { PostDetailed } from 'src/app/types/post.type';
@@ -8,71 +10,111 @@ import { PostDetailed } from 'src/app/types/post.type';
   templateUrl: './index.page.html',
   styleUrls: ['./index.page.scss'],
 })
-export class PostIndexPage implements AfterViewInit {
+export class PostIndexPage implements OnInit {
   private _draft: Array<PostDetailed> | null;
   private _isLoadingDraft: boolean;
   private _published: Array<PostDetailed> | null;
   private _isLoadingPublished: boolean;
   private _trash: Array<PostDetailed> | null;
   private _isLoadingTrash: boolean;
-  private _postService: PostService;
+  private _selectedTabIndex: number;
 
-  constructor(postService: PostService) {
+  private _postService: PostService;
+  private _routerService: Router;
+  private _activatedRouteService: ActivatedRoute;
+
+  constructor(
+    postService: PostService,
+    routerService: Router,
+    activatedRouteService: ActivatedRoute
+  ) {
     this._draft = null;
     this._isLoadingDraft = true;
     this._published = null;
     this._isLoadingPublished = true;
     this._trash = null;
     this._isLoadingTrash = true;
+    this._selectedTabIndex = 0;
+
     this._postService = postService;
+    this._routerService = routerService;
+    this._activatedRouteService = activatedRouteService;
   }
 
-  ngAfterViewInit(): void {
-    this.loadDraft();
+  ngOnInit(): void {
+    this._activatedRouteService.queryParams.subscribe((params) => {
+      const tab = params?.tab ?? null;
+      switch (true) {
+        default:
+          break;
+        case tab === 'published':
+          this._selectedTabIndex = 1;
+          break;
+        case tab === 'trash':
+          this._selectedTabIndex = 2;
+          break;
+      }
+    });
   }
 
-  public async loadDraft() {
-    if (this._draft === null) {
+  private async changeRouteQuery(tabQuery: string): Promise<void> {
+    await this._routerService.navigate([], {
+      relativeTo: this._activatedRouteService,
+      queryParams: {
+        tab: tabQuery,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  public loadDraft(isDraftTabDisplayed: boolean) {
+    this.changeRouteQuery('draft');
+    if (this._draft === null && isDraftTabDisplayed) {
       this._isLoadingDraft = true;
-      this._postService.getDrafts().subscribe(
-        (response) => {
+      this._postService
+        .getDrafts()
+        .pipe(
+          finalize(() => {
+            this._isLoadingDraft = false;
+          })
+        )
+        .subscribe((response) => {
           this._draft = response?.data ?? null;
-        },
-        (error) => {},
-        () => {
-          this._isLoadingDraft = false;
-        }
-      );
+        });
     }
   }
 
-  public async loadPublished() {
-    if (this._published === null) {
+  public loadPublished(isPublishedTabDisplayed: boolean) {
+    this.changeRouteQuery('published');
+    if (this._published === null && isPublishedTabDisplayed) {
       this._isLoadingPublished = true;
-      this._postService.getPublished().subscribe(
-        (response) => {
+      this._postService
+        .getPublished()
+        .pipe(
+          finalize(() => {
+            this._isLoadingPublished = false;
+          })
+        )
+        .subscribe((response) => {
           this._published = response?.data ?? null;
-        },
-        (error) => {},
-        () => {
-          this._isLoadingPublished = false;
-        }
-      );
+        });
     }
   }
 
-  public async loadTrash() {
-    if (this._trash === null) {
+  public loadTrash(isTrashTabDisplayed: boolean) {
+    this.changeRouteQuery('trash');
+    if (this._trash === null && isTrashTabDisplayed) {
       this._isLoadingTrash = true;
-      this._postService.getTrashed().subscribe(
-        (response) => {
+      this._postService
+        .getTrashed()
+        .pipe(
+          finalize(() => {
+            this._isLoadingTrash = false;
+          })
+        )
+        .subscribe((response) => {
           this._trash = response?.data ?? null;
-        },
-        (error) => {},
-        () => {
-          this._isLoadingTrash = false;
-        }
-      );
+        });
     }
   }
 
@@ -98,5 +140,9 @@ export class PostIndexPage implements AfterViewInit {
 
   get isLoadingTrash(): boolean {
     return this._isLoadingTrash;
+  }
+
+  get selectedTabIndex(): number {
+    return this._selectedTabIndex;
   }
 }
