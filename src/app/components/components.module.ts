@@ -37,6 +37,11 @@ import { LoginLoginFormComponent } from './login/login-form/login-form.component
 import { PostTableComponent } from './post/table/table.component';
 import { PostEditorComponent } from './post/editor/editor.component';
 import { PostViewerComponent } from './post/viewer/viewer.component';
+import {
+  PostTrashViewerComponent,
+  PostTrashViewerInnerDeleteDialogComponent,
+  PostTrashViewerInnerRestoreDialogComponent,
+} from './post/viewer-trash/viewer-trash.component';
 import { PostTabDraftComponent } from './post/tab-draft/tab-draft.component';
 import { PostTabPublishedComponent } from './post/tab-published/tab-published.component';
 import { PostTabTrashComponent } from './post/tab-trash/tab-trash.component';
@@ -59,6 +64,9 @@ import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
     PostTableComponent,
     PostEditorComponent,
     PostViewerComponent,
+    PostTrashViewerComponent,
+    PostTrashViewerInnerDeleteDialogComponent,
+    PostTrashViewerInnerRestoreDialogComponent,
     PostTabDraftComponent,
     PostTabPublishedComponent,
     PostTabTrashComponent,
@@ -103,6 +111,9 @@ import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
     PostTableComponent,
     PostEditorComponent,
     PostViewerComponent,
+    PostTrashViewerComponent,
+    PostTrashViewerInnerDeleteDialogComponent,
+    PostTrashViewerInnerRestoreDialogComponent,
     PostTabDraftComponent,
     PostTabPublishedComponent,
     PostTabTrashComponent,

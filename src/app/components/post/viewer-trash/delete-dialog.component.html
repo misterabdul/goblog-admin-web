@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Delete Post</h1>
+<mat-dialog-content>
+  {{ isDeleting ? "Deleting post" : "Are you sure to delete this post ?" }}
+  <mat-progress-bar mode="indeterminate" [class]="isDeleting ? '' : 'hide'">
+  </mat-progress-bar>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close [disabled]="isDeleting">Cancel</button>
+  <button
+    mat-button
+    [mat-dialog-close]="true"
+    (click)="sureDelete()"
+    [disabled]="isDeleting"
+  >
+    Yes
+  </button>
+</mat-dialog-actions>

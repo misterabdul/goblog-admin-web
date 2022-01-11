@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { AuthService } from 'src/app/services/auth.service';
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
@@ -101,7 +102,9 @@ export class InnerLogoutDialogComponent {
         )
         .subscribe(
           (logoutResponse) => {
-            this._snackBar.open('Logged out', undefined, { duration: 3000 });
+            this._snackBar.open('Logged out', undefined, {
+              duration: SnackBarConfig.SUCCESS_DURATIONS,
+            });
             this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
           },
           (errorResponse) => {
@@ -110,12 +113,12 @@ export class InnerLogoutDialogComponent {
                 errorResponse.error?.message ?? 'Unknown error.',
                 undefined,
                 {
-                  duration: 3000,
+                  duration: SnackBarConfig.ERROR_DURATIONS,
                 }
               );
             } else {
               this._snackBar.open('Unknown error.', undefined, {
-                duration: 3000,
+                duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
             this._dialogRef.close(InnerLogoutDialogComponent.RESULT_ERROR);

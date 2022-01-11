@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Restore Post</h1>
+<mat-dialog-content>
+  {{ isRestoring ? "Restoring post" : "Are you sure to restore this post ?" }}
+  <mat-progress-bar mode="indeterminate" [class]="isRestoring ? '' : 'hide'">
+  </mat-progress-bar>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close [disabled]="isRestoring">Cancel</button>
+  <button
+    mat-button
+    [mat-dialog-close]="true"
+    (click)="sureRestore()"
+    [disabled]="isRestoring"
+  >
+    Yes
+  </button>
+</mat-dialog-actions>

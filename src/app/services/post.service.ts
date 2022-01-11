@@ -74,4 +74,19 @@ export class PostService {
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
+
+  public submitDeletePost(postId: string): Observable<void> {
+    return this._http.delete<void>(
+      UrlConfig.submitPost + '/' + postId,
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
+
+  public submitRestorePost(postId: string): Observable<void> {
+    return this._http.put<void>(
+      UrlConfig.submitPost + '/' + postId + '/detrash',
+      {},
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
 }
