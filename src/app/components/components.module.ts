@@ -31,6 +31,7 @@ import { SharedSidenavLeftComponent } from './shared/sidenav-left/sidenav-left.c
 import { SharedContentMarkdownComponent } from './shared/content-markdown/content-markdown.component';
 import { SharedEditorMarkdownComponent } from './shared/editor-markdown/editor-markdown.component';
 import { SharedCloakComponent } from './shared/cloak/cloak.component';
+import { SharedBasicDialogComponent } from './shared/basic-dialog/basic-dialog.component';
 
 import { LoginLoginFormComponent } from './login/login-form/login-form.component';
 
@@ -48,6 +49,13 @@ import { PostTabTrashComponent } from './post/tab-trash/tab-trash.component';
 import { PostInputMarkdownComponent } from './post/input-markdown/input-markdown.component';
 import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
 
+import { UserTableComponent } from './user/table/table.component';
+import { UserTabActiveComponent } from './user/tab-active/tab-active.component';
+import { UserTabTrashComponent } from './user/tab-trash/tab-trash.component';
+import { UserViewerComponent } from './user/viewer/viewer.component';
+import { UserEditorComponent } from './user/editor/editor.component';
+import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.component';
+
 @NgModule({
   declarations: [
     SharedHeaderComponent,
@@ -58,6 +66,7 @@ import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
     SharedContentMarkdownComponent,
     SharedEditorMarkdownComponent,
     SharedCloakComponent,
+    SharedBasicDialogComponent,
 
     LoginLoginFormComponent,
 
@@ -72,6 +81,13 @@ import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
     PostTabTrashComponent,
     PostInputMarkdownComponent,
     PostInputTagsComponent,
+
+    UserTableComponent,
+    UserTabActiveComponent,
+    UserTabTrashComponent,
+    UserViewerComponent,
+    UserEditorComponent,
+    UserViewerTrashComponent,
   ],
   imports: [
     CommonModule,
@@ -105,6 +121,7 @@ import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
     SharedContentMarkdownComponent,
     SharedEditorMarkdownComponent,
     SharedCloakComponent,
+    SharedBasicDialogComponent,
 
     LoginLoginFormComponent,
 
@@ -119,6 +136,13 @@ import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
     PostTabTrashComponent,
     PostInputMarkdownComponent,
     PostInputTagsComponent,
+
+    UserTableComponent,
+    UserTabActiveComponent,
+    UserTabTrashComponent,
+    UserViewerComponent,
+    UserViewerTrashComponent,
+    UserEditorComponent,
   ],
 })
 export class ComponentModule {}

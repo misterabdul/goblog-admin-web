@@ -9,6 +9,7 @@ import { UserCreatePage } from './create/create.page';
 import { UserShowPage } from './show/show.page';
 import { UserUpdatePage } from './update/update.page';
 import { UserDeletePage } from './delete/delete.page';
+import { UserRestorePage } from './restore/restore.page';
 
 const routes: Routes = [
   {
@@ -31,6 +32,11 @@ const routes: Routes = [
       {
         path: ':id/delete',
         component: UserDeletePage,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: ':id/restore',
+        component: UserRestorePage,
         canActivate: [AuthGuardService],
       },
     ],

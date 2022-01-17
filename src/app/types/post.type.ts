@@ -1,7 +1,8 @@
 import { Time } from '@angular/common';
-import { CategoryData } from './category.type';
 
+import { CategoryData } from './category.type';
 import { ResponseMessage, TimeMeta } from './response.type';
+import { UserCommon } from './user.type';
 
 export class Post implements ResponseMessage {
   public uid: string | undefined;
@@ -24,7 +25,7 @@ export class PostDetailed extends Post implements TimeMeta {
   public deletedAt: Time | null | undefined;
 }
 
-export class PostAuthor {
+export class PostAuthor implements UserCommon {
   public username: string | undefined;
   public email: string | undefined;
   public firstName: string | undefined;

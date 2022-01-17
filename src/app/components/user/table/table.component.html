@@ -1,0 +1,88 @@
+<table mat-table [dataSource]="users">
+  <ng-container matColumnDef="no">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>No.</th>
+    <td class="text-center" mat-cell *matCellDef="let user; let i = index">
+      {{ i + 1 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="username">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Username</th>
+    <td class="text-center" mat-cell *matCellDef="let user">
+      {{ user.username }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="email">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Email</th>
+    <td class="text-center" mat-cell *matCellDef="let user">
+      {{ user.email }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Name</th>
+    <td class="text-center" mat-cell *matCellDef="let user">
+      {{ properName(user) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="roles">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Roles</th>
+    <td class="text-center" mat-cell *matCellDef="let user">
+      <mat-list>
+        <mat-list-item *ngFor="let role of user?.roles">
+          <span>{{ role.name }}</span>
+        </mat-list-item>
+      </mat-list>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="created-at">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Created At</th>
+    <td class="text-center" mat-cell *matCellDef="let user">
+      {{ properTime(user.createdAt) }} <br />
+      {{ properDate(user.createdAt) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Actions</th>
+    <td class="text-center" mat-cell *matCellDef="let user">
+      <button mat-icon-button [matMenuTriggerFor]="actions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #actions="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="'/user/' + user.uid"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>visibility</mat-icon>
+          <span>View User</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/user/' + user.uid + '/update'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>edit</mat-icon>
+          <span>Edit User</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/user/' + user.uid + '/delete'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>delete</mat-icon>
+          <span>Delete User</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/user/' + user.uid + '/restore'"
+          *ngIf="isTrash"
+        >
+          <mat-icon>restore_from_trash</mat-icon>
+          <span>Restore User</span>
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

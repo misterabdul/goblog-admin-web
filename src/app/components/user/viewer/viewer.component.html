@@ -1,0 +1,59 @@
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Username</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="user?.username ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="user?.email ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>First Name</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="user?.firstName ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Last Name</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="user?.firstName ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Roles</mat-label>
+    <mat-select
+      multiple
+      [value]="getRoleValues(user?.roles ?? null)"
+      [disabled]="true"
+    >
+      <mat-option *ngFor="let role of roles" [value]="role.level">
+        {{ role.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="submit-container">
+    <a
+      class="inner-button"
+      mat-raised-button
+      [routerLink]="'/user/' + (user?.uid ?? null) + '/update'"
+    >
+      Edit
+    </a>
+  </div>
+</div>
