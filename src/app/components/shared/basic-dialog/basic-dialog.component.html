@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+<mat-dialog-content>
+  {{ isProcessing ? processingMessage : message }}
+  <mat-progress-bar mode="indeterminate" [class]="isProcessing ? '' : 'hide'">
+  </mat-progress-bar>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button
+    mat-button
+    mat-dialog-close
+    (click)="cancel()"
+    [disabled]="isProcessing"
+  >
+    {{ cancelLabel }}
+  </button>
+  <button mat-button (click)="approve()" [disabled]="isProcessing">
+    {{ okLabel }}
+  </button>
+</mat-dialog-actions>
