@@ -3,5 +3,7 @@
   <app-component-post-trash-viewer
     [post]="post"
     [mode]="'delete'"
+    [submitting]="deleting"
+    (ngSubmit)="delete($event)"
   ></app-component-post-trash-viewer>
 </div>

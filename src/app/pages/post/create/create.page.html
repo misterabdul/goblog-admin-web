@@ -1,4 +1,7 @@
 <h1>Create Post</h1>
 <div class="editor-content">
-  <app-component-post-editor></app-component-post-editor>
+  <app-component-post-editor
+    [submitting]="submitting"
+    (ngSubmit)="create($event)"
+  ></app-component-post-editor>
 </div>

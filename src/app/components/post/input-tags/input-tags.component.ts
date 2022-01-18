@@ -55,6 +55,7 @@ export class PostInputTagsComponent
       sanitized = sanitized.replace(value, '');
     });
     if (sanitized.length > 0) this._tags.push(sanitized);
+    this._onChangedCallback(this._tags);
     event.chipInput?.clear();
   }
 

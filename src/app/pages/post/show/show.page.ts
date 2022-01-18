@@ -14,11 +14,11 @@ import { PostDetailed } from 'src/app/types/post.type';
   styleUrls: ['./show.page.scss'],
 })
 export class PostShowPage implements AfterViewInit {
-  private _activatedRouteService: ActivatedRoute;
-  private _snackBarService: MatSnackBar;
-  private _postService: PostService;
-  private _postId: string | null;
-  private _post: PostDetailed | null;
+  protected _activatedRouteService: ActivatedRoute;
+  protected _snackBarService: MatSnackBar;
+  protected _postService: PostService;
+  protected _postId: string | null;
+  protected _post: PostDetailed | null;
 
   constructor(
     activatedRouteService: ActivatedRoute,

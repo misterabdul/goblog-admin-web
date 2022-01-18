@@ -11,6 +11,10 @@ import { PostDetailed } from 'src/app/types/post.type';
   styleUrls: ['./index.page.scss'],
 })
 export class PostIndexPage implements OnInit {
+  private _postService: PostService;
+  private _routerService: Router;
+  private _activatedRouteService: ActivatedRoute;
+
   private _draft: Array<PostDetailed> | null;
   private _isLoadingDraft: boolean;
   private _published: Array<PostDetailed> | null;
@@ -19,15 +23,15 @@ export class PostIndexPage implements OnInit {
   private _isLoadingTrash: boolean;
   private _selectedTabIndex: number;
 
-  private _postService: PostService;
-  private _routerService: Router;
-  private _activatedRouteService: ActivatedRoute;
-
   constructor(
     postService: PostService,
     routerService: Router,
     activatedRouteService: ActivatedRoute
   ) {
+    this._postService = postService;
+    this._routerService = routerService;
+    this._activatedRouteService = activatedRouteService;
+
     this._draft = null;
     this._isLoadingDraft = true;
     this._published = null;
@@ -35,10 +39,6 @@ export class PostIndexPage implements OnInit {
     this._trash = null;
     this._isLoadingTrash = true;
     this._selectedTabIndex = 0;
-
-    this._postService = postService;
-    this._routerService = routerService;
-    this._activatedRouteService = activatedRouteService;
   }
 
   ngOnInit(): void {

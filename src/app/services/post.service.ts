@@ -56,7 +56,7 @@ export class PostService {
     );
   }
 
-  public submitDraftPost(formData: PostFormData): Observable<PostDetailed> {
+  public submitNewPost(formData: PostFormData): Observable<PostDetailed> {
     return this._http.post<PostDetailed>(
       UrlConfig.submitPost,
       formData,

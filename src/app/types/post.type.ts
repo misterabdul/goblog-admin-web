@@ -33,6 +33,7 @@ export class PostAuthor implements UserCommon {
 }
 
 export class PostCategory implements CategoryData {
+  public uid: string | undefined;
   public name: string | undefined;
   public slug: string | undefined;
 
@@ -44,7 +45,7 @@ export class PostCategory implements CategoryData {
 
 export class PostFormData {
   public title: string;
-  public categories: Array<CategoryData>;
+  public categories: Array<string>;
   public slug: string | undefined;
   public tags: Array<string> | undefined;
   public content: string | undefined;
@@ -52,14 +53,14 @@ export class PostFormData {
 
   constructor(
     title: string,
-    categories: Array<CategoryData> | CategoryData,
+    categories: Array<string> | string,
     slug?: string,
     tags?: Array<string>,
     content?: string,
     publishNow?: boolean
   ) {
     this.title = title;
-    this.categories = new Array();
+    this.categories = new Array<string>();
     this.categories = this.categories.concat(categories);
     this.slug = slug;
     this.tags = tags;

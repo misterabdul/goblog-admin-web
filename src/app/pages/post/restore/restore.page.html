@@ -3,5 +3,7 @@
   <app-component-post-trash-viewer
     [post]="post"
     [mode]="'restore'"
+    [submitting]="restoring"
+    (ngSubmit)="restore($event)"
   ></app-component-post-trash-viewer>
 </div>

@@ -19,14 +19,10 @@
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Category</mat-label>
-    <mat-select
-      [disabled]="true"
-      [value]="selectedCategory"
-      [compareWith]="categorySelectComparator"
-    >
+    <mat-select [disabled]="true" [value]="selectedCategory">
       <mat-option
         *ngFor="let category of post?.categories ?? []"
-        [value]="category ?? null"
+        [value]="category?.uid ?? null"
       >
         {{ category.name }}
       </mat-option>
@@ -46,21 +42,13 @@
     ></app-component-post-input-markdown>
   </div>
   <div class="submit-container">
-    <a
+    <button
       class="inner-button"
       mat-raised-button
-      (click)="deletePost()"
-      *ngIf="mode === 'delete'"
+      [disabled]="submitting"
+      (click)="submit()"
     >
-      Delete
-    </a>
-    <a
-      class="inner-button"
-      mat-raised-button
-      (click)="restorePost()"
-      *ngIf="mode === 'restore'"
-    >
-      Restore
-    </a>
+      {{ mode === "delete" ? "Delete" : "Restore" }}
+    </button>
   </div>
 </div>

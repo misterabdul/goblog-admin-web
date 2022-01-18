@@ -2,6 +2,7 @@ import { Time } from '@angular/common';
 import { ResponseMessage, TimeMeta } from './response.type';
 
 export interface CategoryData {
+  uid: string | undefined;
   name: string | undefined;
   slug: string | undefined;
 }

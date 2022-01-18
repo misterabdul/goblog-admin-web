@@ -19,14 +19,10 @@
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Category</mat-label>
-    <mat-select
-      [disabled]="true"
-      [value]="selectedCategory"
-      [compareWith]="categorySelectComparator"
-    >
+    <mat-select [disabled]="true" [value]="selectedCategory">
       <mat-option
         *ngFor="let category of post?.categories ?? []"
-        [value]="category ?? null"
+        [value]="category.uid ?? null"
       >
         {{ category.name }}
       </mat-option>

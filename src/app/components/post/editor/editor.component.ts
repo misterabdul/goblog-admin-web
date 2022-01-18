@@ -1,22 +1,20 @@
 import { SPACE } from '@angular/cdk/keycodes';
-import { AfterViewInit, Component, Input } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-
-import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
 import { CategoryService } from 'src/app/services/category.service';
-import { PostService } from 'src/app/services/post.service';
 import { CategoryData } from 'src/app/types/category.type';
 import {
   PostDetailed,
   PostCategory,
   PostFormData,
 } from 'src/app/types/post.type';
-import { HttpErrorResponse } from '@angular/common/http';
 import { PostViewerComponent } from '../viewer/viewer.component';
 
 @Component({
@@ -30,45 +28,31 @@ export class PostEditorComponent
 {
   private _categoryService: CategoryService;
 
+  private _mode: 'create' | 'update';
+  private _submitting: boolean;
   private _categories: Array<CategoryData>;
   private _formModel: FormModel;
-  private _mode: 'create' | 'update';
-  private _commonHttpErrorHandler: (error: any) => void;
 
-  constructor(
-    routerService: Router,
-    snackBarService: MatSnackBar,
-    categoryService: CategoryService,
-    postService: PostService
-  ) {
-    super(routerService, snackBarService, postService);
+  @Output()
+  public ngSubmit: EventEmitter<PostFormData>;
 
+  constructor(categoryService: CategoryService) {
+    super();
     this._categoryService = categoryService;
-    this._mode = 'create';
 
+    this._mode = 'create';
+    this._submitting = false;
     this._categories = new Array();
     this._formModel = new FormModel();
-    this._commonHttpErrorHandler = (error: any): void => {
-      if (error instanceof HttpErrorResponse) {
-        this._snackBarService.open(
-          error.error?.message ?? 'Unknown error.',
-          undefined,
-          {
-            duration: SnackBarConfig.ERROR_DURATIONS,
-          }
-        );
-      } else {
-        this._snackBarService.open('Unknown error.', undefined, {
-          duration: SnackBarConfig.ERROR_DURATIONS,
-        });
-      }
-    };
+
+    this.ngSubmit = new EventEmitter<PostFormData>();
   }
 
   ngAfterViewInit(): void {
     this._categoryService.getCategories().subscribe((response) => {
       this._categories = response?.data!.map<CategoryData>((value) => {
         const category: CategoryData = {
+          uid: value.uid,
           name: value.name,
           slug: value.slug,
         };
@@ -77,79 +61,9 @@ export class PostEditorComponent
     });
   }
 
-  private submitForm(publishNow?: boolean): Observable<PostDetailed> {
-    return this._postService.submitDraftPost(
-      this._formModel.getFormData(publishNow)
-    );
-  }
-
-  private submitFormUpdate(publishNow?: boolean): Observable<void> {
-    return this._postService.submitUpdatePost(
-      this._post?.uid!,
-      this._formModel.getFormData(publishNow)
-    );
-  }
-
-  public saveDraft() {
-    if (!this._formModel.isSubmitting) {
-      this._formModel.submitting();
-
-      this.submitForm()
-        .pipe(
-          finalize(() => {
-            this._formModel.submitDone();
-          })
-        )
-        .subscribe((post) => {
-          this._snackBarService.open('Draft saved.', undefined, {
-            duration: SnackBarConfig.SUCCESS_DURATIONS,
-          });
-          this._routerService.navigate(['/post']);
-        }, this._commonHttpErrorHandler);
-    }
-  }
-
-  public savePublish() {
-    if (this.formModel.canPublish && !this.formModel.isSubmitting) {
-      let submitObservable: Observable<PostDetailed | void>;
-      if (this._mode === 'create') submitObservable = this.submitForm(true);
-      else submitObservable = this.submitFormUpdate(true);
-
-      submitObservable
-        .pipe(
-          finalize(() => {
-            this._formModel.submitDone();
-          })
-        )
-        .subscribe((post) => {
-          this._snackBarService.open('Post published.', undefined, {
-            duration: SnackBarConfig.SUCCESS_DURATIONS,
-          });
-          this._routerService.navigate(['/post']);
-        }, this._commonHttpErrorHandler);
-    } else {
-      this._snackBarService.open('Not implemented yet', undefined, {
-        duration: SnackBarConfig.ERROR_DURATIONS,
-      });
-    }
-  }
-
-  public saveUpdate() {
-    if (!this._formModel.isSubmitting) {
-      this._formModel.submitting();
-
-      this.submitFormUpdate()
-        .pipe(
-          finalize(() => {
-            this._formModel.submitDone();
-          })
-        )
-        .subscribe(() => {
-          this._snackBarService.open('Post updated.', undefined, {
-            duration: SnackBarConfig.SUCCESS_DURATIONS,
-          });
-          this._routerService.navigate(['/post']);
-        }, this._commonHttpErrorHandler);
+  public save(publishNow: boolean) {
+    if (!this._submitting) {
+      this.ngSubmit.emit(this._formModel.getFormData(publishNow));
     }
   }
 
@@ -180,6 +94,17 @@ export class PostEditorComponent
   get post(): PostDetailed {
     return this._post!;
   }
+
+  @Input()
+  set submitting(submitting: boolean) {
+    this._submitting = submitting;
+    if (this._submitting) this._formModel.submitting();
+    else this._formModel.submitDone();
+  }
+
+  get submitting(): boolean {
+    return this._submitting;
+  }
 }
 
 class FormModel {
@@ -190,17 +115,15 @@ class FormModel {
   public content: FormControl;
   public tagSeparator: any;
   public canPublish: boolean;
-  public isSubmitting: boolean;
 
   constructor() {
-    this.title = new FormControl('', [Validators.required]);
-    this.slug = new FormControl('', []);
-    this.categories = new FormControl('', [Validators.required]);
-    this.tags = new FormControl('', []);
-    this.content = new FormControl('', []);
+    this.title = new FormControl(null, [Validators.required]);
+    this.slug = new FormControl(null, []);
+    this.categories = new FormControl([], [Validators.required]);
+    this.tags = new FormControl(null, []);
+    this.content = new FormControl(null, []);
     this.tagSeparator = [SPACE] as const;
     this.canPublish = false;
-    this.isSubmitting = false;
 
     this.emptyFormData();
   }
@@ -216,7 +139,7 @@ class FormModel {
   public fillFormData(post: PostDetailed) {
     this.title.setValue(post.title!);
     this.slug.setValue(post.slug!);
-    this.categories.setValue(post.categories?.[0], { onlySelf: true });
+    this.categories.setValue(post.categories?.[0].uid, { onlySelf: true });
     this.tags.setValue(post.tags!);
     this.content.setValue(post.content!);
 
@@ -244,7 +167,6 @@ class FormModel {
     this.categories.disable();
     this.tags.disable();
     this.content.disable();
-    this.isSubmitting = true;
   }
 
   public submitDone() {
@@ -253,6 +175,5 @@ class FormModel {
     this.categories.enable();
     this.tags.enable();
     this.content.enable();
-    this.isSubmitting = false;
   }
 }
