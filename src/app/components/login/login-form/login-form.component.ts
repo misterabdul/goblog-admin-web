@@ -1,14 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
 
-import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { DarkModeService } from 'src/app/services/darkmode.service';
-
-import { AuthService } from 'src/app/services/auth.service';
+import { LoginFormData } from 'src/app/types/user.type';
 
 @Component({
   selector: 'app-component-login-login-form',
@@ -17,72 +11,44 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginLoginFormComponent {
   private _isDarkMode: boolean;
-  private _isLoading: boolean;
   private _formControl: LoginFormControl;
-  private _routerService: Router;
-  private _snackBarService: MatSnackBar;
-  private _authService: AuthService;
+  private _submitting: boolean;
 
-  constructor(
-    routerService: Router,
-    snackbarService: MatSnackBar,
-    darkModeService: DarkModeService,
-    authService: AuthService
-  ) {
+  @Output()
+  public ngSubmit: EventEmitter<LoginFormData>;
+
+  constructor(darkModeService: DarkModeService) {
     this._isDarkMode = false;
-    this._isLoading = false;
     this._formControl = new LoginFormControl();
-    this._routerService = routerService;
-    this._snackBarService = snackbarService;
-    this._authService = authService;
+    this._submitting = false;
 
     darkModeService.darkModeSubject.subscribe((isDarkMode) => {
       this._isDarkMode = isDarkMode;
     });
+
+    this.ngSubmit = new EventEmitter<LoginFormData>();
   }
 
-  public submitLoginForm(username: string, password: string): void {
-    this._isLoading = true;
-    this._formControl.disableAll();
-    this._authService
-      .authenticate(username, password)
-      .pipe(
-        finalize(() => {
-          this._isLoading = false;
-          this._formControl.enableAll();
-        })
-      )
-      .subscribe(
-        () => {
-          this._routerService.navigate(['/']);
-          this._snackBarService.open('Logged in.', undefined, {
-            duration: SnackBarConfig.SUCCESS_DURATIONS,
-          });
-        },
-        (errorResponse) => {
-          if (errorResponse instanceof HttpErrorResponse) {
-            this._snackBarService.open(
-              errorResponse.error?.message ?? 'Unknown error.',
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          } else {
-            this._snackBarService.open('Unknown error.', undefined, {
-              duration: SnackBarConfig.ERROR_DURATIONS,
-            });
-          }
-        }
-      );
+  public submit(): void {
+    this.ngSubmit.emit({
+      username: this._formControl.email.value,
+      password: this._formControl.password.value,
+    });
   }
 
   get isDarkMode(): boolean {
     return this._isDarkMode;
   }
 
-  get isLoading(): boolean {
-    return this._isLoading;
+  @Input()
+  set submitting(submitting: boolean) {
+    this._submitting = submitting;
+    if (this._submitting) this._formControl.disableAll();
+    else this._formControl.enableAll();
+  }
+
+  get submitting(): boolean {
+    return this._submitting;
   }
 
   get formControl(): LoginFormControl {

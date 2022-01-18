@@ -32,6 +32,16 @@ export class UserRole {
   public since: Time | undefined;
 }
 
+export class LoginFormData {
+  public username: string | undefined;
+  public password: string | undefined;
+
+  constructor(username?: string | undefined, password?: string | undefined) {
+    this.username = username;
+    this.password = password;
+  }
+}
+
 export class UserFormData {
   public username: string | undefined;
   public email: string | undefined;

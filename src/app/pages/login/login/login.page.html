@@ -1,5 +1,8 @@
 <div class="login-container">
   <div class="login-content">
-    <app-component-login-login-form></app-component-login-login-form>
+    <app-component-login-login-form
+      [submitting]="submitting"
+      (ngSubmit)="login($event)"
+    ></app-component-login-login-form>
   </div>
 </div>

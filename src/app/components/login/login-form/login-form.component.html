@@ -1,12 +1,8 @@
 <div class="form-container">
-  <form
-    (ngSubmit)="
-      submitLoginForm(formControl.email.value, formControl.password.value)
-    "
-  >
+  <form (ngSubmit)="submit()">
     <mat-progress-bar
       mode="indeterminate"
-      [class]="isLoading ? '' : 'hide'"
+      [class]="submitting ? '' : 'hide'"
     ></mat-progress-bar>
     <mat-form-field class="form-full-width text-center" appearance="fill">
       <mat-label>Email</mat-label>
