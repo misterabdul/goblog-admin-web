@@ -1,4 +1,8 @@
 <h1>Update User</h1>
 <div class="editor-content">
-  <app-component-user-editor [user]="user"></app-component-user-editor>
+  <app-component-user-editor
+    [user]="user"
+    [submitting]="updating"
+    (ngSubmit)="update($event)"
+  ></app-component-user-editor>
 </div>

@@ -15,11 +15,11 @@ import { UserDetailed } from 'src/app/types/user.type';
   styleUrls: ['./show.page.scss'],
 })
 export class UserShowPage implements AfterViewInit {
-  private _activatedRouteService: ActivatedRoute;
-  private _snackBarService: MatSnackBar;
-  private _userService: UserService;
-  private _userId: string | null;
-  private _user: UserDetailed | null;
+  protected _activatedRouteService: ActivatedRoute;
+  protected _snackBarService: MatSnackBar;
+  protected _userService: UserService;
+  protected _userId: string | null;
+  protected _user: UserDetailed | null;
 
   constructor(
     activatedRouteService: ActivatedRoute,

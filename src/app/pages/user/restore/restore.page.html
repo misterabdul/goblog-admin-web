@@ -3,5 +3,7 @@
   <app-component-user-viewer-trash
     [user]="user"
     [mode]="'restore'"
+    [submitting]="restoring"
+    (ngSubmit)="restore($event)"
   ></app-component-user-viewer-trash>
 </div>

@@ -1,15 +1,6 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 
-import { SnackBarConfig } from 'src/app/configs/snackbar.config';
-
-import { UserService } from 'src/app/services/user.service';
-import { Response } from 'src/app/types/response.type';
 import { UserDetailed, UserFormData } from 'src/app/types/user.type';
 import { ValidatorUtils } from 'src/app/utils/validator.util';
 import { UserViewerComponent } from '../viewer/viewer.component';
@@ -20,62 +11,26 @@ import { UserViewerComponent } from '../viewer/viewer.component';
   styleUrls: ['./editor.component.scss'],
 })
 export class UserEditorComponent extends UserViewerComponent {
-  private _formModel: FormModel;
+  private _submitting: boolean;
   private _mode: 'create' | 'update';
+  private _formModel: FormModel;
 
-  constructor(
-    routerService: Router,
-    snackBarService: MatSnackBar,
-    userService: UserService
-  ) {
-    super(routerService, snackBarService, userService);
+  @Output()
+  public ngSubmit: EventEmitter<UserFormData>;
 
+  constructor() {
+    super();
+
+    this._submitting = false;
     this._formModel = new FormModel();
     this._mode = 'create';
-  }
 
-  private submitForm(): Observable<Response<UserDetailed>> {
-    return this._userService.submitCreateUser(this._formModel.formData);
-  }
-
-  private submitFormUpdate(): Observable<void> {
-    return this._userService.submitUpdateUser(
-      this._user?.uid!,
-      this._formModel.formData
-    );
+    this.ngSubmit = new EventEmitter<UserFormData>();
   }
 
   public save() {
-    if (this._formModel.valid && !this._formModel.isSubmitting) {
-      this._formModel.submitting();
-
-      let submitFunc: Observable<Response<UserDetailed> | void>;
-      let successMsg: string;
-      switch (true) {
-        default:
-        case this._mode === 'create':
-          submitFunc = this.submitForm();
-          successMsg = 'User created.';
-          break;
-        case this._mode === 'update':
-          submitFunc = this.submitFormUpdate();
-          successMsg = 'User updated.';
-          break;
-      }
-
-      submitFunc
-        .pipe(
-          finalize(() => {
-            this._formModel.submitDone();
-          })
-        )
-        .subscribe(() => {
-          this._snackBarService.open(successMsg, undefined, {
-            duration: SnackBarConfig.SUCCESS_DURATIONS,
-          });
-          this._routerService.navigate(['/user']);
-        }, this._commonHttpErrorHandler);
-    }
+    if (this._formModel.valid && !this._formModel.isSubmitting)
+      this.ngSubmit.emit(this._formModel.formData);
   }
 
   get userForms(): FormGroup {
@@ -90,19 +45,9 @@ export class UserEditorComponent extends UserViewerComponent {
     return this._mode;
   }
 
-  get submitBtnLbl(): string {
-    switch (true) {
-      default:
-      case this._mode === 'create':
-        return 'Create';
-      case this._mode === 'update':
-        return 'Update';
-    }
-  }
-
   @Input()
   set user(user: UserDetailed | null) {
-    this._user = user;
+    super.user = user;
     if (this._user !== null) {
       this._formModel.fillFormData(this._user);
       this._mode = 'update';
@@ -112,8 +57,15 @@ export class UserEditorComponent extends UserViewerComponent {
     }
   }
 
-  get user(): UserDetailed {
-    return this._user!;
+  @Input()
+  set submitting(submitting: boolean) {
+    this._submitting = submitting;
+    if (this._submitting) this._formModel.submitting();
+    else this._formModel.submitDone();
+  }
+
+  get submitting(): boolean {
+    return this._submitting;
   }
 }
 

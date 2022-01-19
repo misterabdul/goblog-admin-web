@@ -1,4 +1,7 @@
 <h1>Create User</h1>
 <div class="editor-content">
-  <app-component-user-editor></app-component-user-editor>
+  <app-component-user-editor
+    [submitting]="submitting"
+    (ngSubmit)="create($event)"
+  ></app-component-user-editor>
 </div>

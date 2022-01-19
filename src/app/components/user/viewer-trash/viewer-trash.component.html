@@ -48,21 +48,13 @@
     </mat-select>
   </mat-form-field>
   <div class="submit-container">
-    <a
+    <button
       class="inner-button"
       mat-raised-button
-      (click)="deleteUser()"
-      *ngIf="mode === 'delete'"
+      [disabled]="submitting"
+      (click)="submit()"
     >
-      Delete
-    </a>
-    <a
-      class="inner-button"
-      mat-raised-button
-      (click)="restoreUser()"
-      *ngIf="mode === 'restore'"
-    >
-      Restore
-    </a>
+      {{ mode === "delete" ? "Delete" : "Restore" }}
+    </button>
   </div>
 </div>

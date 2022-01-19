@@ -36,9 +36,9 @@
       class="inner-button"
       mat-raised-button
       type="submit"
-      [disabled]="isSubmitting"
+      [disabled]="submitting"
     >
-      {{ submitBtnLbl }}
+      {{ mode === "create" ? "Create" : "Update" }}
     </button>
   </div>
 </form>

@@ -3,5 +3,7 @@
   <app-component-user-viewer-trash
     [user]="user"
     [mode]="'delete'"
+    [submitting]="deleting"
+    (ngSubmit)="delete($event)"
   ></app-component-user-viewer-trash>
 </div>
