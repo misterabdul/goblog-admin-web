@@ -1,6 +1,8 @@
 <mat-nav-list>
-  <mat-list-item *ngFor="let navItem of navItems">
-    <mat-icon matListIcon>{{ navItem.icon }}</mat-icon>
-    <a matLine [routerLink]="navItem.href">{{ navItem.label }}</a>
-  </mat-list-item>
+  <a [routerLink]="navItem.href" *ngFor="let navItem of navItems">
+    <mat-list-item>
+      <mat-icon matListIcon>{{ navItem.icon }}</mat-icon>
+      <span matLine>{{ navItem.label }}</span>
+    </mat-list-item>
+  </a>
 </mat-nav-list>
