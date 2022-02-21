@@ -45,6 +45,12 @@ import { PostTabTrashComponent } from './post/tab-trash/tab-trash.component';
 import { PostInputMarkdownComponent } from './post/input-markdown/input-markdown.component';
 import { PostInputTagsComponent } from './post/input-tags/input-tags.component';
 
+import { CommentTableComponent } from './comment/table/table.component';
+import { CommentTabCommentComponent } from './comment/tab-comment/tab-comment.component';
+import { CommentTabTrashComponent } from './comment/tab-trash/tab-trash.component';
+import { CommentViewerComponent } from './comment/viewer/viewer.component';
+import { CommentViewerTrashComponent } from './comment/viewer-trash/viewer-trash.component';
+
 import { UserTableComponent } from './user/table/table.component';
 import { UserTabActiveComponent } from './user/tab-active/tab-active.component';
 import { UserTabTrashComponent } from './user/tab-trash/tab-trash.component';
@@ -75,6 +81,12 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     PostTabTrashComponent,
     PostInputMarkdownComponent,
     PostInputTagsComponent,
+
+    CommentTableComponent,
+    CommentTabCommentComponent,
+    CommentTabTrashComponent,
+    CommentViewerComponent,
+    CommentViewerTrashComponent,
 
     UserTableComponent,
     UserTabActiveComponent,
@@ -128,6 +140,12 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     PostTabTrashComponent,
     PostInputMarkdownComponent,
     PostInputTagsComponent,
+
+    CommentTableComponent,
+    CommentTabCommentComponent,
+    CommentTabTrashComponent,
+    CommentViewerComponent,
+    CommentViewerTrashComponent,
 
     UserTableComponent,
     UserTabActiveComponent,

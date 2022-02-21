@@ -1,0 +1,70 @@
+<table mat-table [dataSource]="comments">
+  <ng-container matColumnDef="no">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>No.</th>
+    <td class="text-center" mat-cell *matCellDef="let comment; let i = index">
+      {{ i + 1 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Name</th>
+    <td class="text-center" mat-cell *matCellDef="let comment">
+      {{ comment.name }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="email">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Email</th>
+    <td class="text-center" mat-cell *matCellDef="let comment">
+      {{ comment.email }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="content">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Content</th>
+    <td class="text-center" mat-cell *matCellDef="let comment">
+      {{ comment.content }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="created-at">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Created At</th>
+    <td class="text-center" mat-cell *matCellDef="let comment">
+      {{ properTime(comment.createdAt) }} <br />
+      {{ properDate(comment.createdAt) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Actions</th>
+    <td class="text-center" mat-cell *matCellDef="let comment">
+      <button mat-icon-button [matMenuTriggerFor]="actions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #actions="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="'/comment/' + comment.uid"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>visibility</mat-icon>
+          <span>View Comment</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/comment/' + comment.uid + '/delete'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>delete</mat-icon>
+          <span>Delete Comment</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/comment/' + comment.uid + '/restore'"
+          *ngIf="isTrash"
+        >
+          <mat-icon>restore_from_trash</mat-icon>
+          <span>Restore Comment</span>
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

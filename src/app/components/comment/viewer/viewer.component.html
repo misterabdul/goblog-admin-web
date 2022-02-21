@@ -1,0 +1,35 @@
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="comment?.name ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="comment?.email ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Content</mat-label>
+    <textarea matInput [disabled]="true">
+      {{ comment?.content ?? null }}
+    </textarea>
+  </mat-form-field>
+  <div class="submit-container">
+    <a
+      class="inner-button"
+      mat-raised-button
+      [routerLink]="'/comment/' + (comment?.uid ?? null) + '/delete'"
+    >
+      Delete
+    </a>
+  </div>
+</div>

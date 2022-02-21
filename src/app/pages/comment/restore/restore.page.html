@@ -1,9 +1,9 @@
-<h1>Delete Comment</h1>
+<h1>Restore Comment</h1>
 <div class="viewer-content">
   <app-component-comment-viewer-trash
     [comment]="comment"
-    [mode]="'delete'"
-    [submitting]="deleting"
-    (ngSubmit)="delete($event)"
+    [mode]="'restore'"
+    [submitting]="restoring"
+    (ngSubmit)="restore($event)"
   ></app-component-comment-viewer-trash>
 </div>

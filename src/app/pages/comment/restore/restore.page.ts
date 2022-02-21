@@ -14,14 +14,14 @@ import { CommentShowPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
-  selector: 'app-page-comment-delete',
-  templateUrl: './delete.page.html',
-  styleUrls: ['./delete.page.scss'],
+  selector: 'app-page-comment-restore',
+  templateUrl: './restore.page.html',
+  styleUrls: ['./restore.page.scss'],
 })
-export class CommentDeletePage extends CommentShowPage {
+export class CommentRestorePage extends CommentShowPage {
   private _routerService: Router;
   private _dialogService: MatDialog;
-  private _deleting: boolean;
+  private _restoring: boolean;
 
   constructor(
     activatedRouteService: ActivatedRoute,
@@ -34,16 +34,16 @@ export class CommentDeletePage extends CommentShowPage {
     this._routerService = routerService;
     this._dialogService = dialogService;
 
-    this._deleting = false;
+    this._restoring = false;
   }
 
-  public delete(comment: CommentDetailed | undefined) {
-    if (!this._deleting && this._commentUid) {
+  public restore(comment: CommentDetailed | undefined) {
+    if (!this._restoring && this._commentUid) {
       const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
         data: new BasicDialogData(
-          'Delete Comment',
-          'Are you sure to delete this comment ?',
-          'Deleting comment'
+          'Restore Comment',
+          'Are you sure to restore this comment ?',
+          'Restoring comment'
         ),
       });
 
@@ -52,8 +52,8 @@ export class CommentDeletePage extends CommentShowPage {
           mergeMap<number, ObservableInput<false | void>>((dialogResult) => {
             if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
               dialogRef.componentInstance.isProcessing = true;
-              this._deleting = true;
-              return this._commentService.submitDeleteComment(
+              this._restoring = true;
+              return this._commentService.submitRestoreComment(
                 this._commentUid ?? ''
               );
             } else {
@@ -65,16 +65,20 @@ export class CommentDeletePage extends CommentShowPage {
           (result) => {
             if (result !== false) {
               dialogRef.close();
-              this._snackBarService.open('Comment deleted.', undefined, {
+              this._snackBarService.open('Comment restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
               });
               setTimeout(() => {
-                this._routerService.navigate(['/comment']);
+                this._routerService.navigate(['/comment'], {
+                  queryParams: {
+                    tab: 'trash',
+                  },
+                });
               }, 100);
             }
           },
           (error) => {
-            this._deleting = false;
+            this._restoring = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
@@ -94,7 +98,7 @@ export class CommentDeletePage extends CommentShowPage {
     }
   }
 
-  get deleting(): boolean {
-    return this._deleting;
+  get restoring(): boolean {
+    return this._restoring;
   }
 }

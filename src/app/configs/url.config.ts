@@ -11,6 +11,9 @@ export class UrlConfig {
   public static post = UrlConfig.baseUrl + '/api/v1/auth/editor/post';
   public static submitPost = UrlConfig.baseUrl + '/api/v1/auth/writer/post';
 
+  public static comments = UrlConfig.baseUrl + '/api/v1/auth/editor/comments';
+  public static comment = UrlConfig.baseUrl + '/api/v1/auth/editor/comment';
+
   public static categories =
     UrlConfig.baseUrl + '/api/v1/auth/editor/categories';
   public static category = UrlConfig.baseUrl + '/api/v1/auth/editor/category';

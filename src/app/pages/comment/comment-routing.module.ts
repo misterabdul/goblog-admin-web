@@ -7,6 +7,7 @@ import { AuthGuardService } from 'src/app/services/guards/auth-guard.service';
 import { CommentIndexPage } from './index/index.page';
 import { CommentShowPage } from './show/show.page';
 import { CommentDeletePage } from './delete/delete.page';
+import { CommentRestorePage } from './restore/restore.page';
 
 const routes: Routes = [
   {
@@ -20,13 +21,18 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id',
+        path: ':uid',
         component: CommentShowPage,
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id/delete',
+        path: ':uid/delete',
         component: CommentDeletePage,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: ':uid/restore',
+        component: CommentRestorePage,
         canActivate: [AuthGuardService],
       },
     ],
