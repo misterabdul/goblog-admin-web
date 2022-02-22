@@ -1,3 +1,5 @@
+import { marked } from 'marked';
+
 import { MarkedRenderer } from '@misterabdul/ngx-markdown';
 
 export class MarkedRendererHelpers {

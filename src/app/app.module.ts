@@ -26,7 +26,7 @@ import { AuthService, TokenCheckStatus } from './services/auth.service';
     <router-outlet></router-outlet>
   </div>`,
 })
-class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit {
   private _authService: AuthService;
   private _isCloakVisible: boolean;
 
@@ -53,7 +53,7 @@ class AppComponent implements AfterViewInit {
   declarations: [AppComponent],
   imports: [
     HttpClientModule,
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
