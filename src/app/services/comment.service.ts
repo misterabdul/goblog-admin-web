@@ -30,7 +30,7 @@ export class CommentService {
 
   public getTrashed(): Observable<Response<Array<CommentDetailed>>> {
     return this._http.get<Response<Array<CommentDetailed>>>(
-      UrlConfig.comments + '?type=trash',
+      UrlConfig.comments + '?trash=true',
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
