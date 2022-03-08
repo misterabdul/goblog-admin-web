@@ -34,11 +34,17 @@ export class AuthService {
     username: string,
     password: string
   ): Observable<AuthResponse> {
+    const options = HttpConfig.getDefaultOptions();
+    options.withCredentials = true;
+
     return this._http
       .post<AuthResponse>(
         UrlConfig.login,
-        { username: username, password: password },
-        HttpConfig.getDefaultOptions()
+        {
+          username: username,
+          password: password,
+        },
+        options
       )
       .pipe(
         map((authResponse) => {
@@ -52,30 +58,26 @@ export class AuthService {
   }
 
   public deauthenticate(): Observable<Response<any>> {
-    return this._http
-      .post<Response<any>>(
-        UrlConfig.logout,
-        null,
-        HttpConfig.getDefaultOptions()
-      )
-      .pipe(
-        map((response) => {
-          this._accessToken = null;
-          this._tokenType = null;
-          this._tokenCheckSubject.next(TokenCheckStatus.NO_TOKEN);
+    const options = HttpConfig.getDefaultOptions();
+    options.withCredentials = true;
 
-          return response;
-        })
-      );
+    return this._http.post<Response<any>>(UrlConfig.logout, null, options).pipe(
+      map((response) => {
+        this._accessToken = null;
+        this._tokenType = null;
+        this._tokenCheckSubject.next(TokenCheckStatus.NO_TOKEN);
+
+        return response;
+      })
+    );
   }
 
   public refreshToken(): Observable<AuthResponse> {
+    const options = HttpConfig.getDefaultOptions();
+    options.withCredentials = true;
+
     return this._http
-      .post<AuthResponse>(
-        UrlConfig.refreshToken,
-        null,
-        HttpConfig.getDefaultOptions()
-      )
+      .post<AuthResponse>(UrlConfig.refreshToken, null, options)
       .pipe(
         map((authResponse) => {
           this._accessToken = authResponse.accessToken!;
