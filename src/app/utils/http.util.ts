@@ -142,6 +142,8 @@ export class RefreshAuthInterceptor implements HttpInterceptor {
     const token =
       this._authService.tokenType + ' ' + this._authService.accessToken;
 
-    return request.clone(HttpConfig.getDefaultAuthenticatedOptions(token));
+    return request.clone(
+      HttpConfig.getDefaultAuthenticatedOptions(token) as {}
+    );
   }
 }

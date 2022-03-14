@@ -21,6 +21,7 @@ type HttpOptions = {
   responseType?: 'json';
   withCredentials?: boolean;
 };
+
 export class HttpConfig {
   public static getDefaultOptions(
     extraHeaders: HttpHeaders | null = null
@@ -36,7 +37,7 @@ export class HttpConfig {
   public static getDefaultAuthenticatedOptions(
     authorizationToken: string,
     extraHeaders: HttpHeaders | null = null
-  ) {
+  ): HttpOptions {
     let _headers = extraHeaders ?? new HttpHeaders();
     _headers = _headers.append('Authorization', authorizationToken);
 
