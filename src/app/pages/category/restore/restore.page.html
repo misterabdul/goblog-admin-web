@@ -1,0 +1,9 @@
+<h1>Restore Category</h1>
+<div class="viewer-content">
+  <app-component-category-viewer-trash
+    [category]="category"
+    [mode]="'restore'"
+    [submitting]="restoring"
+    (ngSubmit)="restore($event)"
+  ></app-component-category-viewer-trash>
+</div>

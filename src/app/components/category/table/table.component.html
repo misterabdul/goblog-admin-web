@@ -1,0 +1,72 @@
+<table mat-table [dataSource]="categories">
+  <ng-container matColumnDef="no">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>No.</th>
+    <td class="text-center" mat-cell *matCellDef="let category; let i = index">
+      {{ i + 1 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="slug">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Slug</th>
+    <td class="text-center" mat-cell *matCellDef="let category">
+      {{ category.slug }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Name</th>
+    <td class="text-center" mat-cell *matCellDef="let category">
+      {{ category.name }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="created-at">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Created At</th>
+    <td class="text-center" mat-cell *matCellDef="let category">
+      {{ properTime(category.createdAt) }} <br />
+      {{ properDate(category.createdAt) }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th class="text-center" mat-header-cell *matHeaderCellDef>Actions</th>
+    <td class="text-center" mat-cell *matCellDef="let category">
+      <button mat-icon-button [matMenuTriggerFor]="actions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #actions="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="'/category/' + category.uid"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>visibility</mat-icon>
+          <span>View Category</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/category/' + category.uid + '/update'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>edit</mat-icon>
+          <span>Edit Category</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/category/' + category.uid + '/delete'"
+          *ngIf="!isTrash"
+        >
+          <mat-icon>delete</mat-icon>
+          <span>Delete Category</span>
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="'/category/' + category.uid + '/restore'"
+          *ngIf="isTrash"
+        >
+          <mat-icon>restore_from_trash</mat-icon>
+          <span>Restore Category</span>
+        </button>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

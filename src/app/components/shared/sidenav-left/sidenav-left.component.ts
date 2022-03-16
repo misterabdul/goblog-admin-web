@@ -11,6 +11,7 @@ export class SharedSidenavLeftComponent {
   constructor() {
     this._navItems = [
       new SideNavItem('/dashboard', 'Dashboard', 'home'),
+      new SideNavItem('/category', 'Categories', 'category'),
       new SideNavItem('/post', 'Posts', 'article'),
       new SideNavItem('/comment', 'Comments', 'comment'),
       new SideNavItem('/user', 'Users', 'people_alt'),

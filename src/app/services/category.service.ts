@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { HttpConfig } from '../configs/http.config';
 import { UrlConfig } from '../configs/url.config';
 
-import { CategoryDetailed } from '../types/category.type';
+import { CategoryDetailed, CategoryFormData } from '../types/category.type';
 import { Response } from '../types/response.type';
 import { AuthService } from './auth.service';
 
@@ -30,9 +30,52 @@ export class CategoryService {
     );
   }
 
-  public getCategory(id: string): Observable<CategoryDetailed> {
-    return this._httpClient.get<CategoryDetailed>(
+  public getTrashed(): Observable<Response<Array<CategoryDetailed>>> {
+    return this._httpClient.get<Response<Array<CategoryDetailed>>>(
+      UrlConfig.categories + '?type=trash',
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
+
+  public getCategory(id: string): Observable<Response<CategoryDetailed>> {
+    return this._httpClient.get<Response<CategoryDetailed>>(
       UrlConfig.category + '/' + id,
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
+
+  public submitNewCategory(
+    formData: CategoryFormData
+  ): Observable<Response<CategoryDetailed>> {
+    return this._httpClient.post<Response<CategoryDetailed>>(
+      UrlConfig.category,
+      formData,
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
+
+  public submitUpdateCategory(
+    categoryId: string,
+    formData: CategoryFormData
+  ): Observable<Response<any>> {
+    return this._httpClient.put<Response<any>>(
+      UrlConfig.category + '/' + categoryId,
+      formData,
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
+
+  public submitDeleteCategory(categoryId: string): Observable<Response<any>> {
+    return this._httpClient.delete<Response<any>>(
+      UrlConfig.category + '/' + categoryId,
+      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    );
+  }
+
+  public submitRestoreCategory(categoryId: string): Observable<Response<any>> {
+    return this._httpClient.put<Response<any>>(
+      UrlConfig.category + '/' + categoryId + '/detrash',
+      {},
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }

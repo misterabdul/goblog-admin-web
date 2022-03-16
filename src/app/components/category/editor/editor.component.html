@@ -1,0 +1,20 @@
+<form [formGroup]="categoryForms" (ngSubmit)="save()">
+  <mat-form-field appearance="fill">
+    <mat-label>Slug</mat-label>
+    <input matInput type="text" formControlName="slug" min="5" max="16" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput type="text" formControlName="name" />
+  </mat-form-field>
+  <div class="submit-container">
+    <button
+      class="inner-button"
+      mat-raised-button
+      type="submit"
+      [disabled]="submitting"
+    >
+      {{ mode === "create" ? "Create" : "Update" }}
+    </button>
+  </div>
+</form>

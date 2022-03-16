@@ -1,0 +1,9 @@
+<h1>Delete Category</h1>
+<div class="viewer-content">
+  <app-component-category-viewer-trash
+    [category]="category"
+    [mode]="'delete'"
+    [submitting]="deleting"
+    (ngSubmit)="delete($event)"
+  ></app-component-category-viewer-trash>
+</div>

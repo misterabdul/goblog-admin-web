@@ -35,6 +35,13 @@ import { SharedBasicDialogComponent } from './shared/basic-dialog/basic-dialog.c
 
 import { LoginLoginFormComponent } from './login/login-form/login-form.component';
 
+import { CategoryEditorComponent } from './category/editor/editor.component';
+import { CategoryTabActiveComponent } from './category/tab-active/tab-active.component';
+import { CategoryTabTrashComponent } from './category/tab-trash/tab-trash.component';
+import { CategoryTableComponent } from './category/table/table.component';
+import { CategoryViewerComponent } from './category/viewer/viewer.component';
+import { CategoryViewerTrashComponent } from './category/viewer-trash/viewer-trash.component';
+
 import { PostTableComponent } from './post/table/table.component';
 import { PostEditorComponent } from './post/editor/editor.component';
 import { PostViewerComponent } from './post/viewer/viewer.component';
@@ -71,6 +78,13 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     SharedBasicDialogComponent,
 
     LoginLoginFormComponent,
+
+    CategoryEditorComponent,
+    CategoryTabActiveComponent,
+    CategoryTabTrashComponent,
+    CategoryTableComponent,
+    CategoryViewerComponent,
+    CategoryViewerTrashComponent,
 
     PostTableComponent,
     PostEditorComponent,
@@ -130,6 +144,13 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     SharedBasicDialogComponent,
 
     LoginLoginFormComponent,
+
+    CategoryEditorComponent,
+    CategoryTabActiveComponent,
+    CategoryTabTrashComponent,
+    CategoryTableComponent,
+    CategoryViewerComponent,
+    CategoryViewerTrashComponent,
 
     PostTableComponent,
     PostEditorComponent,
