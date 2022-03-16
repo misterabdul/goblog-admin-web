@@ -1,6 +1,6 @@
 import { Time } from '@angular/common';
 
-import { ResponseMessage, TimeMeta } from './response.type';
+import { TimeMeta } from './response.type';
 
 export interface UserCommon {
   username: string | undefined;
@@ -9,14 +9,12 @@ export interface UserCommon {
   lastName: string | undefined;
 }
 
-export class User implements ResponseMessage, UserCommon {
+export class User implements UserCommon {
   public uid: string | undefined;
   public username: string | undefined;
   public email: string | undefined;
   public firstName: string | undefined;
   public lastName: string | undefined;
-
-  public message: string | undefined;
 }
 
 export class UserDetailed extends User implements TimeMeta {

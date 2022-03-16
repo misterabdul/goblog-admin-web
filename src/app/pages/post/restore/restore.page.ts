@@ -5,13 +5,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ObservableInput, of } from 'rxjs';
 import { finalize, mergeMap } from 'rxjs/operators';
-import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
+
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
-import { PostService } from 'src/app/services/post.service';
+import { Response } from 'src/app/types/response.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { PostDetailed } from 'src/app/types/post.type';
+import { PostService } from 'src/app/services/post.service';
 import { PostShowPage } from '../show/show.page';
+import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
   selector: 'app-page-post-restore',
@@ -52,15 +54,17 @@ export class PostRestorePage extends PostShowPage {
 
       dialogRef.componentInstance.dialogResult
         .pipe(
-          mergeMap<number, ObservableInput<false | void>>((dialogResult) => {
-            if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
-              dialogRef.componentInstance.isProcessing = true;
-              this._restoring = true;
-              return this._postService.submitRestorePost(this._postId ?? '');
-            } else {
-              return of(false);
+          mergeMap<number, ObservableInput<false | Response<any>>>(
+            (dialogResult) => {
+              if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
+                dialogRef.componentInstance.isProcessing = true;
+                this._restoring = true;
+                return this._postService.submitRestorePost(this._postId ?? '');
+              } else {
+                return of(false);
+              }
             }
-          }),
+          ),
           finalize(() => {
             this._restoring = false;
           })

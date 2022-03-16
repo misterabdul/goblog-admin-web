@@ -49,15 +49,17 @@ export class PostService {
     );
   }
 
-  public getPost(id: string): Observable<PostDetailed> {
-    return this._http.get<PostDetailed>(
+  public getPost(id: string): Observable<Response<PostDetailed>> {
+    return this._http.get<Response<PostDetailed>>(
       UrlConfig.post + '/' + id,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
-  public submitNewPost(formData: PostFormData): Observable<PostDetailed> {
-    return this._http.post<PostDetailed>(
+  public submitNewPost(
+    formData: PostFormData
+  ): Observable<Response<PostDetailed>> {
+    return this._http.post<Response<PostDetailed>>(
       UrlConfig.submitPost,
       formData,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
@@ -67,23 +69,23 @@ export class PostService {
   public submitUpdatePost(
     postId: string,
     formData: PostFormData
-  ): Observable<void> {
-    return this._http.put<void>(
+  ): Observable<Response<any>> {
+    return this._http.put<Response<any>>(
       UrlConfig.submitPost + '/' + postId,
       formData,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
-  public submitDeletePost(postId: string): Observable<void> {
-    return this._http.delete<void>(
+  public submitDeletePost(postId: string): Observable<Response<any>> {
+    return this._http.delete<Response<any>>(
       UrlConfig.submitPost + '/' + postId,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
-  public submitRestorePost(postId: string): Observable<void> {
-    return this._http.put<void>(
+  public submitRestorePost(postId: string): Observable<Response<any>> {
+    return this._http.put<Response<any>>(
       UrlConfig.submitPost + '/' + postId + '/detrash',
       {},
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)

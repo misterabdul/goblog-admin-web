@@ -51,15 +51,15 @@ export class CommentService {
     );
   }
 
-  public submitDeleteComment(uid: string): Observable<void> {
-    return this._http.delete<void>(
+  public submitDeleteComment(uid: string): Observable<Response<any>> {
+    return this._http.delete<Response<any>>(
       UrlConfig.comment + '/' + uid,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
-  public submitRestoreComment(uid: string): Observable<void> {
-    return this._http.put<void>(
+  public submitRestoreComment(uid: string): Observable<Response<any>> {
+    return this._http.put<Response<any>>(
       UrlConfig.comment + '/' + uid + '/detrash',
       {},
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)

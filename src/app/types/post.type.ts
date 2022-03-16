@@ -1,10 +1,10 @@
 import { Time } from '@angular/common';
 
 import { CategoryData } from './category.type';
-import { ResponseMessage, TimeMeta } from './response.type';
+import { TimeMeta } from './response.type';
 import { UserCommon } from './user.type';
 
-export class Post implements ResponseMessage {
+export class Post {
   public uid: string | undefined;
   public slug: string | undefined;
   public title: string | undefined;
@@ -15,8 +15,6 @@ export class Post implements ResponseMessage {
   public tags: Array<String> | undefined;
   public author: PostAuthor | undefined;
   public publishedAt: Time | undefined;
-
-  public message: string | undefined;
 }
 
 export class PostDetailed extends Post implements TimeMeta {

@@ -5,13 +5,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ObservableInput, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
+
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
-import { UserService } from 'src/app/services/user.service';
+import { Response } from 'src/app/types/response.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { UserDetailed } from 'src/app/types/user.type';
-
+import { UserService } from 'src/app/services/user.service';
 import { UserShowPage } from '../show/show.page';
+import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
   selector: 'app-page-user-delete',
@@ -49,15 +50,17 @@ export class UserDeletePage extends UserShowPage {
 
       dialogRef.componentInstance.dialogResult
         .pipe(
-          mergeMap<number, ObservableInput<false | void>>((dialogResult) => {
-            if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
-              dialogRef.componentInstance.isProcessing = true;
-              this._deleting = true;
-              return this._userService.submitDeleteUser(this._userId ?? '');
-            } else {
-              return of(false);
+          mergeMap<number, ObservableInput<false | Response<any>>>(
+            (dialogResult) => {
+              if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
+                dialogRef.componentInstance.isProcessing = true;
+                this._deleting = true;
+                return this._userService.submitDeleteUser(this._userId ?? '');
+              } else {
+                return of(false);
+              }
             }
-          })
+          )
         )
         .subscribe(
           (result) => {

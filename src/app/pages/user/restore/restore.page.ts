@@ -8,6 +8,7 @@ import { mergeMap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
+import { Response } from 'src/app/types/response.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { UserDetailed } from 'src/app/types/user.type';
 import { UserService } from 'src/app/services/user.service';
@@ -50,15 +51,17 @@ export class UserRestorePage extends UserShowPage {
 
       dialogRef.componentInstance.dialogResult
         .pipe(
-          mergeMap<number, ObservableInput<false | void>>((dialogResult) => {
-            if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
-              dialogRef.componentInstance.isProcessing = true;
-              this._restoring = true;
-              return this._userService.submitRestoreUser(this._userId ?? '');
-            } else {
-              return of(false);
+          mergeMap<number, ObservableInput<false | Response<any>>>(
+            (dialogResult) => {
+              if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
+                dialogRef.componentInstance.isProcessing = true;
+                this._restoring = true;
+                return this._userService.submitRestoreUser(this._userId ?? '');
+              } else {
+                return of(false);
+              }
             }
-          })
+          )
         )
         .subscribe(
           (result) => {

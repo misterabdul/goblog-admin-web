@@ -62,23 +62,23 @@ export class UserService {
   public submitUpdateUser(
     userId: string,
     formData: UserFormData
-  ): Observable<void> {
-    return this._httpClientService.put<void>(
+  ): Observable<Response<any>> {
+    return this._httpClientService.put<Response<any>>(
       UrlConfig.user + '/' + userId,
       formData,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
-  public submitDeleteUser(userId: string): Observable<void> {
-    return this._httpClientService.delete<void>(
+  public submitDeleteUser(userId: string): Observable<Response<any>> {
+    return this._httpClientService.delete<Response<any>>(
       UrlConfig.user + '/' + userId,
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
     );
   }
 
-  public submitRestoreUser(userId: string): Observable<void> {
-    return this._httpClientService.put<void>(
+  public submitRestoreUser(userId: string): Observable<Response<any>> {
+    return this._httpClientService.put<Response<any>>(
       UrlConfig.user + '/' + userId + '/detrash',
       {},
       HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)

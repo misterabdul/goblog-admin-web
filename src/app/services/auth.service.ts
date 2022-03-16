@@ -6,8 +6,8 @@ import { catchError, finalize, map, switchMap } from 'rxjs/operators';
 import { HttpConfig } from '../configs/http.config';
 import { UrlConfig } from '../configs/url.config';
 
-import { AuthResponse } from '../types/auth-response.type';
 import { Response } from '../types/response.type';
+import { AuthData } from '../types/auth-data.type';
 
 @Injectable({
   providedIn: 'root',
@@ -33,12 +33,12 @@ export class AuthService {
   public authenticate(
     username: string,
     password: string
-  ): Observable<AuthResponse> {
+  ): Observable<Response<AuthData>> {
     const options = HttpConfig.getDefaultOptions();
     options.withCredentials = true;
 
     return this._http
-      .post<AuthResponse>(
+      .post<Response<AuthData>>(
         UrlConfig.login,
         {
           username: username,
@@ -48,8 +48,8 @@ export class AuthService {
       )
       .pipe(
         map((authResponse) => {
-          this._accessToken = authResponse.accessToken!;
-          this._tokenType = authResponse.tokenType!;
+          this._accessToken = authResponse.data!.accessToken!;
+          this._tokenType = authResponse.data!.tokenType!;
           this._tokenCheckSubject.next(TokenCheckStatus.CHECK);
 
           return authResponse;
@@ -72,16 +72,16 @@ export class AuthService {
     );
   }
 
-  public refreshToken(): Observable<AuthResponse> {
+  public refreshToken(): Observable<Response<AuthData>> {
     const options = HttpConfig.getDefaultOptions();
     options.withCredentials = true;
 
     return this._http
-      .post<AuthResponse>(UrlConfig.refreshToken, null, options)
+      .post<Response<AuthData>>(UrlConfig.refreshToken, null, options)
       .pipe(
         map((authResponse) => {
-          this._accessToken = authResponse.accessToken!;
-          this._tokenType = authResponse.tokenType!;
+          this._accessToken = authResponse.data!.accessToken!;
+          this._tokenType = authResponse.data!.tokenType!;
           return authResponse;
         })
       );

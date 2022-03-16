@@ -39,7 +39,7 @@ export class PostShowPage implements AfterViewInit {
         this._postId = params['id'];
         this._postService.getPost(this._postId).subscribe(
           (response) => {
-            this._post = response;
+            this._post = response.data ?? null;
           },
           (error) => {
             if (error instanceof HttpErrorResponse) {
