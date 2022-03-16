@@ -40,7 +40,7 @@ export class PostRestorePage extends PostShowPage {
   }
 
   public restore(post: PostDetailed | undefined) {
-    if (!this._restoring && this._postId) {
+    if (!this._restoring && this._postUid) {
       const dialogRef = this._matDialogService.open(
         SharedBasicDialogComponent,
         {
@@ -59,7 +59,7 @@ export class PostRestorePage extends PostShowPage {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
                 this._restoring = true;
-                return this._postService.submitRestorePost(this._postId ?? '');
+                return this._postService.submitRestorePost(this._postUid ?? '');
               } else {
                 return of(false);
               }
@@ -69,8 +69,8 @@ export class PostRestorePage extends PostShowPage {
             this._restoring = false;
           })
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('Post restored.', undefined, {
@@ -85,7 +85,7 @@ export class PostRestorePage extends PostShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
@@ -100,8 +100,8 @@ export class PostRestorePage extends PostShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

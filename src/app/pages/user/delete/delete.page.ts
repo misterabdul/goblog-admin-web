@@ -62,8 +62,8 @@ export class UserDeletePage extends UserShowPage {
             }
           )
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('User deleted.', undefined, {
@@ -74,7 +74,7 @@ export class UserDeletePage extends UserShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             this._deleting = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
@@ -90,8 +90,8 @@ export class UserDeletePage extends UserShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

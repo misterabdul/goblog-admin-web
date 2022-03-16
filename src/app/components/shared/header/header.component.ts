@@ -31,8 +31,10 @@ export class SharedHeaderComponent {
     this._darkModeService = darkModeService;
     this._logoutDialog = matDialog;
 
-    this._darkModeService.darkModeSubject.subscribe((isDarkMode: boolean) => {
-      this._isDarkMode = isDarkMode;
+    this._darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode: boolean) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
   }
 
@@ -44,10 +46,12 @@ export class SharedHeaderComponent {
     this._logoutDialog
       .open(InnerLogoutDialogComponent)
       .afterClosed()
-      .subscribe((dialogResult) => {
-        if (dialogResult === InnerLogoutDialogComponent.RESULT_YES) {
-          this._routerService.navigate(['/login']);
-        }
+      .subscribe({
+        next: (dialogResult) => {
+          if (dialogResult === InnerLogoutDialogComponent.RESULT_YES) {
+            this._routerService.navigate(['/login']);
+          }
+        },
       });
   }
 
@@ -100,14 +104,14 @@ export class InnerLogoutDialogComponent {
             this._isLoggingOut = false;
           })
         )
-        .subscribe(
-          (logoutResponse) => {
+        .subscribe({
+          next: (logoutResponse) => {
             this._snackBar.open('Logged out', undefined, {
               duration: SnackBarConfig.SUCCESS_DURATIONS,
             });
             this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
           },
-          (errorResponse) => {
+          error: (errorResponse) => {
             if (errorResponse instanceof HttpErrorResponse) {
               this._snackBar.open(
                 errorResponse.error?.message ?? 'Unknown error.',
@@ -122,8 +126,8 @@ export class InnerLogoutDialogComponent {
               });
             }
             this._dialogRef.close(InnerLogoutDialogComponent.RESULT_ERROR);
-          }
-        );
+          },
+        });
     }
   }
 

@@ -15,8 +15,10 @@ export class SharedHeaderLoginComponent {
     this._navItems = [new Menu('register', '/register')];
     this._navItems = [new Menu('login', '/login')];
     this._darkModeService = darkModeService;
-    this._darkModeService.darkModeSubject.subscribe((isDarkMode: boolean) => {
-      this._isDarkMode = isDarkMode;
+    this._darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode: boolean) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
   }
 

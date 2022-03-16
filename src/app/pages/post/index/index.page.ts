@@ -42,18 +42,20 @@ export class PostIndexPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this._activatedRouteService.queryParams.subscribe((params) => {
-      const tab = params?.tab ?? null;
-      switch (true) {
-        default:
-          break;
-        case tab === 'published':
-          this._selectedTabIndex = 1;
-          break;
-        case tab === 'trash':
-          this._selectedTabIndex = 2;
-          break;
-      }
+    this._activatedRouteService.queryParams.subscribe({
+      next: (params) => {
+        const tab = params?.tab ?? null;
+        switch (true) {
+          default:
+            break;
+          case tab === 'published':
+            this._selectedTabIndex = 1;
+            break;
+          case tab === 'trash':
+            this._selectedTabIndex = 2;
+            break;
+        }
+      },
     });
   }
 
@@ -78,8 +80,10 @@ export class PostIndexPage implements OnInit {
             this._isLoadingDraft = false;
           })
         )
-        .subscribe((response) => {
-          this._draft = response?.data ?? null;
+        .subscribe({
+          next: (response) => {
+            this._draft = response?.data ?? null;
+          },
         });
     }
   }
@@ -95,8 +99,10 @@ export class PostIndexPage implements OnInit {
             this._isLoadingPublished = false;
           })
         )
-        .subscribe((response) => {
-          this._published = response?.data ?? null;
+        .subscribe({
+          next: (response) => {
+            this._published = response?.data ?? null;
+          },
         });
     }
   }
@@ -112,8 +118,10 @@ export class PostIndexPage implements OnInit {
             this._isLoadingTrash = false;
           })
         )
-        .subscribe((response) => {
-          this._trash = response?.data ?? null;
+        .subscribe({
+          next: (response) => {
+            this._trash = response?.data ?? null;
+          },
         });
     }
   }

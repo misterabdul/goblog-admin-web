@@ -44,11 +44,11 @@ export class CategoryShowPage implements AfterViewInit {
           return throwError(new Error("couldn't find id route parameter"));
         })
       )
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           this._category = response.data!;
         },
-        (error) => {
+        error: (error) => {
           if (error instanceof HttpErrorResponse) {
             this._snackBarService.open(
               'Failed to fetch category.\n' +
@@ -67,8 +67,8 @@ export class CategoryShowPage implements AfterViewInit {
               }
             );
           }
-        }
-      );
+        },
+      });
   }
 
   get categoryId(): string {

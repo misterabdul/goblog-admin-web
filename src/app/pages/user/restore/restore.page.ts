@@ -63,8 +63,8 @@ export class UserRestorePage extends UserShowPage {
             }
           )
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('User restored.', undefined, {
@@ -79,7 +79,7 @@ export class UserRestorePage extends UserShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             this._restoring = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
@@ -95,8 +95,8 @@ export class UserRestorePage extends UserShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

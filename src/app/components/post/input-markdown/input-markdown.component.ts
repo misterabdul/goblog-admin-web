@@ -48,8 +48,10 @@ export class PostInputMarkdownComponent
     this._onChangedCallback = (value: any): void => {};
     this._onTouchedCallback = (): void => {};
 
-    darkModeService.darkModeSubject.subscribe((isDarkMode) => {
-      this._isDarkMode = isDarkMode;
+    darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
   }
 

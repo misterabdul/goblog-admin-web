@@ -40,8 +40,8 @@ export class LoginPage {
             this._submitting = false;
           })
         )
-        .subscribe(
-          () => {
+        .subscribe({
+          next: (response) => {
             this._snackBarService.open('Logged in.', undefined, {
               duration: SnackBarConfig.SUCCESS_DURATIONS,
             });
@@ -49,7 +49,7 @@ export class LoginPage {
               this._routerService.navigate(['/']);
             }, 100);
           },
-          (errorResponse) => {
+          error: (errorResponse) => {
             if (errorResponse instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 errorResponse.error?.message ?? 'Unknown error.',
@@ -63,8 +63,8 @@ export class LoginPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

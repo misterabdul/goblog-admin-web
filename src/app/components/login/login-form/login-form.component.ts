@@ -22,8 +22,10 @@ export class LoginLoginFormComponent {
     this._formControl = new LoginFormControl();
     this._submitting = false;
 
-    darkModeService.darkModeSubject.subscribe((isDarkMode) => {
-      this._isDarkMode = isDarkMode;
+    darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
 
     this.ngSubmit = new EventEmitter<LoginFormData>();

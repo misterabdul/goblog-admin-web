@@ -40,7 +40,7 @@ export class PostDeletePage extends PostShowPage {
   }
 
   public delete(post: PostDetailed | undefined) {
-    if (!this._deleting && this._postId) {
+    if (!this._deleting && this._postUid) {
       const dialogRef = this._matDialogService.open(
         SharedBasicDialogComponent,
         {
@@ -59,7 +59,7 @@ export class PostDeletePage extends PostShowPage {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
                 this._deleting = true;
-                return this._postService.submitDeletePost(this._postId ?? '');
+                return this._postService.submitDeletePost(this._postUid ?? '');
               } else {
                 return of(false);
               }
@@ -69,8 +69,8 @@ export class PostDeletePage extends PostShowPage {
             this._deleting = false;
           })
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('Post deleted.', undefined, {
@@ -81,7 +81,7 @@ export class PostDeletePage extends PostShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
@@ -96,8 +96,8 @@ export class PostDeletePage extends PostShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

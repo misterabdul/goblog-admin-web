@@ -24,21 +24,23 @@ export class SharedContentMarkdownComponent {
     this._content = undefined;
 
     const helpers = new MarkedRendererHelpers();
-    darkModeService.darkModeSubject.subscribe((isDarkMode) => {
-      this.isDarkMode = isDarkMode;
-      markdownService.renderer.link = helpers.linkRenderer(
-        markdownService.renderer,
-        isDarkMode
-      );
-      markdownService.renderer.code = helpers.codeRenderer(
-        markdownService.renderer,
-        isDarkMode
-      );
-      markdownService.renderer.image = helpers.imageRenderer(
-        markdownService.renderer,
-        isDarkMode
-      );
-      markdownService.reload();
+    darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode) => {
+        this.isDarkMode = isDarkMode;
+        markdownService.renderer.link = helpers.linkRenderer(
+          markdownService.renderer,
+          isDarkMode
+        );
+        markdownService.renderer.code = helpers.codeRenderer(
+          markdownService.renderer,
+          isDarkMode
+        );
+        markdownService.renderer.image = helpers.imageRenderer(
+          markdownService.renderer,
+          isDarkMode
+        );
+        markdownService.reload();
+      },
     });
   }
 

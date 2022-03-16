@@ -58,12 +58,14 @@ export class SharedEditorMarkdownComponent
     this._onChangeCallback = (value: any): void => {};
     this._onTouchedCallback = (): void => {};
 
-    darkModeService.darkModeSubject.subscribe((isDarkMode) => {
-      if (isDarkMode) {
-        this._options.theme = 'material-darker';
-      } else {
-        this._options.theme = 'default';
-      }
+    darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode) => {
+        if (isDarkMode) {
+          this._options.theme = 'material-darker';
+        } else {
+          this._options.theme = 'default';
+        }
+      },
     });
   }
 

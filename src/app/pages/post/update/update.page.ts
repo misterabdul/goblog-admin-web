@@ -17,36 +17,33 @@ import { PostShowPage } from '../show/show.page';
 })
 export class PostUpdatePage extends PostShowPage {
   private _routerService: Router;
-  private _matDialogService: MatDialog;
   private _submitting: boolean;
 
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
-    matDialogService: MatDialog,
     snackBarService: MatSnackBar,
     postService: PostService
   ) {
     super(activatedRouteService, snackBarService, postService);
     this._routerService = routerService;
-    this._matDialogService = matDialogService;
 
     this._submitting = false;
   }
 
   public update(post: PostFormData | undefined) {
-    if (!this._submitting && post && this._postId) {
+    if (!this._submitting && post && this._postUid) {
       this._postService
-        .submitUpdatePost(this._postId, post)
+        .submitUpdatePost(this._postUid, post)
         .pipe(finalize(() => (this._submitting = false)))
-        .subscribe(
-          () => {
+        .subscribe({
+          next: (response) => {
             this._snackBarService.open('Draft saved.', undefined, {
               duration: SnackBarConfig.SUCCESS_DURATIONS,
             });
             this._routerService.navigate(['/post']);
           },
-          (error) => {
+          error: (error) => {
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -60,8 +57,8 @@ export class PostUpdatePage extends PostShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

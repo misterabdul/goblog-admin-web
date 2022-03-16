@@ -38,15 +38,17 @@ export class CommentIndexPage implements OnInit {
   }
 
   public ngOnInit(): void {
-    this._activatedRouteService.queryParams.subscribe((params) => {
-      const tab = params?.tab ?? null;
-      switch (true) {
-        default:
-          break;
-        case tab === 'trash':
-          this._selectedTabIndex = 1;
-          break;
-      }
+    this._activatedRouteService.queryParams.subscribe({
+      next: (params) => {
+        const tab = params?.tab ?? null;
+        switch (true) {
+          default:
+            break;
+          case tab === 'trash':
+            this._selectedTabIndex = 1;
+            break;
+        }
+      },
     });
   }
 
@@ -71,12 +73,12 @@ export class CommentIndexPage implements OnInit {
             this._isLoadingComments = false;
           })
         )
-        .subscribe(
-          (response) => {
+        .subscribe({
+          next: (response) => {
             this._comments = response?.data ?? null;
           },
-          (error) => {}
-        );
+          error: (error) => {},
+        });
     }
   }
 
@@ -91,8 +93,11 @@ export class CommentIndexPage implements OnInit {
             this._isLoadingTrash = false;
           })
         )
-        .subscribe((response) => {
-          this._trash = response?.data ?? null;
+        .subscribe({
+          next: (response) => {
+            this._trash = response?.data ?? null;
+          },
+          error: (error) => {},
         });
     }
   }

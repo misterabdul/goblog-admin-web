@@ -12,8 +12,10 @@ export class SharedHeaderNotFoundComponent {
 
   constructor(darkModeService: DarkModeService) {
     this._darkModeService = darkModeService;
-    this._darkModeService.darkModeSubject.subscribe((isDarkMode: boolean) => {
-      this._isDarkMode = isDarkMode;
+    this._darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode: boolean) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
   }
 

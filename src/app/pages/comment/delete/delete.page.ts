@@ -64,8 +64,8 @@ export class CommentDeletePage extends CommentShowPage {
             }
           )
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('Comment deleted.', undefined, {
@@ -76,7 +76,7 @@ export class CommentDeletePage extends CommentShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             this._deleting = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
@@ -92,8 +92,8 @@ export class CommentDeletePage extends CommentShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

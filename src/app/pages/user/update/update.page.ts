@@ -32,8 +32,8 @@ export class UserUpdatePage extends UserShowPage {
   public update(user: UserFormData | undefined) {
     if (!this._updating && user) {
       this._updating = true;
-      this._userService.submitUpdateUser(this.userId, user).subscribe(
-        () => {
+      this._userService.submitUpdateUser(this.userId, user).subscribe({
+        next: (response) => {
           this._snackBarService.open('User updated.', undefined, {
             duration: SnackBarConfig.SUCCESS_DURATIONS,
           });
@@ -41,7 +41,7 @@ export class UserUpdatePage extends UserShowPage {
             this._routerService.navigate(['/user']);
           }, 100);
         },
-        (error) => {
+        error: (error) => {
           this._updating = false;
           if (error instanceof HttpErrorResponse) {
             this._snackBarService.open(
@@ -56,8 +56,8 @@ export class UserUpdatePage extends UserShowPage {
               duration: SnackBarConfig.ERROR_DURATIONS,
             });
           }
-        }
-      );
+        },
+      });
     }
   }
 

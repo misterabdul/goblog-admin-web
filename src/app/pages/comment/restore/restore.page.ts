@@ -64,8 +64,8 @@ export class CommentRestorePage extends CommentShowPage {
             }
           )
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('Comment restored.', undefined, {
@@ -80,7 +80,7 @@ export class CommentRestorePage extends CommentShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             this._restoring = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
@@ -96,8 +96,8 @@ export class CommentRestorePage extends CommentShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

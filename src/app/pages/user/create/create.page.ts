@@ -34,8 +34,8 @@ export class UserCreatePage {
   public create(user: UserFormData | undefined) {
     if (!this._submitting && user) {
       this._submitting = true;
-      this._userService.submitCreateUser(user).subscribe(
-        () => {
+      this._userService.submitCreateUser(user).subscribe({
+        next: (response) => {
           this._snackBarService.open('User created.', undefined, {
             duration: SnackBarConfig.SUCCESS_DURATIONS,
           });
@@ -43,7 +43,7 @@ export class UserCreatePage {
             this._routerService.navigate(['/user']);
           }, 100);
         },
-        (error) => {
+        error: (error) => {
           this._submitting = false;
           if (error instanceof HttpErrorResponse) {
             this._snackBarService.open(
@@ -58,8 +58,8 @@ export class UserCreatePage {
               duration: SnackBarConfig.ERROR_DURATIONS,
             });
           }
-        }
-      );
+        },
+      });
     }
   }
 

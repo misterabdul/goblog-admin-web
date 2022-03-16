@@ -12,8 +12,10 @@ export class LoginLayout {
   constructor(darkmodeService: DarkModeService) {
     this._isDarkMode = false;
 
-    darkmodeService.darkModeSubject.subscribe((isDarkMode) => {
-      this._isDarkMode = isDarkMode;
+    darkmodeService.darkModeSubject.subscribe({
+      next: (isDarkMode) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
   }
 

@@ -63,8 +63,8 @@ export class CategoryRestorePage extends CategoryShowPage {
             }
           )
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('Category restored.', undefined, {
@@ -79,7 +79,7 @@ export class CategoryRestorePage extends CategoryShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             this._restoring = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
@@ -95,8 +95,8 @@ export class CategoryRestorePage extends CategoryShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

@@ -11,8 +11,10 @@ export class NotFoundPage {
   constructor(darkModeService: DarkModeService) {
     this._isDarkMode = false;
 
-    darkModeService.darkModeSubject.subscribe((isDarkMode) => {
-      this._isDarkMode = isDarkMode;
+    darkModeService.darkModeSubject.subscribe({
+      next: (isDarkMode) => {
+        this._isDarkMode = isDarkMode;
+      },
     });
   }
 

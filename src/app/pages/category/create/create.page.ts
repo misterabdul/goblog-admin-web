@@ -33,8 +33,8 @@ export class CategoryCreatePage {
   public create(category: CategoryFormData | undefined) {
     if (!this._submitting && category) {
       this._submitting = true;
-      this._categoryService.submitNewCategory(category).subscribe(
-        () => {
+      this._categoryService.submitNewCategory(category).subscribe({
+        next: (response) => {
           this._snackBarService.open('Category created.', undefined, {
             duration: SnackBarConfig.SUCCESS_DURATIONS,
           });
@@ -42,7 +42,7 @@ export class CategoryCreatePage {
             this._routerService.navigate(['/category']);
           }, 100);
         },
-        (error) => {
+        error: (error) => {
           this._submitting = false;
           if (error instanceof HttpErrorResponse) {
             this._snackBarService.open(
@@ -57,8 +57,8 @@ export class CategoryCreatePage {
               duration: SnackBarConfig.ERROR_DURATIONS,
             });
           }
-        }
-      );
+        },
+      });
     }
   }
 

@@ -44,11 +44,11 @@ export class CommentShowPage implements AfterViewInit {
           return this._commentService.getComment(this._commentUid!);
         })
       )
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           this._comment = response.data!;
         },
-        (error) => {
+        error: (error) => {
           if (error instanceof HttpErrorResponse) {
             this._snackBarService.open(
               'Failed to fetch comment.\n' +
@@ -67,8 +67,8 @@ export class CommentShowPage implements AfterViewInit {
               }
             );
           }
-        }
-      );
+        },
+      });
   }
 
   get commentUid(): string {

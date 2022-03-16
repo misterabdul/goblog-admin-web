@@ -49,15 +49,17 @@ export class PostEditorComponent
   }
 
   ngAfterViewInit(): void {
-    this._categoryService.getCategories().subscribe((response) => {
-      this._categories = response?.data!.map<CategoryData>((value) => {
-        const category: CategoryData = {
-          uid: value.uid,
-          name: value.name,
-          slug: value.slug,
-        };
-        return category;
-      });
+    this._categoryService.getCategories().subscribe({
+      next: (response) => {
+        this._categories = response?.data!.map<CategoryData>((value) => {
+          const category: CategoryData = {
+            uid: value.uid,
+            name: value.name,
+            slug: value.slug,
+          };
+          return category;
+        });
+      },
     });
   }
 

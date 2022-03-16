@@ -36,11 +36,13 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this._authService.checkForToken().subscribe((status) => {
-      if (status !== TokenCheckStatus.CHECKING)
-        setTimeout(() => {
-          this._isCloakVisible = false;
-        }, 400);
+    this._authService.checkForToken().subscribe({
+      next: (status) => {
+        if (status !== TokenCheckStatus.CHECKING)
+          setTimeout(() => {
+            this._isCloakVisible = false;
+          }, 400);
+      },
     });
   }
 

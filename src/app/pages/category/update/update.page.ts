@@ -34,8 +34,8 @@ export class CategoryUpdatePage extends CategoryShowPage {
       this._updating = true;
       this._categoryService
         .submitUpdateCategory(this.categoryId, category)
-        .subscribe(
-          () => {
+        .subscribe({
+          next: (response) => {
             this._snackBarService.open('Category updated.', undefined, {
               duration: SnackBarConfig.SUCCESS_DURATIONS,
             });
@@ -43,7 +43,7 @@ export class CategoryUpdatePage extends CategoryShowPage {
               this._routerService.navigate(['/category']);
             }, 100);
           },
-          (error) => {
+          error: (error) => {
             this._updating = false;
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
@@ -58,8 +58,8 @@ export class CategoryUpdatePage extends CategoryShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 

@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { concatMap } from 'rxjs';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
@@ -17,7 +18,7 @@ export class PostShowPage implements AfterViewInit {
   protected _activatedRouteService: ActivatedRoute;
   protected _snackBarService: MatSnackBar;
   protected _postService: PostService;
-  protected _postId: string | null;
+  protected _postUid: string | null;
   protected _post: PostDetailed | null;
 
   constructor(
@@ -29,45 +30,49 @@ export class PostShowPage implements AfterViewInit {
     this._snackBarService = snackBarService;
     this._postService = postService;
 
-    this._postId = null;
+    this._postUid = null;
     this._post = null;
   }
 
   public ngAfterViewInit(): void {
-    this._activatedRouteService.params.subscribe((params) => {
-      if (typeof params['id'] === 'string') {
-        this._postId = params['id'];
-        this._postService.getPost(this._postId).subscribe(
-          (response) => {
-            this._post = response.data ?? null;
-          },
-          (error) => {
-            if (error instanceof HttpErrorResponse) {
-              this._snackBarService.open(
-                'Failed to fetch post.\n' +
-                  (error.error?.message ?? 'Unknown error.'),
-                undefined,
-                {
-                  duration: SnackBarConfig.ERROR_DURATIONS,
-                }
-              );
-            } else {
-              this._snackBarService.open(
-                'Failed to fetch post.\nUnknown error.',
-                undefined,
-                {
-                  duration: SnackBarConfig.ERROR_DURATIONS,
-                }
-              );
-            }
+    this._activatedRouteService.params
+      .pipe(
+        concatMap((params) => {
+          if (typeof params['uid'] === 'string') this._postUid = params['uid'];
+          else this._postUid = null;
+
+          return this._postService.getPost(this._postUid!);
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          this._post = response.data ?? null;
+        },
+        error: (error) => {
+          if (error instanceof HttpErrorResponse) {
+            this._snackBarService.open(
+              'Failed to fetch post.\n' +
+                (error.error?.message ?? 'Unknown error.'),
+              undefined,
+              {
+                duration: SnackBarConfig.ERROR_DURATIONS,
+              }
+            );
+          } else {
+            this._snackBarService.open(
+              'Failed to fetch post.\nUnknown error.',
+              undefined,
+              {
+                duration: SnackBarConfig.ERROR_DURATIONS,
+              }
+            );
           }
-        );
-      }
-    });
+        },
+      });
   }
 
-  get postId(): string | null {
-    return this._postId;
+  get postUid(): string | null {
+    return this._postUid;
   }
 
   get post(): PostDetailed | null {

@@ -38,15 +38,17 @@ export class UserIndexPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this._activatedRouteService.queryParams.subscribe((params) => {
-      const tab = params?.tab ?? null;
-      switch (true) {
-        default:
-          break;
-        case tab === 'trash':
-          this._selectedTabIndex = 1;
-          break;
-      }
+    this._activatedRouteService.queryParams.subscribe({
+      next: (params) => {
+        const tab = params?.tab ?? null;
+        switch (true) {
+          default:
+            break;
+          case tab === 'trash':
+            this._selectedTabIndex = 1;
+            break;
+        }
+      },
     });
   }
 
@@ -71,12 +73,12 @@ export class UserIndexPage implements OnInit {
             this._isLoadingActive = false;
           })
         )
-        .subscribe(
-          (response) => {
+        .subscribe({
+          next: (response) => {
             this._active = response?.data ?? null;
           },
-          (error) => {}
-        );
+          error: (error) => {},
+        });
     }
   }
 
@@ -91,8 +93,10 @@ export class UserIndexPage implements OnInit {
             this._isLoadingTrash = false;
           })
         )
-        .subscribe((response) => {
-          this._trash = response?.data ?? null;
+        .subscribe({
+          next: (response) => {
+            this._trash = response?.data ?? null;
+          },
         });
     }
   }

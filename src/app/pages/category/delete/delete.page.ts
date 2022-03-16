@@ -63,8 +63,8 @@ export class CategoryDeletePage extends CategoryShowPage {
             }
           )
         )
-        .subscribe(
-          (result) => {
+        .subscribe({
+          next: (result) => {
             if (result !== false) {
               dialogRef.close();
               this._snackBarService.open('Category deleted.', undefined, {
@@ -75,7 +75,7 @@ export class CategoryDeletePage extends CategoryShowPage {
               }, 100);
             }
           },
-          (error) => {
+          error: (error) => {
             this._deleting = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
@@ -91,8 +91,8 @@ export class CategoryDeletePage extends CategoryShowPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
-          }
-        );
+          },
+        });
     }
   }
 
