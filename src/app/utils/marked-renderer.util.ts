@@ -1,5 +1,4 @@
 import { marked } from 'marked';
-
 import { MarkedRenderer } from '@misterabdul/ngx-markdown';
 
 export class MarkedRendererHelpers {
@@ -7,48 +6,28 @@ export class MarkedRendererHelpers {
   private originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
   public linkRenderer(
-    renderer: marked.Renderer,
-    isDarkMode: boolean = false
+    renderer: marked.Renderer
   ): (href: string | null, title: string, text: string) => string {
-    if (isDarkMode)
-      return (href: string | null, title: string, text: string): string => {
-        href = this.cleanUrl(
-          renderer.options.sanitize,
-          renderer.options.baseUrl,
-          href
-        );
-        if (href === null) {
-          return text;
-        }
-        let out = '<a class="md-link-dark" href="' + escape(href) + '"';
-        if (title) {
-          out += ' title="' + title + '"';
-        }
-        out += '>' + text + '</a>';
-        return out;
-      };
-    else
-      return (href: string | null, title: string, text: string): string => {
-        href = this.cleanUrl(
-          renderer.options.sanitize,
-          renderer.options.baseUrl,
-          href
-        );
-        if (href === null) {
-          return text;
-        }
-        let out = '<a href="' + escape(href) + '"';
-        if (title) {
-          out += ' title="' + title + '"';
-        }
-        out += '>' + text + '</a>';
-        return out;
-      };
+    return (href: string | null, title: string, text: string): string => {
+      href = this.cleanUrl(
+        renderer.options.sanitize,
+        renderer.options.baseUrl,
+        href
+      );
+      if (href === null) {
+        return text;
+      }
+      let out = '<a class="md-link" href="' + escape(href) + '"';
+      if (title) {
+        out += ' title="' + title + '"';
+      }
+      out += '>' + text + '</a>';
+      return out;
+    };
   }
 
   public codeRenderer(
-    renderer: MarkedRenderer,
-    isDarkMode: boolean
+    renderer: MarkedRenderer
   ): (
     code: string,
     infostring: string | undefined,
@@ -71,21 +50,16 @@ export class MarkedRendererHelpers {
 
       code = code.replace(/\n$/, '') + '\n';
 
-      const darkClass = isDarkMode ? 'md-pre-dark' : '';
       if (!lang) {
         return (
-          '<pre class="md-pre ' +
-          darkClass +
-          '"><code>' +
+          '<pre class="md-pre"><code>' +
           (escaped ? code : this.escape(code, true)) +
           '</code></pre>\n'
         );
       }
 
       return (
-        '<pre class="md-pre ' +
-        darkClass +
-        '"><code class="' +
+        '<pre class="md-pre"><code class="' +
         renderer.options.langPrefix +
         this.escape(lang, true) +
         '">' +
@@ -96,8 +70,7 @@ export class MarkedRendererHelpers {
   }
 
   public imageRenderer(
-    renderer: MarkedRenderer,
-    isDarkMode: boolean
+    renderer: MarkedRenderer
   ): (
     href: string | null,
     title: string | null,
@@ -115,11 +88,8 @@ export class MarkedRendererHelpers {
       );
       if (href === null) return text ?? '';
 
-      const darkClass = isDarkMode ? 'md-img-dark' : '';
       let out =
-        '<img class="md-img ' +
-        darkClass +
-        '" src="' +
+        '<img class="md-img" src="' +
         href +
         '" alt="' +
         text +

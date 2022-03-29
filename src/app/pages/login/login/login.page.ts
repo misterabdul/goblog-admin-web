@@ -3,7 +3,9 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
+
 import { AuthService } from 'src/app/services/auth.service';
 import { LoginFormData } from 'src/app/types/user.type';
 

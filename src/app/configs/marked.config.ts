@@ -40,7 +40,7 @@ export class MarkedConfig {
       return '<h' + level + '>' + text + '</h' + level + '>\n';
     };
 
-    renderer.image = helpers.imageRenderer(renderer, false);
+    renderer.image = helpers.imageRenderer(renderer);
 
     renderer.checkbox = (checked: boolean): string => {
       return (
@@ -95,7 +95,7 @@ export class MarkedConfig {
       return tag + content + '</' + type + '>\n';
     };
 
-    renderer.code = helpers.codeRenderer(renderer, false);
+    renderer.code = helpers.codeRenderer(renderer);
 
     return {
       renderer: renderer,

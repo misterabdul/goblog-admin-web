@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
+
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
 @Component({
@@ -6,15 +7,21 @@ import { DarkModeService } from 'src/app/services/darkmode.service';
   templateUrl: './header-login.component.html',
   styleUrls: ['./header-login.component.scss'],
 })
-export class SharedHeaderLoginComponent {
+export class SharedHeaderLoginComponent implements AfterViewInit {
   private _darkModeService: DarkModeService;
-  private _isDarkMode: boolean = false;
+
+  private _isDarkMode: boolean;
   private _navItems: Array<Menu>;
 
   constructor(darkModeService: DarkModeService) {
+    this._darkModeService = darkModeService;
+
+    this._isDarkMode = false;
     this._navItems = [new Menu('register', '/register')];
     this._navItems = [new Menu('login', '/login')];
-    this._darkModeService = darkModeService;
+  }
+
+  ngAfterViewInit(): void {
     this._darkModeService.darkModeSubject.subscribe({
       next: (isDarkMode: boolean) => {
         this._isDarkMode = isDarkMode;

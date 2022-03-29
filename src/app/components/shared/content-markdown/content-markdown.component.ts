@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { MarkdownService } from '@misterabdul/ngx-markdown';
+
 import { DarkModeService } from 'src/app/services/darkmode.service';
 import { MarkedRendererHelpers } from 'src/app/utils/marked-renderer.util';
 
@@ -8,9 +9,12 @@ import { MarkedRendererHelpers } from 'src/app/utils/marked-renderer.util';
   templateUrl: './content-markdown.component.html',
   styleUrls: ['./content-markdown.component.scss'],
 })
-export class SharedContentMarkdownComponent {
-  public isDarkMode: boolean;
-  public isSrcMode: boolean;
+export class SharedContentMarkdownComponent implements AfterViewInit {
+  private _darkModeService: DarkModeService;
+  private _markdownService: MarkdownService;
+  private _markedRendererHelpers: MarkedRendererHelpers;
+
+  private _isSrcMode: boolean;
   private _src: String | undefined;
   private _content: String | undefined;
 
@@ -18,49 +22,61 @@ export class SharedContentMarkdownComponent {
     darkModeService: DarkModeService,
     markdownService: MarkdownService
   ) {
-    this.isDarkMode = false;
-    this.isSrcMode = false;
+    this._darkModeService = darkModeService;
+    this._markdownService = markdownService;
+    this._markedRendererHelpers = new MarkedRendererHelpers();
+
+    this._isSrcMode = false;
     this._src = undefined;
     this._content = undefined;
+  }
 
-    const helpers = new MarkedRendererHelpers();
-    darkModeService.darkModeSubject.subscribe({
-      next: (isDarkMode) => {
-        this.isDarkMode = isDarkMode;
-        markdownService.renderer.link = helpers.linkRenderer(
-          markdownService.renderer,
-          isDarkMode
-        );
-        markdownService.renderer.code = helpers.codeRenderer(
-          markdownService.renderer,
-          isDarkMode
-        );
-        markdownService.renderer.image = helpers.imageRenderer(
-          markdownService.renderer,
-          isDarkMode
-        );
-        markdownService.reload();
-      },
-    });
+  ngAfterViewInit(): void {
+    // this._darkModeService.darkModeSubject.subscribe({
+    //   next: (isDarkMode) => {
+    //     this._markdownService.renderer.link =
+    //       this._markedRendererHelpers.linkRenderer(
+    //         this._markdownService.renderer,
+    //         isDarkMode
+    //       );
+    //     this._markdownService.renderer.code =
+    //       this._markedRendererHelpers.codeRenderer(
+    //         this._markdownService.renderer,
+    //         isDarkMode
+    //       );
+    //     this._markdownService.renderer.image =
+    //       this._markedRendererHelpers.imageRenderer(
+    //         this._markdownService.renderer,
+    //         isDarkMode
+    //       );
+    //     this._markdownService.reload();
+    //   },
+    // });
   }
 
   @Input()
   set src(value: String | undefined) {
     this._src = value;
-    this.isSrcMode = true;
+    this._isSrcMode = true;
     this._content = undefined;
-  }
-  get src(): String | undefined {
-    return this._src;
   }
 
   @Input()
   set content(value: String | undefined) {
-    if (!this.isSrcMode) {
+    if (!this._isSrcMode) {
       this._content = value;
       this._src = undefined;
     }
   }
+
+  get src(): String | undefined {
+    return this._src;
+  }
+
+  get isSrcMode(): boolean {
+    return this._isSrcMode;
+  }
+
   get content(): String | undefined {
     return this._content;
   }

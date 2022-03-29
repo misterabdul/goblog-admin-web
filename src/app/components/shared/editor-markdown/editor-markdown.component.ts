@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { AfterViewInit, Component, forwardRef, Input } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -34,14 +34,16 @@ type VimMode = {
   ],
 })
 export class SharedEditorMarkdownComponent
-  implements ControlValueAccessor, Validator
+  implements AfterViewInit, ControlValueAccessor, Validator
 {
-  private _options = {
-    lineNumbers: true,
-    theme: 'default',
-    mode: 'markdown',
-    keyMap: 'vim',
-    viewportMargin: Infinity,
+  private _darkModeService;
+
+  private _options: {
+    lineNumbers: boolean;
+    theme: 'default' | 'material-darker';
+    mode: 'markdown';
+    keyMap: 'default' | 'vim';
+    viewportMargin: number;
   };
   private _isDisabled: boolean;
   private _model: String | undefined;
@@ -52,13 +54,24 @@ export class SharedEditorMarkdownComponent
   private _onTouchedCallback: () => void;
 
   constructor(darkModeService: DarkModeService) {
+    this._darkModeService = darkModeService;
+
+    this._options = {
+      lineNumbers: true,
+      theme: 'default',
+      mode: 'markdown',
+      keyMap: 'vim',
+      viewportMargin: Infinity,
+    };
     this._isDisabled = false;
     this._currentMode = 'normal';
     this._currentCommand = '';
     this._onChangeCallback = (value: any): void => {};
     this._onTouchedCallback = (): void => {};
+  }
 
-    darkModeService.darkModeSubject.subscribe({
+  ngAfterViewInit(): void {
+    this._darkModeService.darkModeSubject.subscribe({
       next: (isDarkMode) => {
         if (isDarkMode) {
           this._options.theme = 'material-darker';

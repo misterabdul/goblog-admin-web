@@ -1,8 +1,6 @@
-<div [class]="isDarkMode ? 'dark-mode' : ''">
-  <app-component-shared-header-login></app-component-shared-header-login>
-  <mat-sidenav-container [class]="isDarkMode ? 'dark-mode' : ''">
-    <mat-sidenav-content>
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+<app-component-shared-header-login></app-component-shared-header-login>
+<mat-sidenav-container>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

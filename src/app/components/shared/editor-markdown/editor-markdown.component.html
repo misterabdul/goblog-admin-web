@@ -1,15 +1,13 @@
-<div>
-  <ngx-codemirror
-    [options]="options"
-    [disabled]="isDisabled"
-    [ngModel]="model"
-    (ngModelChange)="writeValue($event)"
-    (editor)="editorInitialized($event)"
-  ></ngx-codemirror>
-  <div class="editor-status" *ngIf="options.keyMap === 'vim'">
-    <span class="editor-status-left text-uppercase">
-      -- {{ currentMode }} --
-    </span>
-    <span class="editor-status-right">{{ currentCommand }}</span>
-  </div>
+<ngx-codemirror
+  [options]="options"
+  [disabled]="isDisabled"
+  [ngModel]="model"
+  (ngModelChange)="writeValue($event)"
+  (editor)="editorInitialized($event)"
+></ngx-codemirror>
+<div class="editor-status" *ngIf="options.keyMap === 'vim'">
+  <span class="editor-status-left text-uppercase">
+    -- {{ currentMode }} --
+  </span>
+  <span class="editor-status-right">{{ currentCommand }}</span>
 </div>

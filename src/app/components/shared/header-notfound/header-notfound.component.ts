@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
+
 import { DarkModeService } from 'src/app/services/darkmode.service';
 
 @Component({
@@ -6,12 +7,18 @@ import { DarkModeService } from 'src/app/services/darkmode.service';
   templateUrl: './header-notfound.component.html',
   styleUrls: ['./header-notfound.component.scss'],
 })
-export class SharedHeaderNotFoundComponent {
+export class SharedHeaderNotFoundComponent implements AfterViewInit {
   private _darkModeService: DarkModeService;
-  private _isDarkMode: boolean = false;
+
+  private _isDarkMode: boolean;
 
   constructor(darkModeService: DarkModeService) {
     this._darkModeService = darkModeService;
+
+    this._isDarkMode = false;
+  }
+
+  ngAfterViewInit() {
     this._darkModeService.darkModeSubject.subscribe({
       next: (isDarkMode: boolean) => {
         this._isDarkMode = isDarkMode;

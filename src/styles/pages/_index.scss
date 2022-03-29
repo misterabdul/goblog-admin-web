@@ -1,0 +1,20 @@
+@use "@angular/material" as mat;
+
+@use "./category" as category;
+@use "./comment" as comment;
+@use "./login" as login;
+@use "./notfound" as notfound;
+@use "./post" as post;
+@use "./user" as user;
+
+@mixin all-page($theme) {
+  @include category.all-pages($theme);
+  @include comment.all-pages($theme);
+  @include login.all-pages($theme);
+  @include notfound.all-pages($theme);
+  @include post.all-pages($theme);
+  @include user.all-pages($theme);
+}
+
+@mixin all-page-colors($theme) {
+}

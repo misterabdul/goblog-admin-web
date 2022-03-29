@@ -1,50 +1,48 @@
-<div class="form-container">
-  <form (ngSubmit)="submit()">
-    <mat-progress-bar
-      mode="indeterminate"
-      [class]="submitting ? '' : 'hide'"
-    ></mat-progress-bar>
-    <mat-form-field class="form-full-width text-center" appearance="fill">
-      <mat-label>Email</mat-label>
-      <input
-        type="email"
-        class="text-center"
-        matInput
-        [formControl]="formControl.email"
-        placeholder="Ex. pat@example.com"
-      />
-      <mat-error *ngIf="formControl.email.invalid">
-        {{ formControl.emailError }}
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field class="form-full-width text-center" appearance="fill">
-      <mat-label>Password</mat-label>
-      <input
-        type="password"
-        class="text-center"
-        matInput
-        [formControl]="formControl.password"
-        placeholder="Password"
-      />
-      <mat-error *ngIf="formControl.password.invalid">
-        {{ formControl.passwordError }}
-      </mat-error>
-    </mat-form-field>
-    <button
-      type="submit"
-      class="full-width"
-      mat-raised-button
-      color="primary"
-      value="submit"
-    >
-      Login
-    </button>
-    <div
-      class="full-width text-center"
-      style="padding-top: 5px; padding-bottom: 5px"
-    >
-      Or
-    </div>
-    <a href="/signup" class="full-width" mat-raised-button> Sign Up </a>
-  </form>
-</div>
+<form (ngSubmit)="submit()">
+  <mat-progress-bar
+    mode="indeterminate"
+    [class]="submitting ? '' : 'hide'"
+  ></mat-progress-bar>
+  <mat-form-field class="form-full-width text-center" appearance="fill">
+    <mat-label>Email</mat-label>
+    <input
+      type="email"
+      class="text-center"
+      matInput
+      [formControl]="formControl.email"
+      placeholder="Ex. pat@example.com"
+    />
+    <mat-error *ngIf="formControl.email.invalid">
+      {{ formControl.emailError }}
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="form-full-width text-center" appearance="fill">
+    <mat-label>Password</mat-label>
+    <input
+      type="password"
+      class="text-center"
+      matInput
+      [formControl]="formControl.password"
+      placeholder="Password"
+    />
+    <mat-error *ngIf="formControl.password.invalid">
+      {{ formControl.passwordError }}
+    </mat-error>
+  </mat-form-field>
+  <button
+    type="submit"
+    class="full-width"
+    mat-raised-button
+    color="primary"
+    value="submit"
+  >
+    Login
+  </button>
+  <div
+    class="full-width text-center"
+    style="padding-top: 5px; padding-bottom: 5px"
+  >
+    Or
+  </div>
+  <a href="/signup" class="full-width" mat-raised-button> Sign Up </a>
+</form>

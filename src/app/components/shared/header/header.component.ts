@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { AuthService } from 'src/app/services/auth.service';
 import { DarkModeService } from 'src/app/services/darkmode.service';
@@ -13,11 +14,12 @@ import { DarkModeService } from 'src/app/services/darkmode.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class SharedHeaderComponent {
+export class SharedHeaderComponent implements AfterViewInit {
   private _routerService: Router;
   private _darkModeService: DarkModeService;
   private _logoutDialog: MatDialog;
-  private _isDarkMode: boolean = false;
+
+  private _isDarkMode: boolean;
   private _navItems: Array<Menu>;
 
   constructor(
@@ -25,12 +27,15 @@ export class SharedHeaderComponent {
     darkModeService: DarkModeService,
     matDialog: MatDialog
   ) {
-    this._navItems = [new Menu('posts', '/post')];
-
     this._routerService = routerService;
     this._darkModeService = darkModeService;
     this._logoutDialog = matDialog;
 
+    this._isDarkMode = false;
+    this._navItems = [new Menu('posts', '/post')];
+  }
+
+  ngAfterViewInit() {
     this._darkModeService.darkModeSubject.subscribe({
       next: (isDarkMode: boolean) => {
         this._isDarkMode = isDarkMode;
