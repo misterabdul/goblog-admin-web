@@ -3,7 +3,7 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { AfterViewInit, Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,10 +20,7 @@ import { MsgPackInterceptor, RefreshAuthInterceptor } from './utils/http.util';
 
 @Component({
   selector: 'app-root',
-  template: `<div
-    [class]="'root ' + (isDarkMode ? 'dark-mode' : '')"
-    *ngIf="isDarkMode !== null"
-  >
+  template: `<div *ngIf="isDarkMode !== null">
     <app-component-shared-cloak
       *ngIf="isCloakVisible"
     ></app-component-shared-cloak>
@@ -36,6 +33,7 @@ export class AppComponent implements OnInit {
 
   private _isDarkMode: boolean | null;
   private _isCloakVisible: boolean;
+  private _body: HTMLElement;
 
   constructor(authService: AuthService, darkModeService: DarkModeService) {
     this._authService = authService;
@@ -43,11 +41,17 @@ export class AppComponent implements OnInit {
 
     this._isDarkMode = null;
     this._isCloakVisible = true;
+    this._body = document.body;
   }
 
   ngOnInit(): void {
     this._darkModeService.darkModeSubject.subscribe({
       next: (isDarkMode) => {
+        if (isDarkMode) {
+          this._body.classList.add('dark-mode');
+        } else {
+          this._body.classList.remove('dark-mode');
+        }
         this._isDarkMode = isDarkMode;
       },
     });
