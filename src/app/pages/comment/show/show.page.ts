@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { concatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { CommentDetailed } from 'src/app/types/comment.type';
@@ -36,7 +36,7 @@ export class CommentShowPage implements AfterViewInit {
   ngAfterViewInit(): void {
     this._activatedRouteService.params
       .pipe(
-        concatMap((params) => {
+        mergeMap((params) => {
           if (typeof params['uid'] === 'string')
             this._commentUid = params['uid'];
           else this._commentUid = null;
