@@ -18,6 +18,7 @@ export class SharedSidenavLeftComponent implements AfterViewInit {
       new SideNavItem('/category', 'Categories', 'category'),
       new SideNavItem('/post', 'Posts', 'article'),
       new SideNavItem('/comment', 'Comments', 'comment'),
+      new SideNavItem('/page', 'Pages', 'description'),
       new SideNavItem('/user', 'Users', 'people_alt'),
     ];
   }

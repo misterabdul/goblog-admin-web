@@ -5,6 +5,7 @@ import { HomeModule } from './home/home.module';
 import { CategoryModule } from './category/category.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+import { PageModule as InnerPageModule } from './page/page.module';
 import { UserModule } from './user/user.module';
 import { LoginModule } from './login/login.module';
 import { PageRoutingModule } from './pages-routing.module';
@@ -19,6 +20,7 @@ import { NotFoundPage } from './notfound/notfound.page';
     CategoryModule,
     PostModule,
     CommentModule,
+    InnerPageModule,
     UserModule,
     LoginModule,
     PageRoutingModule,
