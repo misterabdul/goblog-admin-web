@@ -1,0 +1,13 @@
+<div *ngIf="!isLoading; else loadingBar">
+  <div *ngIf="hasContents; else emptyContent">
+    <app-component-page-table [pages]="pages"></app-component-page-table>
+  </div>
+  <ng-template #emptyContent>
+    <div class="spinner-container">No draft</div>
+  </ng-template>
+</div>
+<ng-template #loadingBar>
+  <div class="spinner-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+</ng-template>

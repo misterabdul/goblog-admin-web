@@ -58,6 +58,15 @@ import { CommentTabTrashComponent } from './comment/tab-trash/tab-trash.componen
 import { CommentViewerComponent } from './comment/viewer/viewer.component';
 import { CommentViewerTrashComponent } from './comment/viewer-trash/viewer-trash.component';
 
+import { PageTabDraftComponent } from './page/tab-draft/tab-draft.component';
+import { PageTabPublishedComponent } from './page/tab-published/tab-published.component';
+import { PageTabTrashComponent } from './page/tab-trash/tab-trash.component';
+import { PageTableComponent } from './page/table/table.component';
+import { PageViewerComponent } from './page/viewer/viewer.component';
+import { PageViewerTrashComponent } from './page/viewer-trash/viewer-trash.component';
+import { PageInputMarkdownComponent } from './page/input-markdown/input-markdown.component';
+import { PageEditorComponent } from './page/editor/editor.component';
+
 import { UserTableComponent } from './user/table/table.component';
 import { UserTabActiveComponent } from './user/tab-active/tab-active.component';
 import { UserTabTrashComponent } from './user/tab-trash/tab-trash.component';
@@ -101,6 +110,15 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     CommentTabTrashComponent,
     CommentViewerComponent,
     CommentViewerTrashComponent,
+
+    PageTabDraftComponent,
+    PageTabPublishedComponent,
+    PageTabTrashComponent,
+    PageTableComponent,
+    PageViewerComponent,
+    PageViewerTrashComponent,
+    PageInputMarkdownComponent,
+    PageEditorComponent,
 
     UserTableComponent,
     UserTabActiveComponent,
@@ -167,6 +185,15 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     CommentTabTrashComponent,
     CommentViewerComponent,
     CommentViewerTrashComponent,
+
+    PageTabDraftComponent,
+    PageTabPublishedComponent,
+    PageTabTrashComponent,
+    PageTableComponent,
+    PageViewerComponent,
+    PageViewerTrashComponent,
+    PageInputMarkdownComponent,
+    PageEditorComponent,
 
     UserTableComponent,
     UserTabActiveComponent,

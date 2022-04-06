@@ -1,1 +1,8 @@
-<p>update works!</p>
+<h1>Create Page</h1>
+<div class="editor-content">
+  <app-component-page-editor
+    [page]="page"
+    [submitting]="submitting"
+    (ngSubmit)="update($event)"
+  ></app-component-page-editor>
+</div>

@@ -1,1 +1,9 @@
-<p>restore works!</p>
+<h1>Restore Page</h1>
+<div class="viewer-content">
+  <app-component-page-viewer-trash
+    [page]="page"
+    [mode]="'restore'"
+    [submitting]="restoring"
+    (ngSubmit)="restore($event)"
+  ></app-component-page-viewer-trash>
+</div>

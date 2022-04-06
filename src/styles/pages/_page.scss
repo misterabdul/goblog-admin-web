@@ -1,0 +1,51 @@
+@mixin default-content() {
+  left: 0;
+  right: 0;
+  padding-right: 10px;
+  padding-bottom: 100px;
+}
+
+@mixin all-pages($theme) {
+  app-page-page-index {
+    .table-content {
+      @include default-content();
+    }
+
+    .fab-container {
+      position: fixed;
+      z-index: 1;
+      bottom: 10px;
+      right: 10px;
+    }
+  }
+
+  app-page-page-show {
+    .viewer-content {
+      @include default-content();
+    }
+  }
+
+  app-page-page-create {
+    .editor-content {
+      @include default-content();
+    }
+  }
+
+  app-page-page-update {
+    .editor-content {
+      @include default-content();
+    }
+  }
+
+  app-page-page-delete {
+    .viewer-content {
+      @include default-content();
+    }
+  }
+
+  app-page-page-restore {
+    .viewer-content {
+      @include default-content();
+    }
+  }
+}

@@ -1,1 +1,9 @@
-<p>delete works!</p>
+<h1>Delete Page</h1>
+<div class="viewer-content">
+  <app-component-page-viewer-trash
+    [page]="page"
+    [mode]="'delete'"
+    [submitting]="deleting"
+    (ngSubmit)="delete($event)"
+  ></app-component-page-viewer-trash>
+</div>

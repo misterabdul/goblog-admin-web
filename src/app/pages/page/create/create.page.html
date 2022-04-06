@@ -1,1 +1,7 @@
-<p>create works!</p>
+<h1>Create Page</h1>
+<div class="editor-content">
+  <app-component-page-editor
+    [submitting]="submitting"
+    (ngSubmit)="create($event)"
+  ></app-component-page-editor>
+</div>

@@ -4,6 +4,7 @@
 @use "./comment" as comment;
 @use "./login" as login;
 @use "./notfound" as notfound;
+@use "./page" as page;
 @use "./post" as post;
 @use "./user" as user;
 
@@ -12,6 +13,7 @@
   @include comment.all-pages($theme);
   @include login.all-pages($theme);
   @include notfound.all-pages($theme);
+  @include page.all-pages($theme);
   @include post.all-pages($theme);
   @include user.all-pages($theme);
 }

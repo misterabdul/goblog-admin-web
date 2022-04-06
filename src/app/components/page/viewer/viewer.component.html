@@ -1,0 +1,35 @@
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="page?.title ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Slug</mat-label>
+    <input
+      matInput
+      type="text"
+      [ngModel]="page?.slug ?? null"
+      [disabled]="true"
+    />
+  </mat-form-field>
+  <div class="input-markdown-container">
+    <app-component-page-input-markdown
+      [value]="page?.content ?? null"
+      [disabled]="true"
+    ></app-component-page-input-markdown>
+  </div>
+  <div class="submit-container">
+    <a
+      class="inner-button"
+      mat-raised-button
+      [routerLink]="'/page/' + (page?.uid ?? null) + '/update'"
+    >
+      Edit
+    </a>
+  </div>
+</div>

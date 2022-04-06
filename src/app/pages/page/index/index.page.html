@@ -1,1 +1,51 @@
-<p>index works!</p>
+<h1>Pages</h1>
+<div class="table-content">
+  <mat-tab-group [selectedIndex]="selectedTabIndex">
+    <mat-tab>
+      <ng-template matTabLabel>
+        <span>Draft</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-component-page-tab-draft
+          [isLoading]="isLoadingDraft"
+          [pages]="draft"
+          (isDisplayed)="loadDraft($event)"
+        ></app-component-page-tab-draft>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <span>Published</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-component-page-tab-published
+          [isLoading]="isLoadingPublished"
+          [pages]="published"
+          (isDisplayed)="loadPublished($event)"
+        ></app-component-page-tab-published>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabLabel>
+        <span>Trash</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-component-page-tab-trash
+          [isLoading]="isLoadingTrash"
+          [pages]="trash"
+          (isDisplayed)="loadTrash($event)"
+        ></app-component-page-tab-trash>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<div class="fab-container">
+  <button
+    mat-fab
+    color="primary"
+    matTooltip="Create new page"
+    routerLink="/page/create"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

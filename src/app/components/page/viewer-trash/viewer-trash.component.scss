@@ -1,0 +1,20 @@
+mat-form-field {
+  width: 100%;
+}
+
+.input-tags-container {
+  width: 100%;
+}
+
+.input-markdown-container {
+  padding-bottom: 17px;
+}
+
+.submit-container {
+  display: flex;
+  flex-direction: row-reverse;
+
+  .inner-button {
+    margin-left: 10px;
+  }
+}
