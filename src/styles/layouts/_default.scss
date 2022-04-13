@@ -1,5 +1,6 @@
 @use "sass:map" as map;
 @use "@angular/material" as mat;
+
 @use "../constants" as constants;
 
 @mixin default-layout-header() {
@@ -75,7 +76,7 @@
   }
 }
 
-@mixin default-layout($theme) {
+@mixin all-component-themes($theme) {
   app-layout-default {
     app-component-shared-header {
       @include default-layout-header();
@@ -85,7 +86,7 @@
   }
 }
 
-@mixin default-layout-color($theme) {
+@mixin all-component-colors($theme) {
   app-layout-default {
     @include default-layout-colors($theme);
   }

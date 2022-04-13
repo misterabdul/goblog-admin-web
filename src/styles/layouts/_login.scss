@@ -2,9 +2,8 @@
 @use "@angular/material" as mat;
 
 @use "./default" as default;
-@use "../constants" as constants;
 
-@mixin login-layout($theme) {
+@mixin all-component-themes($theme) {
   app-layout-login {
     app-component-shared-header-login {
       @include default.default-layout-header();
@@ -14,7 +13,7 @@
   }
 }
 
-@mixin login-layout-color($theme) {
+@mixin all-component-colors($theme) {
   app-layout-login {
     @include default.default-layout-colors($theme);
   }

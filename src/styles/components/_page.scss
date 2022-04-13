@@ -1,0 +1,90 @@
+@use "sass:map" as map;
+@use "@angular/material" as mat;
+
+@use "./shared" as shared;
+
+@mixin editor-content() {
+  @include shared.default-editor-content();
+
+  .input-markdown-container {
+    padding-bottom: 17px;
+  }
+}
+
+@mixin input-markdown() {
+  @include shared.default-input-markdown();
+}
+
+@mixin spinner-container() {
+  @include shared.default-spinner-container();
+}
+
+@mixin table-commons() {
+  @include shared.default-table-commons();
+}
+
+@mixin all-component-themes($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground-palette: map.get($color-config, "foreground");
+  $background-palette: map.get($color-config, "background");
+
+  $txt-color: mat.get-color-from-palette($foreground-palette, "text");
+  $bg-color: mat.get-color-from-palette($background-palette, "background");
+
+  app-component-page-editor {
+    @include editor-content();
+  }
+
+  app-component-page-input-markdown {
+    @include input-markdown();
+  }
+
+  app-component-page-tab-draft {
+    @include spinner-container();
+  }
+
+  app-component-page-tab-published {
+    @include spinner-container();
+  }
+
+  app-component-page-tab-trash {
+    @include spinner-container();
+  }
+
+  app-component-page-table {
+    table {
+      @include table-commons();
+
+      .mat-column-no.mat-cell {
+        border-right: 1px solid currentColor;
+        width: 40px;
+      }
+
+      .mat-column-created-at.mat-cell,
+      .mat-column-published-at.mat-cell {
+        width: 80px;
+      }
+
+      .mat-column-action.mat-cell {
+        width: 70px;
+      }
+    }
+  }
+
+  app-component-page-viewer {
+    @include editor-content();
+  }
+
+  app-component-page-viewer-trash {
+    @include editor-content();
+  }
+}
+
+@mixin all-component-colors($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground-palette: map.get($color-config, "foreground");
+  $background-palette: map.get($color-config, "background");
+
+  $txt-color: mat.get-color-from-palette($foreground-palette, "text");
+  $bg-color: mat.get-color-from-palette($background-palette, "background");
+}

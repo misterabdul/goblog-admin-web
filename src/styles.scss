@@ -10,13 +10,13 @@
 
 @include mat.core();
 @include mat.all-component-themes(themes.$light-theme);
-@include layouts.all-layout(themes.$light-theme);
-@include components.all-component(themes.$light-theme);
-@include pages.all-page(themes.$light-theme);
+@include layouts.all-component-themes(themes.$light-theme);
+@include components.all-component-themes(themes.$light-theme);
+@include pages.all-component-themes(themes.$light-theme);
 
 .dark-mode {
   @include mat.all-component-colors(themes.$dark-theme);
-  @include layouts.all-layout-colors(themes.$dark-theme);
+  @include layouts.all-component-colors(themes.$dark-theme);
   @include components.all-component-colors(themes.$dark-theme);
-  @include pages.all-page-colors(themes.$dark-theme);
+  @include pages.all-component-colors(themes.$dark-theme);
 }

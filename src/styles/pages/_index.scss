@@ -1,5 +1,3 @@
-@use "@angular/material" as mat;
-
 @use "./category" as category;
 @use "./comment" as comment;
 @use "./login" as login;
@@ -8,15 +6,22 @@
 @use "./post" as post;
 @use "./user" as user;
 
-@mixin all-page($theme) {
-  @include category.all-pages($theme);
-  @include comment.all-pages($theme);
-  @include login.all-pages($theme);
-  @include notfound.all-pages($theme);
-  @include page.all-pages($theme);
-  @include post.all-pages($theme);
-  @include user.all-pages($theme);
+@mixin all-component-themes($theme) {
+  @include category.all-component-themes($theme);
+  @include comment.all-component-themes($theme);
+  @include login.all-component-themes($theme);
+  @include notfound.all-component-themes($theme);
+  @include page.all-component-themes($theme);
+  @include post.all-component-themes($theme);
+  @include user.all-component-themes($theme);
 }
 
-@mixin all-page-colors($theme) {
+@mixin all-component-colors($theme) {
+  @include category.all-component-colors($theme);
+  @include comment.all-component-colors($theme);
+  @include login.all-component-colors($theme);
+  @include notfound.all-component-colors($theme);
+  @include page.all-component-colors($theme);
+  @include post.all-component-colors($theme);
+  @include user.all-component-colors($theme);
 }

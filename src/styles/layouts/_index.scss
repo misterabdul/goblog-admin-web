@@ -1,14 +1,15 @@
-@use "@angular/material" as mat;
-
 @use "./default" as default;
 @use "./login" as login;
+@use "./notfound" as notfound;
 
-@mixin all-layout($theme) {
-  @include default.default-layout($theme);
-  @include login.login-layout($theme);
+@mixin all-component-themes($theme) {
+  @include default.all-component-themes($theme);
+  @include login.all-component-themes($theme);
+  @include notfound.all-component-themes($theme);
 }
 
-@mixin all-layout-colors($theme) {
-  @include default.default-layout-color($theme);
-  @include login.login-layout-color($theme);
+@mixin all-component-colors($theme) {
+  @include default.all-component-colors($theme);
+  @include login.all-component-colors($theme);
+  @include notfound.all-component-colors($theme);
 }

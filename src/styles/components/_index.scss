@@ -1,30 +1,27 @@
-@use "@angular/material" as mat;
-
-@use "./cloak" as cloak;
-@use "./codemirror" as codemirror;
-@use "./header" as header;
+@use "./shared" as shared;
+@use "./category" as category;
+@use "./comment" as comment;
 @use "./login" as login;
-@use "./markdown" as markdown;
-@use "./shimmer" as shimmer;
+@use "./page" as page;
+@use "./post" as post;
+@use "./user" as user;
 
-@mixin all-component($theme) {
-  @include cloak.cloak($theme);
-  @include codemirror.codemirror($theme);
-  @include header.header-default($theme);
-  @include header.header-login($theme);
-  @include login.login-form($theme);
-  @include markdown.markdown($theme);
-  @include markdown.markdown-editor($theme);
-  @include markdown.markdown-viewer($theme);
-  @include shimmer.shimmer($theme);
+@mixin all-component-themes($theme) {
+  @include shared.all-component-themes($theme);
+  @include category.all-component-themes($theme);
+  @include comment.all-component-themes($theme);
+  @include login.all-component-themes($theme);
+  @include page.all-component-themes($theme);
+  @include post.all-component-themes($theme);
+  @include user.all-component-themes($theme);
 }
 
 @mixin all-component-colors($theme) {
-  @include cloak.cloak-color($theme);
-  @include header.header-default-color($theme);
-  @include header.header-login-color($theme);
-  @include markdown.markdown-color($theme);
-  @include markdown.markdown-editor-color($theme);
-  @include markdown.markdown-viewer-color($theme);
-  @include shimmer.shimmer-color($theme);
+  @include shared.all-component-colors($theme);
+  @include category.all-component-colors($theme);
+  @include comment.all-component-colors($theme);
+  @include login.all-component-colors($theme);
+  @include page.all-component-colors($theme);
+  @include post.all-component-colors($theme);
+  @include user.all-component-colors($theme);
 }

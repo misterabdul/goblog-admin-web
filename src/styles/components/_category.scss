@@ -1,0 +1,81 @@
+@use "sass:map" as map;
+@use "@angular/material" as mat;
+
+@use "./shared" as shared;
+
+@mixin editor-content() {
+  @include shared.default-editor-content();
+}
+
+@mixin spinner-container() {
+  @include shared.default-spinner-container();
+}
+
+@mixin table-commons() {
+  @include shared.default-table-commons();
+}
+
+@mixin all-component-themes($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground-palette: map.get($color-config, "foreground");
+  $background-palette: map.get($color-config, "background");
+
+  $txt-color: mat.get-color-from-palette($foreground-palette, "text");
+  $bg-color: mat.get-color-from-palette($background-palette, "background");
+
+  app-component-category-editor {
+    @include editor-content();
+  }
+
+  app-component-category-tab-active {
+    @include spinner-container();
+  }
+
+  app-component-category-tab-trash {
+    @include spinner-container();
+  }
+
+  app-component-category-table {
+    table {
+      @include table-commons();
+
+      .mat-column-no.mat-cell {
+        border-right: 1px solid currentColor;
+        width: 40px;
+      }
+
+      .mat-column-slug.mat-cell {
+        width: 80px;
+      }
+
+      .mat-column-name.mat-cell {
+        width: 100px;
+      }
+
+      .mat-column-created-at.mat-cell {
+        width: 80px;
+      }
+
+      .mat-column-action.mat-cell {
+        width: 70px;
+      }
+    }
+  }
+
+  app-component-category-viewer {
+    @include editor-content();
+  }
+
+  app-component-category-viewer-trash {
+    @include editor-content();
+  }
+}
+
+@mixin all-component-colors($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground-palette: map.get($color-config, "foreground");
+  $background-palette: map.get($color-config, "background");
+
+  $txt-color: mat.get-color-from-palette($foreground-palette, "text");
+  $bg-color: mat.get-color-from-palette($background-palette, "background");
+}

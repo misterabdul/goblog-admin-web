@@ -1,0 +1,404 @@
+@use "sass:map" as map;
+@use "@angular/material" as mat;
+
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/theme/material-darker";
+
+@mixin header-default-components() {
+  button {
+    text-transform: uppercase;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+    height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .material-icons {
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  a.nav-item {
+    text-transform: uppercase;
+  }
+}
+
+@mixin all-component-themes($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground-palette: map.get($color-config, "foreground");
+  $background-palette: map.get($color-config, "background");
+
+  $txt-color: mat.get-color-from-palette($foreground-palette, "text");
+  $dvd-color: mat.get-color-from-palette($background-palette, "divider");
+  $bg-color: mat.get-color-from-palette($background-palette, "background");
+
+  markdown {
+    color: $txt-color;
+
+    .md-p {
+      text-align: justify;
+      text-justify: inter-word;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-link {
+      color: $txt-color;
+    }
+
+    .md-p > strong {
+      font-weight: 550;
+    }
+
+    .md-h1 {
+      font-size: 38px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-h2 {
+      font-size: 32px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-h3 {
+      font-size: 29px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-h4 {
+      font-size: 26px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-h5 {
+      font-size: 22px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-h6 {
+      font-size: 18px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .md-list {
+      margin-bottom: 15px !important;
+    }
+
+    .md-list-item {
+      font-size: 18px !important;
+    }
+
+    .md-checkbox-icon {
+      font-size: 18px !important;
+      vertical-align: top;
+    }
+
+    .md-table-container {
+      overflow-x: auto;
+      margin-bottom: 15px !important;
+    }
+
+    .md-table-cell {
+      white-space: nowrap;
+      font-size: 18px;
+      letter-spacing: 0px !important;
+    }
+
+    .md-img {
+      object-fit: contain;
+      max-width: 100%;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border-width: 2px;
+      border-style: solid;
+      border-color: $dvd-color;
+      margin-bottom: 15px !important;
+    }
+
+    .md-pre {
+      margin-bottom: 15px !important;
+      background-color: $bg-color !important;
+      border-width: 1px;
+      border-style: solid;
+      border-color: $dvd-color;
+    }
+  }
+
+  .CodeMirror {
+    height: auto !important;
+    min-height: 200px;
+  }
+
+  .CodeMirror-scroll {
+    min-height: 300px;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  .CodeMirror-dialog.CodeMirror-dialog-bottom {
+    margin-left: 30px;
+  }
+
+  .shimmer-loader {
+    animation-duration: 1.5s;
+    background-color: #e0e0e0 !important;
+    background-image: linear-gradient(
+      to right,
+      #e0e0e0 0%,
+      #c0c0c0 20%,
+      #e0e0e0 40%,
+      #e0e0e0 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 1000px 1000px;
+    display: inline-block;
+    position: relative;
+    // animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: shimmerAnimation;
+    animation-timing-function: linear;
+    // -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: shimmerAnimation;
+    -webkit-animation-timing-function: linear;
+  }
+
+  app-component-shared-cloak {
+    div {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $txt-color;
+      background-color: $bg-color;
+    }
+  }
+
+  app-component-shared-header {
+    @include header-default-components();
+  }
+
+  app-component-shared-header-login {
+    @include header-default-components();
+  }
+
+  app-component-shared-header-notfound {
+    @include header-default-components();
+  }
+
+  app-component-login-login-form {
+    form {
+      width: 100%;
+      align-items: center;
+
+      mat-progress-bar {
+        margin-bottom: 3px;
+      }
+
+      mat-progress-bar.hide {
+        visibility: hidden;
+      }
+
+      mat-form-field.form-full-width {
+        width: 100%;
+      }
+
+      .full-width {
+        width: 100%;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+    }
+  }
+
+  app-component-shared-editor-markdown {
+    .editor-status {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      font-family: "Courier New", Courier, monospace;
+
+      .editor-status-left {
+        flex-basis: 100%;
+      }
+
+      .editor-status-right {
+        flex-basis: 100%;
+        display: flex;
+        flex-direction: row-reverse;
+      }
+    }
+
+    .text-uppercase {
+      text-transform: uppercase;
+    }
+  }
+
+  app-component-shared-content-markdown {
+    markdown {
+      // color: #dfdfdf;
+      color: $txt-color;
+    }
+  }
+}
+
+@mixin all-component-colors($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground-palette: map.get($color-config, "foreground");
+  $background-palette: map.get($color-config, "background");
+
+  $txt-color: mat.get-color-from-palette($foreground-palette, "text");
+  $dvd-color: mat.get-color-from-palette($background-palette, "divider");
+  $bg-color: mat.get-color-from-palette($background-palette, "background");
+
+  markdown {
+    color: $txt-color;
+
+    .md-link {
+      color: $txt-color;
+    }
+
+    .md-img {
+      border-color: $dvd-color;
+    }
+
+    .md-pre {
+      background-color: $bg-color !important;
+      border-color: $dvd-color;
+    }
+  }
+
+  .shimmer-loader {
+    background-color: #404040 !important;
+    background-image: linear-gradient(
+      80deg,
+      #404040 0%,
+      #404040 20%,
+      #505050 40%,
+      #404040 60%,
+      #404040 100%
+    );
+  }
+
+  app-component-shared-cloak {
+    div {
+      color: $txt-color;
+      background-color: $bg-color;
+    }
+  }
+
+  app-component-shared-content-markdown {
+    markdown {
+      // color: #dfdfdf;
+      color: $txt-color;
+    }
+  }
+}
+
+@mixin default-editor-content() {
+  mat-form-field {
+    width: 100%;
+  }
+
+  .submit-container {
+    display: flex;
+    flex-direction: row-reverse;
+
+    .inner-button {
+      margin-left: 10px;
+    }
+  }
+}
+
+@mixin default-input-markdown() {
+  .markdown-label {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+
+    .markdown-button-right {
+      margin-left: 10px;
+    }
+  }
+
+  .markdown-container {
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(0, 0, 0, 0.04);
+    margin-top: 5px;
+
+    .markdown-item {
+      flex-basis: 100%;
+      overflow-x: auto;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+    }
+
+    .markdown-item.darkmode {
+      border: 1px solid rgba(230, 230, 230, 0.2);
+    }
+
+    .markdown-preview {
+      display: initial;
+      padding: 5px;
+    }
+
+    .markdown-preview.hide {
+      display: none;
+    }
+  }
+}
+
+@mixin default-spinner-container() {
+  .spinner-container {
+    height: 400px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@mixin default-table-commons() {
+  width: 100%;
+
+  .mat-cell,
+  .mat-header-cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .mat-row .mat-cell {
+    cursor: pointer;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+  }
+
+  .mat-row:hover .mat-cell {
+    border-color: currentColor;
+  }
+
+  .w100 {
+    width: 100%;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+}

@@ -2,9 +2,8 @@
 @use "@angular/material" as mat;
 
 @use "./default" as default;
-@use "../constants" as constants;
 
-@mixin notfound-layout($theme) {
+@mixin all-component-themes($theme) {
   app-layout-notfound {
     app-component-shared-header-notfound {
       @include default.default-layout-header();
@@ -14,7 +13,7 @@
   }
 }
 
-@mixin notfound-layout($theme) {
+@mixin all-component-colors($theme) {
   app-layout-notfound {
     @include default.default-layout-colors($theme);
   }
