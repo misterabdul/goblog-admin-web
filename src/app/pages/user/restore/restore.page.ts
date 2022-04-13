@@ -40,7 +40,7 @@ export class UserRestorePage extends UserShowPage {
   }
 
   public restore(user: UserDetailed | undefined) {
-    if (!this._restoring && this._userId) {
+    if (!this._restoring && this._userUid) {
       const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
         data: new BasicDialogData(
           'Restore User',
@@ -56,7 +56,7 @@ export class UserRestorePage extends UserShowPage {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
                 this._restoring = true;
-                return this._userService.submitRestoreUser(this._userId ?? '');
+                return this._userService.submitRestoreUser(this._userUid ?? '');
               } else {
                 return of(false);
               }

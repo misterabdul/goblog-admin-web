@@ -39,7 +39,7 @@ export class UserDeletePage extends UserShowPage {
   }
 
   public delete(user: UserDetailed | undefined) {
-    if (!this._deleting && this._userId) {
+    if (!this._deleting && this._userUid) {
       const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
         data: new BasicDialogData(
           'Delete User',
@@ -55,7 +55,7 @@ export class UserDeletePage extends UserShowPage {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
                 this._deleting = true;
-                return this._userService.submitDeleteUser(this._userId ?? '');
+                return this._userService.submitDeleteUser(this._userUid ?? '');
               } else {
                 return of(false);
               }

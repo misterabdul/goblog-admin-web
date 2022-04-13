@@ -30,9 +30,9 @@ export class UserUpdatePage extends UserShowPage {
   }
 
   public update(user: UserFormData | undefined) {
-    if (!this._updating && user) {
+    if (!this._updating && user && this._userUid) {
       this._updating = true;
-      this._userService.submitUpdateUser(this.userId, user).subscribe({
+      this._userService.submitUpdateUser(this._userUid, user).subscribe({
         next: (response) => {
           this._snackBarService.open('User updated.', undefined, {
             duration: SnackBarConfig.SUCCESS_DURATIONS,

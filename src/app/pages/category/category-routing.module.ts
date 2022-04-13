@@ -28,22 +28,22 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id',
+        path: ':uid',
         component: CategoryShowPage,
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id/update',
+        path: ':uid/update',
         component: CategoryUpdatePage,
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id/delete',
+        path: ':uid/delete',
         component: CategoryDeletePage,
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id/restore',
+        path: ':uid/restore',
         component: CategoryRestorePage,
         canActivate: [AuthGuardService],
       },

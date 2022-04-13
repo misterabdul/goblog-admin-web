@@ -30,10 +30,10 @@ export class CategoryUpdatePage extends CategoryShowPage {
   }
 
   public update(category: CategoryFormData | undefined) {
-    if (!this._updating && category) {
+    if (!this._updating && category && this._categoryUid) {
       this._updating = true;
       this._categoryService
-        .submitUpdateCategory(this.categoryId, category)
+        .submitUpdateCategory(this._categoryUid, category)
         .subscribe({
           next: (response) => {
             this._snackBarService.open('Category updated.', undefined, {

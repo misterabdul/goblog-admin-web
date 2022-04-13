@@ -38,7 +38,7 @@ export class CategoryDeletePage extends CategoryShowPage {
   }
 
   public delete(category: CategoryDetailed | undefined) {
-    if (!this._deleting && this._categoryId) {
+    if (!this._deleting && this._categoryUid) {
       const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
         data: new BasicDialogData(
           'Delete Category',
@@ -55,7 +55,7 @@ export class CategoryDeletePage extends CategoryShowPage {
                 dialogRef.componentInstance.isProcessing = true;
                 this._deleting = true;
                 return this._categoryService.submitDeleteCategory(
-                  this._categoryId ?? ''
+                  this._categoryUid ?? ''
                 );
               } else {
                 return of(false);

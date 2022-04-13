@@ -38,7 +38,7 @@ export class CategoryRestorePage extends CategoryShowPage {
   }
 
   public restore(category: CategoryDetailed | undefined) {
-    if (!this._restoring && this._categoryId) {
+    if (!this._restoring && this._categoryUid) {
       const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
         data: new BasicDialogData(
           'Restore Category',
@@ -55,7 +55,7 @@ export class CategoryRestorePage extends CategoryShowPage {
                 dialogRef.componentInstance.isProcessing = true;
                 this._restoring = true;
                 return this._categoryService.submitRestoreCategory(
-                  this._categoryId ?? ''
+                  this._categoryUid ?? ''
                 );
               } else {
                 return of(false);

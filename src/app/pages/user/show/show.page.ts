@@ -18,7 +18,7 @@ export class UserShowPage implements AfterViewInit {
   protected _activatedRouteService: ActivatedRoute;
   protected _snackBarService: MatSnackBar;
   protected _userService: UserService;
-  protected _userId: string | null;
+  protected _userUid: string | null;
   protected _user: UserDetailed | null;
 
   constructor(
@@ -30,7 +30,7 @@ export class UserShowPage implements AfterViewInit {
     this._snackBarService = snackBarService;
     this._userService = userService;
 
-    this._userId = null;
+    this._userUid = null;
     this._user = null;
   }
 
@@ -38,9 +38,9 @@ export class UserShowPage implements AfterViewInit {
     this._activatedRouteService.params
       .pipe(
         mergeMap((params) => {
-          if (typeof params['id'] === 'string') {
-            this._userId = params['id'];
-            return this._userService.getUser(this._userId);
+          if (typeof params['uid'] === 'string') {
+            this._userUid = params['uid'];
+            return this._userService.getUser(this._userUid);
           }
           return throwError(new Error("couldn't find id route parameter"));
         })
@@ -72,8 +72,8 @@ export class UserShowPage implements AfterViewInit {
       });
   }
 
-  get userId(): string {
-    return this._userId!;
+  get userUid(): string {
+    return this._userUid!;
   }
 
   get user(): UserDetailed {

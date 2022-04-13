@@ -23,19 +23,23 @@ const routes: Routes = [
         component: UserCreatePage,
         canActivate: [AuthGuardService],
       },
-      { path: ':id', component: UserShowPage, canActivate: [AuthGuardService] },
       {
-        path: ':id/update',
+        path: ':uid',
+        component: UserShowPage,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: ':uid/update',
         component: UserUpdatePage,
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id/delete',
+        path: ':uid/delete',
         component: UserDeletePage,
         canActivate: [AuthGuardService],
       },
       {
-        path: ':id/restore',
+        path: ':uid/restore',
         component: UserRestorePage,
         canActivate: [AuthGuardService],
       },

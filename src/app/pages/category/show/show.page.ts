@@ -17,7 +17,7 @@ export class CategoryShowPage implements AfterViewInit {
   protected _activatedRouteService: ActivatedRoute;
   protected _snackBarService: MatSnackBar;
   protected _categoryService: CategoryService;
-  protected _categoryId: string | null;
+  protected _categoryUid: string | null;
   protected _category: CategoryDetailed | null;
 
   constructor(
@@ -29,7 +29,7 @@ export class CategoryShowPage implements AfterViewInit {
     this._snackBarService = snackBarService;
     this._categoryService = categoryService;
 
-    this._categoryId = null;
+    this._categoryUid = null;
     this._category = null;
   }
 
@@ -37,9 +37,9 @@ export class CategoryShowPage implements AfterViewInit {
     this._activatedRouteService.params
       .pipe(
         mergeMap((params) => {
-          if (typeof params['id'] === 'string') {
-            this._categoryId = params['id'];
-            return this._categoryService.getCategory(this._categoryId);
+          if (typeof params['uid'] === 'string') {
+            this._categoryUid = params['uid'];
+            return this._categoryService.getCategory(this._categoryUid);
           }
           return throwError(new Error("couldn't find id route parameter"));
         })
@@ -71,8 +71,8 @@ export class CategoryShowPage implements AfterViewInit {
       });
   }
 
-  get categoryId(): string {
-    return this._categoryId!;
+  get categoryUid(): string {
+    return this._categoryUid!;
   }
 
   get category(): CategoryDetailed {
