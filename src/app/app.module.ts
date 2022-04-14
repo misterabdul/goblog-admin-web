@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
         this._isDarkMode = isDarkMode;
       },
     });
-    this._authService.checkForToken().subscribe({
+    this._authService.getTokenCheckStatus().subscribe({
       next: (status) => {
         if (status !== TokenCheckStatus.CHECKING)
           setTimeout(() => {
