@@ -5,21 +5,20 @@ import { Observable } from 'rxjs';
 import { UrlConfig } from '../configs/url.config';
 import { HttpConfig } from '../configs/http.config';
 
-import { AuthService } from './auth.service';
 import { Response } from '../types/response.type';
 import { UserDetailed, UserFormData } from '../types/user.type';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private _authorizationToken: string | null;
   private _httpClientService: HttpClient;
   private _authService: AuthService;
 
-  constructor(httpClientService: HttpClient, authService: AuthService) {
-    this._authorizationToken = null;
+  private _authorizationToken: string | null;
 
+  constructor(httpClientService: HttpClient, authService: AuthService) {
     this._httpClientService = httpClientService;
     this._authService = authService;
 
