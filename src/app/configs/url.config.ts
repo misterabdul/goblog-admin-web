@@ -7,6 +7,8 @@ export class UrlConfig {
   public static logout = UrlConfig.baseUrl + '/api/v1/refresh/signout';
   public static refreshToken = UrlConfig.baseUrl + '/api/v1/refresh';
 
+  public static me = UrlConfig.baseUrl + '/api/v1/auth/me';
+
   public static categories =
     UrlConfig.baseUrl + '/api/v1/auth/editor/categories';
   public static category = UrlConfig.baseUrl + '/api/v1/auth/editor/category';

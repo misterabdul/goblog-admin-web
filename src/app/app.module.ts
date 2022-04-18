@@ -1,6 +1,7 @@
 import {
   HttpClient,
   HttpClientModule,
+  HttpErrorResponse,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { Component, NgModule, OnInit } from '@angular/core';
@@ -17,6 +18,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { ComponentModule } from './components/components.module';
 import { PageModule } from './pages/pages.module';
 import { MsgPackInterceptor, RefreshAuthInterceptor } from './utils/http.util';
+import { concatMap, of } from 'rxjs';
+import { MeService } from './services/me.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarConfig } from './configs/snackbar.config';
 
 @Component({
   selector: 'app-root',
@@ -28,15 +33,24 @@ import { MsgPackInterceptor, RefreshAuthInterceptor } from './utils/http.util';
   </div>`,
 })
 export class AppComponent implements OnInit {
+  private _snackBarService: MatSnackBar;
   private _authService: AuthService;
+  private _meService: MeService;
   private _darkModeService: DarkModeService;
 
   private _isDarkMode: boolean | null;
   private _isCloakVisible: boolean;
   private _body: HTMLElement;
 
-  constructor(authService: AuthService, darkModeService: DarkModeService) {
+  constructor(
+    snackBarService: MatSnackBar,
+    authService: AuthService,
+    meService: MeService,
+    darkModeService: DarkModeService
+  ) {
+    this._snackBarService = snackBarService;
     this._authService = authService;
+    this._meService = meService;
     this._darkModeService = darkModeService;
 
     this._isDarkMode = null;
@@ -55,14 +69,48 @@ export class AppComponent implements OnInit {
         this._isDarkMode = isDarkMode;
       },
     });
-    this._authService.getTokenCheckStatus().subscribe({
-      next: (status) => {
-        if (status !== TokenCheckStatus.CHECKING)
+    this._authService
+      .getTokenCheckStatus()
+      .pipe(
+        concatMap((result) => {
+          if (
+            result.status === TokenCheckStatus.CHECK &&
+            result.authResponse?.data !== undefined
+          ) {
+            const _authToken =
+              result.authResponse?.data?.tokenType +
+              ' ' +
+              result.authResponse?.data?.accessToken!;
+            return this._meService.fetchMe(_authToken).pipe(
+              concatMap((meResponse) => {
+                return of(result);
+              })
+            );
+          }
+          return of(result);
+        })
+      )
+      .subscribe({
+        next: (result) => {
           setTimeout(() => {
             this._isCloakVisible = false;
           }, 400);
-      },
-    });
+        },
+        error: (error) => {
+          if (!(error instanceof HttpErrorResponse && error.status === 401)) {
+            this._snackBarService.open(
+              error.error?.message ?? 'Unknown error.',
+              undefined,
+              {
+                duration: SnackBarConfig.ERROR_DURATIONS,
+              }
+            );
+          }
+          setTimeout(() => {
+            this._isCloakVisible = false;
+          }, 400);
+        },
+      });
   }
 
   get isDarkMode(): boolean | null {

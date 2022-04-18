@@ -19,7 +19,7 @@ export class AuthService {
   private _accessToken: string | null;
   private _tokenType: string | null;
   private _firstTimeCheck: boolean;
-  private _tokenCheckSubject: BehaviorSubject<TokenCheckStatus>;
+  private _tokenCheckSubject: BehaviorSubject<TokenCheckResult>;
 
   constructor(httpClientService: HttpClient, meService: MeService) {
     this._httpClientService = httpClientService;
@@ -27,9 +27,10 @@ export class AuthService {
     this._accessToken = null;
     this._tokenType = null;
     this._firstTimeCheck = true;
-    this._tokenCheckSubject = new BehaviorSubject<TokenCheckStatus>(
-      TokenCheckStatus.CHECKING
-    );
+    this._tokenCheckSubject = new BehaviorSubject<TokenCheckResult>({
+      status: TokenCheckStatus.CHECKING,
+      authResponse: null,
+    });
   }
 
   private saveTokens(authResponse: Response<AuthData>) {
@@ -61,7 +62,10 @@ export class AuthService {
       .pipe(
         concatMap((authResponse) => {
           this.saveTokens(authResponse);
-          this._tokenCheckSubject.next(TokenCheckStatus.CHECK);
+          this._tokenCheckSubject.next({
+            status: TokenCheckStatus.CHECK,
+            authResponse: authResponse,
+          });
 
           return of(authResponse);
         })
@@ -77,7 +81,10 @@ export class AuthService {
       .pipe(
         concatMap((response) => {
           this.clearTokens();
-          this._tokenCheckSubject.next(TokenCheckStatus.NO_TOKEN);
+          this._tokenCheckSubject.next({
+            status: TokenCheckStatus.NO_TOKEN,
+            authResponse: null,
+          });
 
           return of(response);
         })
@@ -99,19 +106,28 @@ export class AuthService {
       );
   }
 
-  public getTokenCheckStatus(): Observable<TokenCheckStatus> {
+  public getTokenCheckStatus(): Observable<TokenCheckResult> {
     if (this._firstTimeCheck) {
       this._firstTimeCheck = false;
-      this._tokenCheckSubject.next(TokenCheckStatus.CHECKING);
+      this._tokenCheckSubject.next({
+        status: TokenCheckStatus.CHECKING,
+        authResponse: null,
+      });
 
       return this.refreshToken().pipe(
-        concatMap(() => {
-          this._tokenCheckSubject.next(TokenCheckStatus.CHECK);
+        concatMap((authResponse) => {
+          this._tokenCheckSubject.next({
+            status: TokenCheckStatus.CHECK,
+            authResponse: authResponse,
+          });
           return this._tokenCheckSubject;
         }),
         catchError(() => {
           this.deauthenticate();
-          this._tokenCheckSubject.next(TokenCheckStatus.NO_TOKEN);
+          this._tokenCheckSubject.next({
+            status: TokenCheckStatus.NO_TOKEN,
+            authResponse: null,
+          });
           return this._tokenCheckSubject;
         })
       );
@@ -138,3 +154,8 @@ export enum TokenCheckStatus {
   NO_TOKEN = 1,
   CHECK = 2,
 }
+
+export type TokenCheckResult = {
+  status: TokenCheckStatus;
+  authResponse: Response<AuthData> | null;
+};

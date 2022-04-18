@@ -19,12 +19,12 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
 
   canActivate(): Observable<boolean> {
     return this._authService.getTokenCheckStatus().pipe(
-      filter((status) => status !== TokenCheckStatus.CHECKING),
-      map((status) => {
-        if (status === TokenCheckStatus.NO_TOKEN)
+      filter((result) => result.status !== TokenCheckStatus.CHECKING),
+      map((result) => {
+        if (result.status === TokenCheckStatus.NO_TOKEN)
           this._routerService.navigate(['login']);
 
-        return status === TokenCheckStatus.CHECK;
+        return result.status === TokenCheckStatus.CHECK;
       }),
       catchError(() => {
         this._routerService.navigate(['login']);
