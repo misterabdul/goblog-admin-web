@@ -1,5 +1,10 @@
 <app-component-shared-header-notfound></app-component-shared-header-notfound>
 <mat-sidenav-container>
+  <mat-sidenav *ngIf="isLoggedIn" mode="side" opened>
+    <app-component-shared-sidenav-left
+      [userRoles]="meData?.roles ?? []"
+    ></app-component-shared-sidenav-left>
+  </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

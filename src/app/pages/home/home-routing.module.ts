@@ -12,11 +12,10 @@ const routes: Routes = [
     component: DefaultLayout,
     canActivate: [AuthGuardService],
     children: [
-      { path: '', component: HomeIndexPage, canActivate: [AuthGuardService] },
+      { path: '', component: HomeIndexPage },
       {
         path: 'dashboard',
         component: HomeIndexPage,
-        canActivate: [AuthGuardService],
       },
     ],
   },

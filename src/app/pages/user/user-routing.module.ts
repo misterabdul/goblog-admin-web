@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DefaultLayout } from 'src/app/layouts/layouts.module';
 import { AuthGuardService } from 'src/app/services/guards/auth-guard.service';
+import { AdminGuardService } from 'src/app/services/guards/admin-guard.service';
 
 import { UserIndexPage } from './index/index.page';
 import { UserCreatePage } from './create/create.page';
@@ -15,33 +16,28 @@ const routes: Routes = [
   {
     path: 'user',
     component: DefaultLayout,
-    canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService, AdminGuardService],
     children: [
-      { path: '', component: UserIndexPage, canActivate: [AuthGuardService] },
+      { path: '', component: UserIndexPage },
       {
         path: 'create',
         component: UserCreatePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid',
         component: UserShowPage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/update',
         component: UserUpdatePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/delete',
         component: UserDeletePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/restore',
         component: UserRestorePage,
-        canActivate: [AuthGuardService],
       },
     ],
   },

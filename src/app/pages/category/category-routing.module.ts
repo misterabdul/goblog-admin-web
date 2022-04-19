@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DefaultLayout } from 'src/app/layouts/layouts.module';
 import { AuthGuardService } from 'src/app/services/guards/auth-guard.service';
+import { EditorGuardService } from 'src/app/services/guards/editor-guard.service';
 
 import { CategoryIndexPage } from './index/index.page';
 import { CategoryCreatePage } from './create/create.page';
@@ -15,37 +16,31 @@ const routes: Routes = [
   {
     path: 'category',
     component: DefaultLayout,
-    canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService, EditorGuardService],
     children: [
       {
         path: '',
         component: CategoryIndexPage,
-        canActivate: [AuthGuardService],
       },
       {
         path: 'create',
         component: CategoryCreatePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid',
         component: CategoryShowPage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/update',
         component: CategoryUpdatePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/delete',
         component: CategoryDeletePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/restore',
         component: CategoryRestorePage,
-        canActivate: [AuthGuardService],
       },
     ],
   },

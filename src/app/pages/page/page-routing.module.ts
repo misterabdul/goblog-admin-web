@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DefaultLayout } from 'src/app/layouts/layouts.module';
 import { AuthGuardService } from 'src/app/services/guards/auth-guard.service';
+import { EditorGuardService } from 'src/app/services/guards/editor-guard.service';
 
 import { PageIndexPage } from './index/index.page';
 import { PageCreatePage } from './create/create.page';
@@ -15,29 +16,25 @@ const routes: Routes = [
   {
     path: 'page',
     component: DefaultLayout,
-    canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService, EditorGuardService],
     children: [
-      { path: '', component: PageIndexPage, canActivate: [AuthGuardService] },
+      { path: '', component: PageIndexPage },
       {
         path: 'create',
         component: PageCreatePage,
-        canActivate: [AuthGuardService],
       },
-      { path: ':uid', component: PageShowPage, canActivate: [AuthGuardService] },
+      { path: ':uid', component: PageShowPage },
       {
         path: ':uid/update',
         component: PageUpdatePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/delete',
         component: PageDeletePage,
-        canActivate: [AuthGuardService],
       },
       {
         path: ':uid/restore',
         component: PageRestorePage,
-        canActivate: [AuthGuardService],
       },
     ],
   },
