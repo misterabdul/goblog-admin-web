@@ -1,37 +1,19 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
-import { AuthService, TokenCheckStatus } from '../auth.service';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+
+import { AuthService } from '../auth.service';
+import { AuthGuardService } from './auth-guard.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LoginGuardService implements CanActivate, CanActivateChild {
-  private _authService: AuthService;
-  private _routerService: Router;
-
+export class LoginGuardService extends AuthGuardService {
   constructor(authService: AuthService, routerService: Router) {
-    this._authService = authService;
-    this._routerService = routerService;
-  }
+    super(authService, routerService);
 
-  canActivate(): Observable<boolean> {
-    return this._authService.getTokenCheckStatus().pipe(
-      filter((result) => result.status !== TokenCheckStatus.CHECKING),
-      map((result) => {
-        if (result.status === TokenCheckStatus.CHECK)
-          this._routerService.navigate(['']);
-
-        return result.status === TokenCheckStatus.NO_TOKEN;
-      }),
-      catchError(() => {
-        return of(false);
-      })
-    );
-  }
-
-  canActivateChild(): Observable<boolean> {
-    return this.canActivate();
+    this._tokenExistReturns = of(this._routerService.parseUrl('/'));
+    this._noTokenReturns = of(true);
+    this._errorReturns = of(true);
   }
 }

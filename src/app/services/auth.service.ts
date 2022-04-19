@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, concatMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 
 import { HttpConfig } from '../configs/http.config';
 import { UrlConfig } from '../configs/url.config';
@@ -60,14 +60,14 @@ export class AuthService {
         options
       )
       .pipe(
-        concatMap((authResponse) => {
+        map((authResponse) => {
           this.saveTokens(authResponse);
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.CHECK,
             authResponse: authResponse,
           });
 
-          return of(authResponse);
+          return authResponse;
         })
       );
   }
@@ -79,14 +79,14 @@ export class AuthService {
     return this._httpClientService
       .post<Response<any>>(UrlConfig.logout, null, options)
       .pipe(
-        concatMap((response) => {
+        map((response) => {
           this.clearTokens();
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.NO_TOKEN,
             authResponse: null,
           });
 
-          return of(response);
+          return response;
         })
       );
   }
@@ -98,10 +98,10 @@ export class AuthService {
     return this._httpClientService
       .post<Response<AuthData>>(UrlConfig.refreshToken, null, options)
       .pipe(
-        concatMap((authResponse) => {
+        map((authResponse) => {
           this.saveTokens(authResponse);
 
-          return of(authResponse);
+          return authResponse;
         })
       );
   }
@@ -115,20 +115,22 @@ export class AuthService {
       });
 
       return this.refreshToken().pipe(
-        concatMap((authResponse) => {
+        mergeMap((authResponse) => {
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.CHECK,
             authResponse: authResponse,
           });
+
           return this._tokenCheckSubject;
         }),
-        catchError(() => {
+        catchError((error) => {
           this.deauthenticate();
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.NO_TOKEN,
             authResponse: null,
           });
-          return this._tokenCheckSubject;
+
+          return throwError(() => error);
         })
       );
     }

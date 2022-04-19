@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
-  concatMap,
+  map,
   Observable,
   of,
   throwError,
@@ -53,10 +53,10 @@ export class MeService {
         HttpConfig.getDefaultAuthenticatedOptions(_authorizationToken!)
       )
       .pipe(
-        concatMap((response) => {
+        map((response) => {
           this._meDataSubject.next(response.data ?? null);
 
-          return of(response);
+          return response;
         }),
         catchError((error) => {
           this._meDataSubject.next(null);

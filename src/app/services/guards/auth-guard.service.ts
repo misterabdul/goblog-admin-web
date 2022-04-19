@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, Router } from '@angular/router';
+import {
+  CanActivate,
+  CanActivateChild,
+  Router,
+  UrlTree,
+} from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, filter, mergeMap } from 'rxjs/operators';
 
 import { AuthService, TokenCheckStatus } from '../auth.service';
 
@@ -9,31 +14,37 @@ import { AuthService, TokenCheckStatus } from '../auth.service';
   providedIn: 'root',
 })
 export class AuthGuardService implements CanActivate, CanActivateChild {
-  private _authService: AuthService;
-  private _routerService: Router;
+  protected _authService: AuthService;
+  protected _routerService: Router;
+
+  protected _tokenExistReturns: Observable<boolean | UrlTree>;
+  protected _noTokenReturns: Observable<boolean | UrlTree>;
+  protected _errorReturns: Observable<boolean | UrlTree>;
 
   constructor(authService: AuthService, routerService: Router) {
     this._authService = authService;
     this._routerService = routerService;
+
+    this._tokenExistReturns = of(true);
+    this._noTokenReturns = of(this._routerService.parseUrl('/login'));
+    this._errorReturns = of(this._routerService.parseUrl('/login'));
   }
 
-  canActivate(): Observable<boolean> {
+  canActivate(): Observable<boolean | UrlTree> {
     return this._authService.getTokenCheckStatus().pipe(
       filter((result) => result.status !== TokenCheckStatus.CHECKING),
-      map((result) => {
+      mergeMap((result) => {
         if (result.status === TokenCheckStatus.NO_TOKEN)
-          this._routerService.navigate(['login']);
-
-        return result.status === TokenCheckStatus.CHECK;
+          return this._noTokenReturns;
+        return this._tokenExistReturns;
       }),
       catchError(() => {
-        this._routerService.navigate(['login']);
-        return of(false);
+        return this._errorReturns;
       })
     );
   }
 
-  canActivateChild(): Observable<boolean> {
+  canActivateChild(): Observable<boolean | UrlTree> {
     return this.canActivate();
   }
 }
