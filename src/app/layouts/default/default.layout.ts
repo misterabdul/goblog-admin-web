@@ -25,7 +25,7 @@ export class DefaultLayout implements AfterViewInit {
     });
   }
 
-  get meData(): UserDetailed {
-    return this._meData!;
+  get meData(): UserDetailed | null {
+    return this._meData;
   }
 }

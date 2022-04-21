@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
-  map,
   Observable,
-  of,
+  Subject,
+  switchMap,
+  tap,
   throwError,
 } from 'rxjs';
 
@@ -23,13 +24,15 @@ export class MeService {
   private _httpClientService: HttpClient;
   private _authService: AuthService;
 
+  private _isFetched: boolean;
   private _authorizationToken: string | null;
-  private _meDataSubject: BehaviorSubject<UserDetailed | null | undefined>;
+  private _meDataSubject: Subject<UserDetailed | null | undefined>;
 
   constructor(httpClientService: HttpClient, authService: AuthService) {
     this._httpClientService = httpClientService;
     this._authService = authService;
 
+    this._isFetched = false as boolean;
     this._authorizationToken = this._authService.isAuthenticated
       ? this._authService.tokenType + ' ' + this._authService.accessToken
       : null;
@@ -39,24 +42,29 @@ export class MeService {
   }
 
   public getMe(): Observable<UserDetailed | null | undefined> {
-    return this._meDataSubject;
+    if (!this._isFetched) {
+      this._isFetched = true as boolean;
+      return this.fetchMe().pipe(
+        switchMap(() => {
+          return this._meDataSubject.asObservable();
+        })
+      );
+    }
+
+    return this._meDataSubject.asObservable();
   }
 
-  public fetchMe(
-    authorizationToken: string | undefined = undefined
-  ): Observable<Response<UserDetailed>> {
-    const _authorizationToken = authorizationToken ?? this._authorizationToken!;
-
+  public fetchMe(): Observable<Response<UserDetailed>> {
     return this._httpClientService
       .get<Response<UserDetailed>>(
         UrlConfig.me,
-        HttpConfig.getDefaultAuthenticatedOptions(_authorizationToken!)
+        HttpConfig.getDefaultAuthenticatedOptions(
+          this._authorizationToken ?? ''
+        )
       )
       .pipe(
-        map((response) => {
+        tap((response) => {
           this._meDataSubject.next(response.data ?? null);
-
-          return response;
         }),
         catchError((error) => {
           this._meDataSubject.next(null);
@@ -69,6 +77,7 @@ export class MeService {
   }
 
   public clearMe(): void {
+    this._isFetched = false as boolean;
     this._meDataSubject.next(undefined);
   }
 }

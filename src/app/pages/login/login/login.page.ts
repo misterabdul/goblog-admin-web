@@ -2,7 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, take, tap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
@@ -35,26 +36,14 @@ export class LoginPage {
   public login(data: LoginFormData | undefined) {
     if (!this._submitting && data && data.username && data.password) {
       this._submitting = true;
-      this._authService
+      const authSubscriber = this._authService
         .authenticate(data.username, data.password)
         .pipe(
-          finalize(() => {
-            this._submitting = false;
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this._snackBarService.open('Logged in.', undefined, {
-              duration: SnackBarConfig.SUCCESS_DURATIONS,
-            });
-            setTimeout(() => {
-              this._routerService.navigate(['/']);
-            }, 100);
-          },
-          error: (errorResponse) => {
-            if (errorResponse instanceof HttpErrorResponse) {
+          take(1),
+          catchError((error) => {
+            if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
-                errorResponse.error?.message ?? 'Unknown error.',
+                error.error?.message ?? 'Unknown error.',
                 undefined,
                 {
                   duration: SnackBarConfig.ERROR_DURATIONS,
@@ -65,6 +54,19 @@ export class LoginPage {
                 duration: SnackBarConfig.ERROR_DURATIONS,
               });
             }
+            return of(null);
+          }),
+          tap(() => {
+            this._snackBarService.open('Logged in.', undefined, {
+              duration: SnackBarConfig.SUCCESS_DURATIONS,
+            });
+          })
+        )
+        .subscribe({
+          complete: () => {
+            this._submitting = false;
+            this._routerService.navigateByUrl('/');
+            authSubscriber.unsubscribe();
           },
         });
     }

@@ -3,11 +3,13 @@ import { AfterViewInit, Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, take, tap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { AuthService } from 'src/app/services/auth.service';
 import { DarkModeService } from 'src/app/services/darkmode.service';
+import { MeService } from 'src/app/services/me.service';
 
 @Component({
   selector: 'app-component-shared-header',
@@ -48,14 +50,17 @@ export class SharedHeaderComponent implements AfterViewInit {
   }
 
   public logout(): void {
-    this._logoutDialog
+    const logoutDialogSubscriber = this._logoutDialog
       .open(InnerLogoutDialogComponent)
       .afterClosed()
       .subscribe({
         next: (dialogResult) => {
           if (dialogResult === InnerLogoutDialogComponent.RESULT_YES) {
-            this._routerService.navigate(['/login']);
+            this._routerService.navigateByUrl('/login');
           }
+        },
+        complete: () => {
+          logoutDialogSubscriber.unsubscribe();
         },
       });
   }
@@ -79,22 +84,25 @@ class Menu {
   styleUrls: ['./logout-dialog.component.scss'],
 })
 export class InnerLogoutDialogComponent {
-  private _authService: AuthService;
   private _snackBar: MatSnackBar;
   private _dialogRef: MatDialogRef<InnerLogoutDialogComponent>;
+  private _authService: AuthService;
+  private _meService: MeService;
   private _isLoggingOut: boolean;
 
   public static RESULT_YES = 1;
   public static RESULT_ERROR = -1;
 
   constructor(
-    authService: AuthService,
     snackBar: MatSnackBar,
-    matDialogRef: MatDialogRef<InnerLogoutDialogComponent>
+    matDialogRef: MatDialogRef<InnerLogoutDialogComponent>,
+    authService: AuthService,
+    meService: MeService
   ) {
-    this._authService = authService;
     this._snackBar = snackBar;
     this._dialogRef = matDialogRef;
+    this._authService = authService;
+    this._meService = meService;
     this._isLoggingOut = false;
   }
 
@@ -102,24 +110,14 @@ export class InnerLogoutDialogComponent {
     if (!this._isLoggingOut) {
       this._isLoggingOut = true;
 
-      this._authService
+      const deauthSubsriber = this._authService
         .deauthenticate()
         .pipe(
-          finalize(() => {
-            this._isLoggingOut = false;
-          })
-        )
-        .subscribe({
-          next: (logoutResponse) => {
-            this._snackBar.open('Logged out', undefined, {
-              duration: SnackBarConfig.SUCCESS_DURATIONS,
-            });
-            this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
-          },
-          error: (errorResponse) => {
-            if (errorResponse instanceof HttpErrorResponse) {
+          take(1),
+          catchError((error) => {
+            if (error instanceof HttpErrorResponse) {
               this._snackBar.open(
-                errorResponse.error?.message ?? 'Unknown error.',
+                error.error?.message ?? 'Unknown error.',
                 undefined,
                 {
                   duration: SnackBarConfig.ERROR_DURATIONS,
@@ -131,6 +129,21 @@ export class InnerLogoutDialogComponent {
               });
             }
             this._dialogRef.close(InnerLogoutDialogComponent.RESULT_ERROR);
+
+            return of(null);
+          }),
+          tap(() => {
+            this._snackBar.open('Logged out', undefined, {
+              duration: SnackBarConfig.SUCCESS_DURATIONS,
+            });
+            this._dialogRef.close(InnerLogoutDialogComponent.RESULT_YES);
+          })
+        )
+        .subscribe({
+          complete: () => {
+            this._meService.clearMe();
+            this._isLoggingOut = false;
+            deauthSubsriber.unsubscribe();
           },
         });
     }

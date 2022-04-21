@@ -8,20 +8,20 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { MarkdownModule, MarkedOptions } from '@misterabdul/ngx-markdown';
+import { catchError, of, take } from 'rxjs';
 
 import { MarkedConfig } from './configs/marked.config';
+import { SnackBarConfig } from './configs/snackbar.config';
 
-import { AuthService, TokenCheckStatus } from './services/auth.service';
+import { AuthService } from './services/auth.service';
 import { DarkModeService } from './services/darkmode.service';
 import { AppRoutingModule } from './app-routing.module';
 import { ComponentModule } from './components/components.module';
 import { PageModule } from './pages/pages.module';
 import { MsgPackInterceptor, RefreshAuthInterceptor } from './utils/http.util';
-import { concatMap, of } from 'rxjs';
-import { MeService } from './services/me.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SnackBarConfig } from './configs/snackbar.config';
 
 @Component({
   selector: 'app-root',
@@ -33,9 +33,9 @@ import { SnackBarConfig } from './configs/snackbar.config';
   </div>`,
 })
 export class AppComponent implements OnInit {
+  private _routerService: Router;
   private _snackBarService: MatSnackBar;
   private _authService: AuthService;
-  private _meService: MeService;
   private _darkModeService: DarkModeService;
 
   private _isDarkMode: boolean | null;
@@ -43,14 +43,14 @@ export class AppComponent implements OnInit {
   private _body: HTMLElement;
 
   constructor(
+    routerService: Router,
     snackBarService: MatSnackBar,
     authService: AuthService,
-    meService: MeService,
     darkModeService: DarkModeService
   ) {
+    this._routerService = routerService;
     this._snackBarService = snackBarService;
     this._authService = authService;
-    this._meService = meService;
     this._darkModeService = darkModeService;
 
     this._isDarkMode = null;
@@ -69,34 +69,12 @@ export class AppComponent implements OnInit {
         this._isDarkMode = isDarkMode;
       },
     });
-    this._authService
+
+    const tokenCheckSubscription = this._authService
       .getTokenCheckStatus()
       .pipe(
-        concatMap((result) => {
-          if (
-            result.status === TokenCheckStatus.CHECK &&
-            result.authResponse?.data !== undefined
-          ) {
-            const _authToken =
-              result.authResponse?.data?.tokenType +
-              ' ' +
-              result.authResponse?.data?.accessToken!;
-            return this._meService.fetchMe(_authToken).pipe(
-              concatMap((meResponse) => {
-                return of(result);
-              })
-            );
-          }
-          return of(result);
-        })
-      )
-      .subscribe({
-        next: (result) => {
-          setTimeout(() => {
-            this._isCloakVisible = false;
-          }, 400);
-        },
-        error: (error) => {
+        take(1),
+        catchError((error) => {
           if (!(error instanceof HttpErrorResponse && error.status === 401)) {
             this._snackBarService.open(
               error.error?.message ?? 'Unknown error.',
@@ -106,9 +84,17 @@ export class AppComponent implements OnInit {
               }
             );
           }
+
+          return of(null);
+        })
+      )
+      .subscribe({
+        complete: () => {
           setTimeout(() => {
             this._isCloakVisible = false;
           }, 400);
+          this._routerService.initialNavigation();
+          tokenCheckSubscription.unsubscribe();
         },
       });
   }

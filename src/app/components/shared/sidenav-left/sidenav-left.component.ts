@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { UserRole } from 'src/app/types/user.type';
 import { UserRoleLevel } from 'src/app/utils/user-roles.util';
@@ -8,7 +8,7 @@ import { UserRoleLevel } from 'src/app/utils/user-roles.util';
   templateUrl: './sidenav-left.component.html',
   styleUrls: ['./sidenav-left.component.scss'],
 })
-export class SharedSidenavLeftComponent implements AfterViewInit {
+export class SharedSidenavLeftComponent {
   private _userRoles: Array<UserRole>;
   private _navItems: Array<SideNavItem>;
 
@@ -18,6 +18,10 @@ export class SharedSidenavLeftComponent implements AfterViewInit {
   }
 
   protected setNavItems() {
+    this._navItems = new Array<SideNavItem>(
+      new SideNavItem('/dashboard', 'Dashboard', 'home')
+    );
+
     if (
       this._userRoles.some(
         (userRole) =>
@@ -60,10 +64,6 @@ export class SharedSidenavLeftComponent implements AfterViewInit {
       )
     )
       this._navItems.push();
-  }
-
-  ngAfterViewInit(): void {
-    this._navItems = [new SideNavItem('/dashboard', 'Dashboard', 'home')];
   }
 
   @Input()

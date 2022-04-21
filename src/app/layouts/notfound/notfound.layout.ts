@@ -25,11 +25,11 @@ export class NotFoundLayout implements AfterViewInit {
     });
   }
 
-  get meData(): UserDetailed {
-    return this._meData!;
+  get meData(): UserDetailed | null {
+    return this._meData;
   }
 
   get isLoggedIn(): boolean {
-    return this._meData !== null || this._meData !== undefined;
+    return this._meData !== null;
   }
 }

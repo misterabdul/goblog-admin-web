@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 
 import { HttpConfig } from '../configs/http.config';
 import { UrlConfig } from '../configs/url.config';
 
 import { Response } from '../types/response.type';
 import { AuthData } from '../types/auth-data.type';
-import { MeService } from './me.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,9 +18,9 @@ export class AuthService {
   private _accessToken: string | null;
   private _tokenType: string | null;
   private _firstTimeCheck: boolean;
-  private _tokenCheckSubject: BehaviorSubject<TokenCheckResult>;
+  private _tokenCheckSubject: Subject<TokenCheckResult>;
 
-  constructor(httpClientService: HttpClient, meService: MeService) {
+  constructor(httpClientService: HttpClient) {
     this._httpClientService = httpClientService;
 
     this._accessToken = null;
@@ -60,14 +59,12 @@ export class AuthService {
         options
       )
       .pipe(
-        map((authResponse) => {
+        tap((authResponse) => {
           this.saveTokens(authResponse);
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.CHECK,
             authResponse: authResponse,
           });
-
-          return authResponse;
         })
       );
   }
@@ -79,14 +76,12 @@ export class AuthService {
     return this._httpClientService
       .post<Response<any>>(UrlConfig.logout, null, options)
       .pipe(
-        map((response) => {
+        tap(() => {
           this.clearTokens();
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.NO_TOKEN,
             authResponse: null,
           });
-
-          return response;
         })
       );
   }
@@ -98,10 +93,12 @@ export class AuthService {
     return this._httpClientService
       .post<Response<AuthData>>(UrlConfig.refreshToken, null, options)
       .pipe(
-        map((authResponse) => {
+        tap((authResponse) => {
           this.saveTokens(authResponse);
-
-          return authResponse;
+          this._tokenCheckSubject.next({
+            status: TokenCheckStatus.CHECK,
+            authResponse: authResponse,
+          });
         })
       );
   }
@@ -109,33 +106,24 @@ export class AuthService {
   public getTokenCheckStatus(): Observable<TokenCheckResult> {
     if (this._firstTimeCheck) {
       this._firstTimeCheck = false;
-      this._tokenCheckSubject.next({
-        status: TokenCheckStatus.CHECKING,
-        authResponse: null,
-      });
 
       return this.refreshToken().pipe(
-        mergeMap((authResponse) => {
-          this._tokenCheckSubject.next({
-            status: TokenCheckStatus.CHECK,
-            authResponse: authResponse,
-          });
-
-          return this._tokenCheckSubject;
+        switchMap(() => {
+          return this._tokenCheckSubject.asObservable();
         }),
-        catchError((error) => {
+        catchError(() => {
           this.deauthenticate();
           this._tokenCheckSubject.next({
             status: TokenCheckStatus.NO_TOKEN,
             authResponse: null,
           });
 
-          return throwError(() => error);
+          return this._tokenCheckSubject.asObservable();
         })
       );
     }
 
-    return this._tokenCheckSubject;
+    return this._tokenCheckSubject.asObservable();
   }
 
   get accessToken(): string | null {
@@ -152,9 +140,9 @@ export class AuthService {
 }
 
 export enum TokenCheckStatus {
-  CHECKING = 0,
-  NO_TOKEN = 1,
-  CHECK = 2,
+  CHECKING = -1,
+  NO_TOKEN = 0,
+  CHECK = 1,
 }
 
 export type TokenCheckResult = {
