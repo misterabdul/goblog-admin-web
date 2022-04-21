@@ -126,7 +126,7 @@ export class AppComponent implements OnInit {
   declarations: [AppComponent],
   imports: [
     HttpClientModule,
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
