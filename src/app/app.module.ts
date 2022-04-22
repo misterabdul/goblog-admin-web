@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
     });
 
     const tokenCheckSubscription = this._authService
-      .getTokenCheckStatus()
+      .getAuthToken()
       .pipe(
         take(1),
         catchError((error) => {

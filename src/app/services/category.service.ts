@@ -5,54 +5,54 @@ import { Observable } from 'rxjs';
 import { HttpConfig } from '../configs/http.config';
 import { UrlConfig } from '../configs/url.config';
 
-import { CategoryDetailed, CategoryFormData } from '../types/category.type';
 import { Response } from '../types/response.type';
-import { AuthService } from './auth.service';
+import { CategoryDetailed, CategoryFormData } from '../types/category.type';
+import { AuthService, CommonAuthResourceService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CategoryService {
-  private _httpClientService: HttpClient;
-
-  private _authorizationToken: string | null;
-
+export class CategoryService extends CommonAuthResourceService {
   constructor(httpClientService: HttpClient, authService: AuthService) {
-    this._httpClientService = httpClientService;
-
-    this._authorizationToken = authService.isAuthenticated
-      ? authService.tokenType + ' ' + authService.accessToken
-      : null;
+    super(httpClientService, authService);
   }
 
   public getCategories(): Observable<Response<Array<CategoryDetailed>>> {
-    return this._httpClientService.get<Response<Array<CategoryDetailed>>>(
-      UrlConfig.categories,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<CategoryDetailed>>>(
+        UrlConfig.categories,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getTrashed(): Observable<Response<Array<CategoryDetailed>>> {
-    return this._httpClientService.get<Response<Array<CategoryDetailed>>>(
-      UrlConfig.categories + '?type=trash',
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<CategoryDetailed>>>(
+        UrlConfig.categories + '?type=trash',
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getCategory(id: string): Observable<Response<CategoryDetailed>> {
-    return this._httpClientService.get<Response<CategoryDetailed>>(
-      UrlConfig.category + '/' + id,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<CategoryDetailed>>(
+        UrlConfig.category + '/' + id,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitNewCategory(
     formData: CategoryFormData
   ): Observable<Response<CategoryDetailed>> {
-    return this._httpClientService.post<Response<CategoryDetailed>>(
-      UrlConfig.category,
-      formData,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.post<Response<CategoryDetailed>>(
+        UrlConfig.category,
+        formData,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
@@ -60,25 +60,31 @@ export class CategoryService {
     categoryId: string,
     formData: CategoryFormData
   ): Observable<Response<any>> {
-    return this._httpClientService.put<Response<any>>(
-      UrlConfig.category + '/' + categoryId,
-      formData,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.put<Response<any>>(
+        UrlConfig.category + '/' + categoryId,
+        formData,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitDeleteCategory(categoryId: string): Observable<Response<any>> {
-    return this._httpClientService.delete<Response<any>>(
-      UrlConfig.category + '/' + categoryId,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.delete<Response<any>>(
+        UrlConfig.category + '/' + categoryId,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitRestoreCategory(categoryId: string): Observable<Response<any>> {
-    return this._httpClientService.put<Response<any>>(
-      UrlConfig.category + '/' + categoryId + '/detrash',
-      {},
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.put<Response<any>>(
+        UrlConfig.category + '/' + categoryId + '/detrash',
+        {},
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 }

@@ -6,9 +6,9 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, filter, mergeMap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap } from 'rxjs/operators';
 
-import { AuthService, TokenCheckStatus } from '../auth.service';
+import { AuthService } from '../auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,11 +31,11 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
   }
 
   canActivate(): Observable<boolean | UrlTree> {
-    return this._authService.getTokenCheckStatus().pipe(
-      filter((result) => result.status !== TokenCheckStatus.CHECKING),
-      mergeMap((result) => {
-        if (result.status === TokenCheckStatus.NO_TOKEN)
-          return this._noTokenReturns;
+    return this._authService.getAuthToken().pipe(
+      filter((authToken) => authToken !== false),
+      map((authToken) => (authToken === false ? null : authToken)),
+      mergeMap((authToken) => {
+        if (authToken === null) return this._noTokenReturns;
         return this._tokenExistReturns;
       }),
       catchError(() => {

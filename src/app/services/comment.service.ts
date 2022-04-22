@@ -7,66 +7,70 @@ import { HttpConfig } from '../configs/http.config';
 
 import { Response } from '../types/response.type';
 import { CommentDetailed } from '../types/comment.type';
-import { AuthService } from './auth.service';
+import { AuthService, CommonAuthResourceService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CommentService {
-  private _httpClientService: HttpClient;
-
-  private _authorizationToken: string | null;
-
+export class CommentService extends CommonAuthResourceService {
   constructor(httpClientService: HttpClient, authService: AuthService) {
-    this._httpClientService = httpClientService;
-
-    this._authorizationToken = authService.isAuthenticated
-      ? authService.tokenType + ' ' + authService.accessToken
-      : null;
+    super(httpClientService, authService);
   }
 
   public getComments(): Observable<Response<Array<CommentDetailed>>> {
-    return this._httpClientService.get<Response<Array<CommentDetailed>>>(
-      UrlConfig.comments,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<CommentDetailed>>>(
+        UrlConfig.comments,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getTrashed(): Observable<Response<Array<CommentDetailed>>> {
-    return this._httpClientService.get<Response<Array<CommentDetailed>>>(
-      UrlConfig.comments + '?trash=true',
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<CommentDetailed>>>(
+        UrlConfig.comments + '?trash=true',
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getPostComments(
     postUid: string
   ): Observable<Response<Array<CommentDetailed>>> {
-    return this._httpClientService.get<Response<Array<CommentDetailed>>>(
-      UrlConfig.post + '/' + postUid + '/comments',
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<CommentDetailed>>>(
+        UrlConfig.post + '/' + postUid + '/comments',
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getComment(uid: string): Observable<Response<CommentDetailed>> {
-    return this._httpClientService.get<Response<CommentDetailed>>(
-      UrlConfig.comment + '/' + uid,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<CommentDetailed>>(
+        UrlConfig.comment + '/' + uid,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitDeleteComment(uid: string): Observable<Response<any>> {
-    return this._httpClientService.delete<Response<any>>(
-      UrlConfig.comment + '/' + uid,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.delete<Response<any>>(
+        UrlConfig.comment + '/' + uid,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitRestoreComment(uid: string): Observable<Response<any>> {
-    return this._httpClientService.put<Response<any>>(
-      UrlConfig.comment + '/' + uid + '/detrash',
-      {},
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.put<Response<any>>(
+        UrlConfig.comment + '/' + uid + '/detrash',
+        {},
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 }

@@ -7,66 +7,70 @@ import { HttpConfig } from '../configs/http.config';
 
 import { Response } from '../types/response.type';
 import { PageDetailed, PageFormData } from '../types/page.type';
-import { AuthService } from './auth.service';
+import { AuthService, CommonAuthResourceService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PageService {
-  private _httpClientService: HttpClient;
-
-  private _authorizationToken: string | null;
-
+export class PageService extends CommonAuthResourceService {
   constructor(httpClientService: HttpClient, authService: AuthService) {
-    this._httpClientService = httpClientService;
-
-    this._authorizationToken = authService.isAuthenticated
-      ? authService.tokenType + ' ' + authService.accessToken
-      : null;
+    super(httpClientService, authService);
   }
 
   public getPages(): Observable<Response<Array<PageDetailed>>> {
-    return this._httpClientService.get<Response<Array<PageDetailed>>>(
-      UrlConfig.pages,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<PageDetailed>>>(
+        UrlConfig.pages,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getDrafts(): Observable<Response<Array<PageDetailed>>> {
-    return this._httpClientService.get<Response<Array<PageDetailed>>>(
-      UrlConfig.pages + '?type=draft',
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<PageDetailed>>>(
+        UrlConfig.pages + '?type=draft',
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getPublished(): Observable<Response<Array<PageDetailed>>> {
-    return this._httpClientService.get<Response<Array<PageDetailed>>>(
-      UrlConfig.pages + '?type=published',
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<PageDetailed>>>(
+        UrlConfig.pages + '?type=published',
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getTrashed(): Observable<Response<Array<PageDetailed>>> {
-    return this._httpClientService.get<Response<Array<PageDetailed>>>(
-      UrlConfig.pages + '?type=trash',
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<PageDetailed>>>(
+        UrlConfig.pages + '?type=trash',
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public getPage(id: string): Observable<Response<PageDetailed>> {
-    return this._httpClientService.get<Response<PageDetailed>>(
-      UrlConfig.page + '/' + id,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<PageDetailed>>(
+        UrlConfig.page + '/' + id,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitNewPage(
     formData: PageFormData
   ): Observable<Response<PageDetailed>> {
-    return this._httpClientService.post<Response<PageDetailed>>(
-      UrlConfig.submitPage,
-      formData,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.post<Response<PageDetailed>>(
+        UrlConfig.submitPage,
+        formData,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
@@ -74,25 +78,31 @@ export class PageService {
     pageId: string,
     formData: PageFormData
   ): Observable<Response<any>> {
-    return this._httpClientService.put<Response<any>>(
-      UrlConfig.submitPage + '/' + pageId,
-      formData,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.put<Response<any>>(
+        UrlConfig.submitPage + '/' + pageId,
+        formData,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitDeletePage(pageId: string): Observable<Response<any>> {
-    return this._httpClientService.delete<Response<any>>(
-      UrlConfig.submitPage + '/' + pageId,
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.delete<Response<any>>(
+        UrlConfig.submitPage + '/' + pageId,
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 
   public submitRestorePage(pageId: string): Observable<Response<any>> {
-    return this._httpClientService.put<Response<any>>(
-      UrlConfig.submitPage + '/' + pageId + '/detrash',
-      {},
-      HttpConfig.getDefaultAuthenticatedOptions(this._authorizationToken!)
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.put<Response<any>>(
+        UrlConfig.submitPage + '/' + pageId + '/detrash',
+        {},
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
     );
   }
 }

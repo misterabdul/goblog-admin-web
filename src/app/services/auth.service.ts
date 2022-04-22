@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { HttpConfig } from '../configs/http.config';
 import { UrlConfig } from '../configs/url.config';
@@ -15,31 +15,16 @@ import { AuthData } from '../types/auth-data.type';
 export class AuthService {
   private _httpClientService: HttpClient;
 
-  private _accessToken: string | null;
-  private _tokenType: string | null;
-  private _firstTimeCheck: boolean;
-  private _tokenCheckSubject: Subject<TokenCheckResult>;
+  private _isAuthTokenFetched: boolean;
+  private _authTokenSubject: Subject<AuthenticationToken | null | false>;
 
   constructor(httpClientService: HttpClient) {
     this._httpClientService = httpClientService;
 
-    this._accessToken = null;
-    this._tokenType = null;
-    this._firstTimeCheck = true;
-    this._tokenCheckSubject = new BehaviorSubject<TokenCheckResult>({
-      status: TokenCheckStatus.CHECKING,
-      authResponse: null,
-    });
-  }
-
-  private saveTokens(authResponse: Response<AuthData>) {
-    this._accessToken = authResponse.data!.accessToken!;
-    this._tokenType = authResponse.data!.tokenType!;
-  }
-
-  private clearTokens() {
-    this._accessToken = null;
-    this._tokenType = null;
+    this._isAuthTokenFetched = false;
+    this._authTokenSubject = new BehaviorSubject<
+      AuthenticationToken | null | false
+    >(false);
   }
 
   public authenticate(
@@ -60,11 +45,7 @@ export class AuthService {
       )
       .pipe(
         tap((authResponse) => {
-          this.saveTokens(authResponse);
-          this._tokenCheckSubject.next({
-            status: TokenCheckStatus.CHECK,
-            authResponse: authResponse,
-          });
+          this._authTokenSubject.next(new AuthenticationToken(authResponse));
         })
       );
   }
@@ -77,11 +58,7 @@ export class AuthService {
       .post<Response<any>>(UrlConfig.logout, null, options)
       .pipe(
         tap(() => {
-          this.clearTokens();
-          this._tokenCheckSubject.next({
-            status: TokenCheckStatus.NO_TOKEN,
-            authResponse: null,
-          });
+          this._authTokenSubject.next(false);
         })
       );
   }
@@ -94,58 +71,77 @@ export class AuthService {
       .post<Response<AuthData>>(UrlConfig.refreshToken, null, options)
       .pipe(
         tap((authResponse) => {
-          this.saveTokens(authResponse);
-          this._tokenCheckSubject.next({
-            status: TokenCheckStatus.CHECK,
-            authResponse: authResponse,
-          });
+          this._authTokenSubject.next(new AuthenticationToken(authResponse));
         })
       );
   }
 
-  public getTokenCheckStatus(): Observable<TokenCheckResult> {
-    if (this._firstTimeCheck) {
-      this._firstTimeCheck = false;
+  public getAuthToken(
+    forceRefresh?: boolean
+  ): Observable<AuthenticationToken | null | false> {
+    const authTokenObservable = this._authTokenSubject.asObservable();
+    if (forceRefresh === true || !this._isAuthTokenFetched) {
+      this._isAuthTokenFetched = true;
 
       return this.refreshToken().pipe(
-        switchMap(() => {
-          return this._tokenCheckSubject.asObservable();
-        }),
+        switchMap(() => authTokenObservable),
         catchError(() => {
           this.deauthenticate();
-          this._tokenCheckSubject.next({
-            status: TokenCheckStatus.NO_TOKEN,
-            authResponse: null,
-          });
-
-          return this._tokenCheckSubject.asObservable();
+          this._authTokenSubject.next(false);
+          return authTokenObservable;
         })
       );
     }
 
-    return this._tokenCheckSubject.asObservable();
+    return authTokenObservable;
+  }
+}
+
+export class AuthenticationToken {
+  private _tokenType: string | null;
+  private _token: string | null;
+
+  public toString = (): string => this._tokenType + ' ' + this._token;
+
+  constructor(
+    token: Response<AuthData> | string,
+    tokenType?: string | undefined
+  ) {
+    if (typeof token === 'string') {
+      this._token = token;
+      this._tokenType = tokenType ?? null;
+    } else {
+      this._token = token.data?.accessToken ?? null;
+      this._tokenType = token.data?.tokenType ?? null;
+    }
   }
 
-  get accessToken(): string | null {
-    return this._accessToken;
+  get token(): string | null {
+    return this._token;
   }
 
   get tokenType(): string | null {
     return this._tokenType;
   }
+}
 
-  get isAuthenticated(): boolean {
-    return this._accessToken !== null && this._tokenType !== null;
+export abstract class CommonAuthResourceService {
+  protected _httpClientService: HttpClient;
+  protected _authService: AuthService;
+
+  constructor(httpClientService: HttpClient, authService: AuthService) {
+    this._httpClientService = httpClientService;
+    this._authService = authService;
+  }
+
+  protected getAuthToken<T>(
+    handler: (authToken: AuthenticationToken | null) => Observable<T>
+  ): Observable<T> {
+    return this._authService.getAuthToken().pipe(
+      filter((authToken) => authToken !== false),
+      take(1),
+      map((authToken) => (authToken === false ? null : authToken)),
+      switchMap((authToken) => handler(authToken))
+    );
   }
 }
-
-export enum TokenCheckStatus {
-  CHECKING = -1,
-  NO_TOKEN = 0,
-  CHECK = 1,
-}
-
-export type TokenCheckResult = {
-  status: TokenCheckStatus;
-  authResponse: Response<AuthData> | null;
-};

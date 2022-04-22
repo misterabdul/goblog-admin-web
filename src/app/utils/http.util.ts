@@ -7,25 +7,23 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import {
   catchError,
   filter,
   finalize,
+  map,
   mergeMap,
   switchMap,
-  take,
 } from 'rxjs/operators';
 import { decode } from '@msgpack/msgpack';
 
 import { HttpConfig } from '../configs/http.config';
 
-import { AuthService } from '../services/auth.service';
+import { AuthenticationToken, AuthService } from '../services/auth.service';
 
 @Injectable()
 export class MsgPackInterceptor implements HttpInterceptor {
-  constructor() {}
-
   intercept(
     httpRequest: HttpRequest<any>,
     next: HttpHandler
@@ -73,15 +71,18 @@ export class MsgPackInterceptor implements HttpInterceptor {
 
 @Injectable()
 export class RefreshAuthInterceptor implements HttpInterceptor {
-  private _refreshTokenSubject: BehaviorSubject<Boolean>;
-  private _isRefreshing: boolean;
   private _authService: AuthService;
 
-  constructor(authService: AuthService) {
-    this._refreshTokenSubject = new BehaviorSubject<Boolean>(false);
-    this._isRefreshing = false;
+  private _isRefreshing: boolean;
+  private _refreshTokenSubject: Subject<AuthenticationToken | false>;
 
+  constructor(authService: AuthService) {
     this._authService = authService;
+
+    this._isRefreshing = false;
+    this._refreshTokenSubject = new BehaviorSubject<
+      AuthenticationToken | false
+    >(false);
   }
 
   intercept(
@@ -101,7 +102,7 @@ export class RefreshAuthInterceptor implements HttpInterceptor {
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 401)
           return this.handleTokenExpiredError(request, next);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -110,18 +111,25 @@ export class RefreshAuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    const refreshTokenObservable = this._refreshTokenSubject.pipe(
+      filter((authToken) => authToken !== false),
+      switchMap((authToken) => next.handle(this.newRequest(authToken, request)))
+    );
+
     if (!this._isRefreshing) {
       this._isRefreshing = true;
-      this._refreshTokenSubject.next(false);
-
-      return this._authService.refreshToken().pipe(
-        switchMap(() => {
-          this._refreshTokenSubject.next(true);
-          return next.handle(this.newRequest(request));
+      return this._authService.getAuthToken(true).pipe(
+        filter((authToken) => authToken !== false),
+        map((authToken) => (authToken === null ? false : authToken)),
+        switchMap((authToken) => {
+          if (authToken === false)
+            throwError(() => new Error('Unauthenticated'));
+          this._refreshTokenSubject.next(authToken);
+          return refreshTokenObservable;
         }),
         catchError((error) => {
           this._authService.deauthenticate();
-          return throwError(error);
+          return throwError(() => error);
         }),
         finalize(() => {
           this._isRefreshing = false;
@@ -129,19 +137,14 @@ export class RefreshAuthInterceptor implements HttpInterceptor {
       );
     }
 
-    return this._refreshTokenSubject.pipe(
-      filter((isRefreshed) => isRefreshed !== false),
-      take(1),
-      switchMap(() => {
-        return next.handle(this.newRequest(request));
-      })
-    );
+    return refreshTokenObservable;
   }
 
-  private newRequest(request: HttpRequest<any>): HttpRequest<any> {
-    const token =
-      this._authService.tokenType + ' ' + this._authService.accessToken;
-
+  private newRequest(
+    authToken: AuthenticationToken | false,
+    request: HttpRequest<any>
+  ): HttpRequest<any> {
+    const token = authToken === false ? '' : authToken.toString();
     return request.clone(
       HttpConfig.getDefaultAuthenticatedOptions(token) as {}
     );

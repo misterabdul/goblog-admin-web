@@ -8,6 +8,7 @@ import { catchError, take, tap } from 'rxjs/operators';
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
 import { AuthService } from 'src/app/services/auth.service';
+import { MeService } from 'src/app/services/me.service';
 import { LoginFormData } from 'src/app/types/user.type';
 
 @Component({
@@ -19,16 +20,20 @@ export class LoginPage {
   private _routerService: Router;
   private _snackBarService: MatSnackBar;
   private _authService: AuthService;
+  private _meService: MeService;
+
   private _submitting: boolean;
 
   constructor(
     routerService: Router,
     snackBarService: MatSnackBar,
-    authService: AuthService
+    authService: AuthService,
+    meService: MeService
   ) {
     this._routerService = routerService;
     this._snackBarService = snackBarService;
     this._authService = authService;
+    this._meService = meService;
 
     this._submitting = false;
   }
@@ -57,6 +62,7 @@ export class LoginPage {
             return of(null);
           }),
           tap(() => {
+            this._meService.fetchMe();
             this._snackBarService.open('Logged in.', undefined, {
               duration: SnackBarConfig.SUCCESS_DURATIONS,
             });

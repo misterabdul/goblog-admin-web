@@ -5,7 +5,7 @@ import {
   Router,
   UrlTree,
 } from '@angular/router';
-import { Observable, mergeMap, of } from 'rxjs';
+import { Observable, mergeMap, of, filter, map } from 'rxjs';
 
 import { MeService } from '../me.service';
 import { UserRoleLevel } from 'src/app/utils/user-roles.util';
@@ -28,6 +28,8 @@ export class SuperadminGuardService implements CanActivate, CanActivateChild {
 
   canActivate(): Observable<boolean | UrlTree> {
     return this._meService.getMe().pipe(
+      filter((meData) => meData !== false),
+      map((meData) => (meData === false ? null : meData)),
       mergeMap((meData) => {
         let isSuperAdmin = false as boolean;
         if (meData?.roles !== undefined)

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { filter, map } from 'rxjs';
 
 import { MeService } from 'src/app/services/me.service';
 import { UserDetailed } from 'src/app/types/user.type';
@@ -20,9 +21,15 @@ export class DefaultLayout implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this._meService.getMe().subscribe((meData) => {
-      this._meData = meData ?? null;
-    });
+    this._meService
+      .getMe()
+      .pipe(
+        filter((meData) => meData !== false),
+        map((meData) => (meData === false ? null : meData))
+      )
+      .subscribe((meData) => {
+        this._meData = meData ?? null;
+      });
   }
 
   get meData(): UserDetailed | null {
