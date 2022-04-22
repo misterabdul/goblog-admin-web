@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { DefaultLayout } from 'src/app/layouts/layouts.module';
-import { AuthGuardService } from 'src/app/services/guards/auth-guard.service';
-import { WriterGuardService } from 'src/app/services/guards/writer-guard.service';
 
 import { PostIndexPage } from './index/index.page';
 import { PostCreatePage } from './create/create.page';
@@ -16,7 +14,6 @@ const routes: Routes = [
   {
     path: 'post',
     component: DefaultLayout,
-    canActivate: [AuthGuardService, WriterGuardService],
     children: [
       { path: '', component: PostIndexPage },
       {
