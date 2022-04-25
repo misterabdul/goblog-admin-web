@@ -4,7 +4,7 @@ import { PostDetailed } from 'src/app/types/post.type';
 import { PostViewerComponent } from '../viewer/viewer.component';
 
 @Component({
-  selector: 'app-component-post-trash-viewer',
+  selector: 'app-component-post-viewer-trash',
   templateUrl: './viewer-trash.component.html',
   styleUrls: ['./viewer-trash.component.scss'],
 })

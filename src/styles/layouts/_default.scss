@@ -32,10 +32,10 @@
   }
 
   mat-sidenav-container > mat-sidenav {
-    position: fixed;
+    position: fixed !important;
     width: 300px;
-    top: 0;
-    bottom: 0;
+    top: 0 !important;
+    bottom: 0 !important;
     padding-top: 60px;
   }
 
