@@ -60,7 +60,7 @@ export class CategoryEditorComponent extends CategoryViewerComponent {
     }
   }
 
-  get category(): CategoryDetailed {
+  get category(): CategoryDetailed | null {
     return super.category;
   }
 

@@ -19,8 +19,8 @@ export class PostViewerComponent {
     this._post = post;
   }
 
-  get post(): PostDetailed {
-    return this._post!;
+  get post(): PostDetailed | null {
+    return this._post;
   }
 
   get selectedCategory(): string | null {

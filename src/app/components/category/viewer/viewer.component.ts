@@ -19,7 +19,7 @@ export class CategoryViewerComponent {
     this._category = category;
   }
 
-  get category(): CategoryDetailed {
-    return this._category!;
+  get category(): CategoryDetailed | null {
+    return this._category;
   }
 }

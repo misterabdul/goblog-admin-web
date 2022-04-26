@@ -15,11 +15,11 @@ export class CommentViewerComponent {
   }
 
   @Input()
-  set comment(comment: CommentDetailed) {
+  set comment(comment: CommentDetailed | null) {
     this._comment = comment;
   }
 
-  get comment(): CommentDetailed {
-    return this._comment!;
+  get comment(): CommentDetailed | null {
+    return this._comment;
   }
 }
