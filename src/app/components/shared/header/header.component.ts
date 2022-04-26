@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -11,42 +11,26 @@ import { AuthService } from 'src/app/services/auth.service';
 import { DarkModeService } from 'src/app/services/darkmode.service';
 import { MeService } from 'src/app/services/me.service';
 
+import { SharedHeaderLoginComponent } from '../header-login/header-login.component';
+
 @Component({
   selector: 'app-component-shared-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class SharedHeaderComponent implements AfterViewInit {
-  private _routerService: Router;
-  private _darkModeService: DarkModeService;
+export class SharedHeaderComponent extends SharedHeaderLoginComponent {
   private _logoutDialog: MatDialog;
-
-  private _isDarkMode: boolean;
-  private _navItems: Array<Menu>;
 
   constructor(
     routerService: Router,
+    snackBarService: MatSnackBar,
     darkModeService: DarkModeService,
     matDialog: MatDialog
   ) {
-    this._routerService = routerService;
-    this._darkModeService = darkModeService;
+    super(routerService, snackBarService, darkModeService);
     this._logoutDialog = matDialog;
 
-    this._isDarkMode = false;
     this._navItems = [new Menu('posts', '/post')];
-  }
-
-  ngAfterViewInit() {
-    this._darkModeService.darkModeSubject.subscribe({
-      next: (isDarkMode: boolean) => {
-        this._isDarkMode = isDarkMode;
-      },
-    });
-  }
-
-  public toggleDarkMode(): void {
-    this._darkModeService.toggleDarkMode();
   }
 
   public logout(): void {
@@ -63,14 +47,6 @@ export class SharedHeaderComponent implements AfterViewInit {
           logoutDialogSubscriber.unsubscribe();
         },
       });
-  }
-
-  get isDarkMode(): boolean {
-    return this._isDarkMode;
-  }
-
-  get navItems(): Array<Menu> {
-    return this._navItems;
   }
 }
 

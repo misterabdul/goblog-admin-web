@@ -1,44 +1,36 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 import { DarkModeService } from 'src/app/services/darkmode.service';
+import { SharedHeaderNotFoundComponent } from '../header-notfound/header-notfound.component';
 
 @Component({
   selector: 'app-component-shared-header-login',
   templateUrl: './header-login.component.html',
   styleUrls: ['./header-login.component.scss'],
 })
-export class SharedHeaderLoginComponent implements AfterViewInit {
-  private _darkModeService: DarkModeService;
+export class SharedHeaderLoginComponent extends SharedHeaderNotFoundComponent {
+  protected _navItems: Array<Menu>;
 
-  private _isDarkMode: boolean;
-  private _navItems: Array<Menu>;
+  constructor(
+    routerService: Router,
+    snackBarService: MatSnackBar,
+    darkModeService: DarkModeService
+  ) {
+    super(routerService, snackBarService, darkModeService);
 
-  constructor(darkModeService: DarkModeService) {
-    this._darkModeService = darkModeService;
+    this._isDarkMode = false as boolean;
+    this._isLoading = false as boolean;
 
-    this._isDarkMode = false;
-    this._navItems = [new Menu('register', '/register')];
-    this._navItems = [new Menu('login', '/login')];
-  }
-
-  ngAfterViewInit(): void {
-    this._darkModeService.darkModeSubject.subscribe({
-      next: (isDarkMode: boolean) => {
-        this._isDarkMode = isDarkMode;
-      },
-    });
-  }
-
-  get isDarkMode(): boolean {
-    return this._isDarkMode;
+    this._navItems = [
+      new Menu('register', '/register'),
+      new Menu('login', '/login'),
+    ];
   }
 
   get navItems(): Array<Menu> {
     return this._navItems;
-  }
-
-  public toggleDarkMode() {
-    this._darkModeService.toggleDarkMode();
   }
 }
 
