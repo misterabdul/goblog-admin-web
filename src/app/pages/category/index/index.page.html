@@ -1,32 +1,20 @@
 <h1>Categories</h1>
 <div class="table-content">
-  <mat-tab-group [selectedIndex]="selectedTabIndex">
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Categories</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-category-tab-active
-          [isLoading]="isLoadingActive"
-          [categories]="active"
-          (isDisplayed)="loadActive($event)"
-        ></app-component-category-tab-active>
-      </ng-template>
-    </mat-tab>
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Trash</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-category-tab-trash
-          [isLoading]="isLoadingTrash"
-          [categories]="trash"
-          (isDisplayed)="loadTrash($event)"
-        ></app-component-category-tab-trash>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+    <a
+      mat-tab-link
+      *ngFor="let tabLink of tabLinks; index as i"
+      (click)="navigate(tabLink.slug)"
+      [active]="activeLink === i"
+    >
+      {{tabLink.name}}
+    </a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
 </div>
+
 <div class="fab-container">
   <button
     mat-fab

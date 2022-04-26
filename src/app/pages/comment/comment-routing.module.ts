@@ -8,6 +8,17 @@ import { CommentShowPage } from './show/show.page';
 import { CommentDeletePage } from './delete/delete.page';
 import { CommentRestorePage } from './restore/restore.page';
 
+import { CommentTabCommentComponent } from 'src/app/components/comment/tab-comment/tab-comment.component';
+import { CommentTabTrashComponent } from 'src/app/components/comment/tab-trash/tab-trash.component';
+
+import {
+  CommentIndexTabCommentResolver,
+  CommentIndexTabTrashResolver,
+} from './index/index.resolver';
+import { CommentShowResolver } from './show/show.resolver';
+import { CommentDeleteResolver } from './delete/delete.resolver';
+import { CommentRestoreResolver } from './restore/restore.resolver';
+
 const routes: Routes = [
   {
     path: 'comment',
@@ -16,18 +27,33 @@ const routes: Routes = [
       {
         path: '',
         component: CommentIndexPage,
+        children: [
+          {
+            path: '',
+            component: CommentTabCommentComponent,
+            resolve: { comments: CommentIndexTabCommentResolver },
+          },
+          {
+            path: 'trash',
+            component: CommentTabTrashComponent,
+            resolve: { comments: CommentIndexTabTrashResolver },
+          },
+        ],
       },
       {
         path: ':uid',
         component: CommentShowPage,
+        resolve: { comment: CommentShowResolver },
       },
       {
         path: ':uid/delete',
         component: CommentDeletePage,
+        resolve: { comment: CommentDeleteResolver },
       },
       {
         path: ':uid/restore',
         component: CommentRestorePage,
+        resolve: { comment: CommentRestoreResolver },
       },
     ],
   },

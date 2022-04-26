@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-
-import { CommentDetailed } from 'src/app/types/comment.type';
-import { CommentService } from 'src/app/services/comment.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-page-comment-index',
@@ -12,113 +9,51 @@ import { CommentService } from 'src/app/services/comment.service';
 })
 export class CommentIndexPage implements OnInit {
   private _routerService: Router;
-  private _activatedRouteService: ActivatedRoute;
-  private _commentService: CommentService;
 
-  private _comments: Array<CommentDetailed> | null;
-  private _isLoadingComments: boolean;
-  private _trash: Array<CommentDetailed> | null;
-  private _isLoadingTrash: boolean;
-  private _selectedTabIndex: number;
+  private _activeLink: number;
+  private _tabLinks: Array<TabLinks>;
 
-  constructor(
-    routerService: Router,
-    activatedRouteService: ActivatedRoute,
-    commentService: CommentService
-  ) {
+  constructor(routerService: Router) {
     this._routerService = routerService;
-    this._activatedRouteService = activatedRouteService;
-    this._commentService = commentService;
 
-    this._comments = null;
-    this._isLoadingComments = false;
-    this._trash = null;
-    this._isLoadingTrash = false;
-    this._selectedTabIndex = 0;
+    this._activeLink = -1;
+    this._tabLinks = [
+      new TabLinks('Active', '/comment'),
+      new TabLinks('Trash', '/comment/trash'),
+    ];
   }
 
-  public ngOnInit(): void {
-    this._activatedRouteService.queryParams.subscribe({
-      next: (params) => {
-        const tab = params?.tab ?? null;
-        switch (true) {
-          default:
-            break;
-          case tab === 'trash':
-            this._selectedTabIndex = 1;
-            break;
-        }
-      },
-    });
+  ngOnInit(): void {
+    this._activeLink = this._tabLinks.findIndex(
+      (tabLink) => tabLink.slug === this._routerService.url
+    );
+
+    this._routerService.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe({
+        next: (event) => {
+          if (event instanceof NavigationEnd) {
+            this._activeLink = this._tabLinks.findIndex(
+              (tabLink) => tabLink.slug === event.url
+            );
+          }
+        },
+      });
   }
 
-  private async changeRouteQuery(tabQuery: string): Promise<void> {
-    await this._routerService.navigate([], {
-      relativeTo: this._activatedRouteService,
-      queryParams: {
-        tab: tabQuery,
-      },
-      queryParamsHandling: 'merge',
-    });
+  public navigate(url: string) {
+    this._routerService.navigateByUrl(url);
   }
 
-  public loadComments(isCommentTabDisplayed: boolean) {
-    this.changeRouteQuery('comment');
-    if (this._comments === null && isCommentTabDisplayed) {
-      this._isLoadingComments = true;
-      this._commentService
-        .getComments()
-        .pipe(
-          finalize(() => {
-            this._isLoadingComments = false;
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this._comments = response?.data ?? null;
-          },
-          error: (error) => {},
-        });
-    }
+  get activeLink(): number {
+    return this._activeLink;
   }
 
-  public loadTrash(isTrashTabDisplayed: boolean) {
-    this.changeRouteQuery('trash');
-    if (this._trash === null && isTrashTabDisplayed) {
-      this._isLoadingTrash = true;
-      this._commentService
-        .getTrashed()
-        .pipe(
-          finalize(() => {
-            this._isLoadingTrash = false;
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this._trash = response?.data ?? null;
-          },
-          error: (error) => {},
-        });
-    }
+  get tabLinks(): Array<TabLinks> {
+    return this._tabLinks;
   }
+}
 
-  get comments(): Array<CommentDetailed> {
-    return this._comments!;
-  }
-
-  get isLoadingComments(): boolean {
-    return this._isLoadingComments;
-  }
-
-  get trash(): Array<CommentDetailed> {
-    return this._trash!;
-  }
-
-  get isLoadingTrash(): boolean {
-    return this._isLoadingTrash;
-  }
-
-  get selectedTabIndex(): number {
-    return this._selectedTabIndex;
-  }
+class TabLinks {
+  constructor(public name: string, public slug: string) {}
 }

@@ -1,9 +1,9 @@
 <h1>Delete Post</h1>
 <div class="viewer-content">
-  <app-component-post-trash-viewer
+  <app-component-post-viewer-trash
     [post]="post"
     [mode]="'delete'"
-    [submitting]="deleting"
+    [submitting]="submitting"
     (ngSubmit)="delete($event)"
-  ></app-component-post-trash-viewer>
+  ></app-component-post-viewer-trash>
 </div>

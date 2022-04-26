@@ -1,29 +1,16 @@
 <h1>Comments</h1>
 <div class="table-content">
-  <mat-tab-group [selectedIndex]="selectedTabIndex">
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Comments</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-comment-tab-comment
-          [isLoading]="isLoadingComments"
-          [comments]="comments"
-          (isDisplayed)="loadComments($event)"
-        ></app-component-comment-tab-comment>
-      </ng-template>
-    </mat-tab>
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Trash</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-comment-tab-trash
-          [isLoading]="isLoadingTrash"
-          [comments]="trash"
-          (isDisplayed)="loadTrash($event)"
-        ></app-component-comment-tab-trash>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+    <a
+      mat-tab-link
+      *ngFor="let tabLink of tabLinks; index as i"
+      (click)="navigate(tabLink.slug)"
+      [active]="activeLink === i"
+    >
+      {{tabLink.name}}
+    </a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
 </div>

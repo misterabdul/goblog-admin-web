@@ -11,7 +11,7 @@ import { Response } from 'src/app/types/response.type';
 import { CommentDetailed } from 'src/app/types/comment.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { CommentService } from 'src/app/services/comment.service';
-import { CommentShowPage } from '../show/show.page';
+import { CommonCommentModifierPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
@@ -19,44 +19,45 @@ import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dial
   templateUrl: './restore.page.html',
   styleUrls: ['./restore.page.scss'],
 })
-export class CommentRestorePage extends CommentShowPage {
-  private _routerService: Router;
-  private _dialogService: MatDialog;
-  private _restoring: boolean;
-
+export class CommentRestorePage extends CommonCommentModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
-    dialogService: MatDialog,
+    matDialogService: MatDialog,
     snackBarService: MatSnackBar,
     commentService: CommentService
   ) {
-    super(activatedRouteService, snackBarService, commentService);
-    this._routerService = routerService;
-    this._dialogService = dialogService;
-
-    this._restoring = false;
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      commentService
+    );
   }
 
   public restore(comment: CommentDetailed | undefined) {
-    if (!this._restoring && this._commentUid) {
-      const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
-        data: new BasicDialogData(
-          'Restore Comment',
-          'Are you sure to restore this comment ?',
-          'Restoring comment'
-        ),
-      });
+    if (!this._submitting && this._comment?.uid) {
+      const dialogRef = this._matDialogService.open(
+        SharedBasicDialogComponent,
+        {
+          data: new BasicDialogData(
+            'Restore Comment',
+            'Are you sure to restore this comment ?',
+            'Restoring comment'
+          ),
+        }
+      );
 
-      dialogRef.componentInstance.dialogResult
+      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
-                this._restoring = true;
+                this._submitting = true;
                 return this._commentService.submitRestoreComment(
-                  this._commentUid ?? ''
+                  this._comment?.uid ?? ''
                 );
               } else {
                 return of(false);
@@ -67,7 +68,6 @@ export class CommentRestorePage extends CommentShowPage {
         .subscribe({
           next: (result) => {
             if (result !== false) {
-              dialogRef.close();
               this._snackBarService.open('Comment restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
               });
@@ -81,8 +81,6 @@ export class CommentRestorePage extends CommentShowPage {
             }
           },
           error: (error) => {
-            this._restoring = false;
-            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -98,10 +96,12 @@ export class CommentRestorePage extends CommentShowPage {
             }
           },
         });
-    }
-  }
 
-  get restoring(): boolean {
-    return this._restoring;
+      dialogResultSubscriber.add(() => {
+        this._submitting = false;
+        dialogRef.close();
+        dialogResultSubscriber.unsubscribe();
+      });
+    }
   }
 }

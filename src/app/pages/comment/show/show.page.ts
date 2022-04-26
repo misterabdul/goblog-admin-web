@@ -1,81 +1,61 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { mergeMap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { CommentDetailed } from 'src/app/types/comment.type';
 import { CommentService } from 'src/app/services/comment.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-page-comment-show',
   templateUrl: './show.page.html',
   styleUrls: ['./show.page.scss'],
 })
-export class CommentShowPage implements AfterViewInit {
+export class CommentShowPage implements OnInit {
   protected _activatedRouteService: ActivatedRoute;
-  protected _snackBarService: MatSnackBar;
-  protected _commentService: CommentService;
-  protected _commentUid: string | null;
+
   protected _comment: CommentDetailed | null;
 
-  constructor(
-    activatedRouteService: ActivatedRoute,
-    snackBarService: MatSnackBar,
-    commentService: CommentService
-  ) {
+  constructor(activatedRouteService: ActivatedRoute) {
     this._activatedRouteService = activatedRouteService;
-    this._snackBarService = snackBarService;
-    this._commentService = commentService;
 
-    this._commentUid = null;
     this._comment = null;
   }
 
-  ngAfterViewInit(): void {
-    this._activatedRouteService.params
-      .pipe(
-        mergeMap((params) => {
-          if (typeof params['uid'] === 'string')
-            this._commentUid = params['uid'];
-          else this._commentUid = null;
-
-          return this._commentService.getComment(this._commentUid!);
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this._comment = response.data!;
-        },
-        error: (error) => {
-          if (error instanceof HttpErrorResponse) {
-            this._snackBarService.open(
-              'Failed to fetch comment.\n' +
-                (error.error?.message ?? 'Unknown error.'),
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          } else {
-            this._snackBarService.open(
-              'Failed to fetch comment.\nUnknown error.',
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          }
-        },
-      });
+  ngOnInit(): void {
+    this._comment = this._activatedRouteService.snapshot.data.comment;
   }
 
-  get commentUid(): string {
-    return this._commentUid!;
+  get comment(): CommentDetailed | null {
+    return this._comment;
+  }
+}
+
+export abstract class CommonCommentModifierPage extends CommentShowPage {
+  protected _routerService: Router;
+  protected _matDialogService: MatDialog;
+  protected _snackBarService: MatSnackBar;
+  protected _commentService: CommentService;
+
+  protected _submitting: boolean;
+
+  constructor(
+    activatedRouteService: ActivatedRoute,
+    routerService: Router,
+    matDialogService: MatDialog,
+    snackBarService: MatSnackBar,
+    commentService: CommentService
+  ) {
+    super(activatedRouteService);
+    this._routerService = routerService;
+    this._matDialogService = matDialogService;
+    this._snackBarService = snackBarService;
+    this._commentService = commentService;
+
+    this._submitting = false as boolean;
   }
 
-  get comment(): CommentDetailed {
-    return this._comment!;
+  get submitting(): boolean {
+    return this._submitting;
   }
 }

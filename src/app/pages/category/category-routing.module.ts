@@ -9,6 +9,17 @@ import { CategoryShowPage } from './show/show.page';
 import { CategoryUpdatePage } from './update/update.page';
 import { CategoryDeletePage } from './delete/delete.page';
 import { CategoryRestorePage } from './restore/restore.page';
+import { CategoryTabActiveComponent } from 'src/app/components/category/tab-active/tab-active.component';
+import { CategoryTabTrashComponent } from 'src/app/components/category/tab-trash/tab-trash.component';
+
+import {
+  CategoryIndexTabCategoryResolver,
+  CategoryIndexTabTrashResolver,
+} from './index/index.resolver';
+import { CategoryShowResolver } from './show/show.resolver';
+import { CategoryUpdateResolver } from './update/update.resolver';
+import { CategoryRestoreResolver } from './restore/restore.resolver';
+import { CategoryDeleteResolver } from './delete/delete.resolver';
 
 const routes: Routes = [
   {
@@ -18,6 +29,18 @@ const routes: Routes = [
       {
         path: '',
         component: CategoryIndexPage,
+        children: [
+          {
+            path: '',
+            component: CategoryTabActiveComponent,
+            resolve: { categories: CategoryIndexTabCategoryResolver },
+          },
+          {
+            path: 'trash',
+            component: CategoryTabTrashComponent,
+            resolve: { categories: CategoryIndexTabTrashResolver },
+          },
+        ],
       },
       {
         path: 'create',
@@ -26,18 +49,22 @@ const routes: Routes = [
       {
         path: ':uid',
         component: CategoryShowPage,
+        resolve: { category: CategoryShowResolver },
       },
       {
         path: ':uid/update',
         component: CategoryUpdatePage,
+        resolve: { category: CategoryUpdateResolver },
       },
       {
         path: ':uid/delete',
         component: CategoryDeletePage,
+        resolve: { category: CategoryDeleteResolver },
       },
       {
         path: ':uid/restore',
         component: CategoryRestorePage,
+        resolve: { category: CategoryRestoreResolver },
       },
     ],
   },

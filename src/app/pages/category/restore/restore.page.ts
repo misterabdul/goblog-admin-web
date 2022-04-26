@@ -10,7 +10,7 @@ import { CategoryService } from 'src/app/services/category.service';
 import { Response } from 'src/app/types/response.type';
 import { CategoryDetailed } from 'src/app/types/category.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
-import { CategoryShowPage } from '../show/show.page';
+import { CommonCategoryModifierPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
@@ -18,44 +18,45 @@ import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dial
   templateUrl: './restore.page.html',
   styleUrls: ['./restore.page.scss'],
 })
-export class CategoryRestorePage extends CategoryShowPage {
-  private _routerService: Router;
-  private _dialogService: MatDialog;
-  private _restoring: boolean;
-
+export class CategoryRestorePage extends CommonCategoryModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
-    dialogService: MatDialog,
+    matDialogService: MatDialog,
     snackBarService: MatSnackBar,
     categoryService: CategoryService
   ) {
-    super(activatedRouteService, snackBarService, categoryService);
-    this._routerService = routerService;
-    this._dialogService = dialogService;
-
-    this._restoring = false;
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      categoryService
+    );
   }
 
   public restore(category: CategoryDetailed | undefined) {
-    if (!this._restoring && this._categoryUid) {
-      const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
-        data: new BasicDialogData(
-          'Restore Category',
-          'Are you sure to restore this category ?',
-          'Restoring category'
-        ),
-      });
+    if (!this._submitting && this._category?.uid) {
+      const dialogRef = this._matDialogService.open(
+        SharedBasicDialogComponent,
+        {
+          data: new BasicDialogData(
+            'Restore Category',
+            'Are you sure to restore this category ?',
+            'Restoring category'
+          ),
+        }
+      );
 
-      dialogRef.componentInstance.dialogResult
+      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
-                this._restoring = true;
+                this._submitting = true;
                 return this._categoryService.submitRestoreCategory(
-                  this._categoryUid ?? ''
+                  this._category?.uid ?? ''
                 );
               } else {
                 return of(false);
@@ -80,7 +81,6 @@ export class CategoryRestorePage extends CategoryShowPage {
             }
           },
           error: (error) => {
-            this._restoring = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
@@ -97,10 +97,11 @@ export class CategoryRestorePage extends CategoryShowPage {
             }
           },
         });
-    }
-  }
 
-  get restoring(): boolean {
-    return this._restoring;
+      dialogResultSubscriber.add(() => {
+        this._submitting = false;
+        dialogResultSubscriber.unsubscribe();
+      });
+    }
   }
 }

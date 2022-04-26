@@ -1,11 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { throwError } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { UserService } from 'src/app/services/user.service';
 import { UserDetailed } from 'src/app/types/user.type';
 
@@ -14,69 +11,51 @@ import { UserDetailed } from 'src/app/types/user.type';
   templateUrl: './show.page.html',
   styleUrls: ['./show.page.scss'],
 })
-export class UserShowPage implements AfterViewInit {
+export class UserShowPage implements OnInit {
   protected _activatedRouteService: ActivatedRoute;
-  protected _snackBarService: MatSnackBar;
-  protected _userService: UserService;
-  protected _userUid: string | null;
+
   protected _user: UserDetailed | null;
 
-  constructor(
-    activatedRouteService: ActivatedRoute,
-    snackBarService: MatSnackBar,
-    userService: UserService
-  ) {
+  constructor(activatedRouteService: ActivatedRoute) {
     this._activatedRouteService = activatedRouteService;
-    this._snackBarService = snackBarService;
-    this._userService = userService;
 
-    this._userUid = null;
     this._user = null;
   }
 
-  public ngAfterViewInit(): void {
-    this._activatedRouteService.params
-      .pipe(
-        mergeMap((params) => {
-          if (typeof params['uid'] === 'string') {
-            this._userUid = params['uid'];
-            return this._userService.getUser(this._userUid);
-          }
-          return throwError(new Error("couldn't find id route parameter"));
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this._user = response.data!;
-        },
-        error: (error) => {
-          if (error instanceof HttpErrorResponse) {
-            this._snackBarService.open(
-              'Failed to fetch user.\n' +
-                (error.error?.message ?? 'Unknown error.'),
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          } else {
-            this._snackBarService.open(
-              'Failed to fetch user.\nUnknown error.',
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          }
-        },
-      });
+  public ngOnInit(): void {
+    this._user = this._activatedRouteService.snapshot.data.user;
   }
 
-  get userUid(): string {
-    return this._userUid!;
+  get user(): UserDetailed | null {
+    return this._user;
+  }
+}
+
+export abstract class CommonUserModifierPage extends UserShowPage {
+  protected _routerService: Router;
+  protected _matDialogService: MatDialog;
+  protected _snackBarService: MatSnackBar;
+  protected _userService: UserService;
+
+  protected _submitting: boolean;
+
+  constructor(
+    activatedRouteService: ActivatedRoute,
+    routerService: Router,
+    matDialogService: MatDialog,
+    snackBarService: MatSnackBar,
+    userService: UserService
+  ) {
+    super(activatedRouteService);
+    this._routerService = routerService;
+    this._matDialogService = matDialogService;
+    this._snackBarService = snackBarService;
+    this._userService = userService;
+
+    this._submitting = false as boolean;
   }
 
-  get user(): UserDetailed {
-    return this._user!;
+  get submitting(): boolean {
+    return this._submitting;
   }
 }

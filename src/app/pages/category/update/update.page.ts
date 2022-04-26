@@ -1,39 +1,41 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { CategoryService } from 'src/app/services/category.service';
 import { CategoryFormData } from 'src/app/types/category.type';
-import { CategoryShowPage } from '../show/show.page';
+import { CommonCategoryModifierPage } from '../show/show.page';
 
 @Component({
   selector: 'app-page-category-update',
   templateUrl: './update.page.html',
   styleUrls: ['./update.page.scss'],
 })
-export class CategoryUpdatePage extends CategoryShowPage {
-  private _routerService: Router;
-  private _updating: boolean;
-
+export class CategoryUpdatePage extends CommonCategoryModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
+    matDialogService: MatDialog,
     snackBarService: MatSnackBar,
     categoryService: CategoryService
   ) {
-    super(activatedRouteService, snackBarService, categoryService);
-    this._routerService = routerService;
-
-    this._updating = false;
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      categoryService
+    );
   }
 
   public update(category: CategoryFormData | undefined) {
-    if (!this._updating && category && this._categoryUid) {
-      this._updating = true;
-      this._categoryService
-        .submitUpdateCategory(this._categoryUid, category)
+    if (!this._submitting && category && this._category?.uid) {
+      this._submitting = true;
+      const submitUpdateCategorySubscriber = this._categoryService
+        .submitUpdateCategory(this._category.uid, category)
         .subscribe({
           next: (response) => {
             this._snackBarService.open('Category updated.', undefined, {
@@ -44,7 +46,6 @@ export class CategoryUpdatePage extends CategoryShowPage {
             }, 100);
           },
           error: (error) => {
-            this._updating = false;
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -60,10 +61,11 @@ export class CategoryUpdatePage extends CategoryShowPage {
             }
           },
         });
-    }
-  }
 
-  get updating(): boolean {
-    return this._updating;
+      submitUpdateCategorySubscriber.add(() => {
+        this._submitting = false;
+        submitUpdateCategorySubscriber.unsubscribe();
+      });
+    }
   }
 }

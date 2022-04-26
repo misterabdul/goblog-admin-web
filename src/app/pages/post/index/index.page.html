@@ -1,43 +1,18 @@
 <h1>Posts</h1>
 <div class="table-content">
-  <mat-tab-group [selectedIndex]="selectedTabIndex">
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Draft</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-post-tab-draft
-          [isLoading]="isLoadingDraft"
-          [posts]="draft"
-          (isDisplayed)="loadDraft($event)"
-        ></app-component-post-tab-draft>
-      </ng-template>
-    </mat-tab>
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Published</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-post-tab-published
-          [isLoading]="isLoadingPublished"
-          [posts]="published"
-          (isDisplayed)="loadPublished($event)"
-        ></app-component-post-tab-published>
-      </ng-template>
-    </mat-tab>
-    <mat-tab>
-      <ng-template matTabLabel>
-        <span>Trash</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <app-component-post-tab-trash
-          [isLoading]="isLoadingTrash"
-          [posts]="trash"
-          (isDisplayed)="loadTrash($event)"
-        ></app-component-post-tab-trash>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+    <a
+      mat-tab-link
+      *ngFor="let tabLink of tabLinks; index as i"
+      (click)="navigate(tabLink.slug)"
+      [active]="activeLink === i"
+    >
+      {{tabLink.name}}
+    </a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
 </div>
 <div class="fab-container">
   <button

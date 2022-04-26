@@ -1,10 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { mergeMap, throwError } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { CategoryService } from 'src/app/services/category.service';
 import { CategoryDetailed } from 'src/app/types/category.type';
 
@@ -13,69 +11,51 @@ import { CategoryDetailed } from 'src/app/types/category.type';
   templateUrl: './show.page.html',
   styleUrls: ['./show.page.scss'],
 })
-export class CategoryShowPage implements AfterViewInit {
+export class CategoryShowPage implements OnInit {
   protected _activatedRouteService: ActivatedRoute;
-  protected _snackBarService: MatSnackBar;
-  protected _categoryService: CategoryService;
-  protected _categoryUid: string | null;
+
   protected _category: CategoryDetailed | null;
 
-  constructor(
-    activatedRouteService: ActivatedRoute,
-    snackBarService: MatSnackBar,
-    categoryService: CategoryService
-  ) {
+  constructor(activatedRouteService: ActivatedRoute) {
     this._activatedRouteService = activatedRouteService;
-    this._snackBarService = snackBarService;
-    this._categoryService = categoryService;
 
-    this._categoryUid = null;
     this._category = null;
   }
 
-  ngAfterViewInit(): void {
-    this._activatedRouteService.params
-      .pipe(
-        mergeMap((params) => {
-          if (typeof params['uid'] === 'string') {
-            this._categoryUid = params['uid'];
-            return this._categoryService.getCategory(this._categoryUid);
-          }
-          return throwError(new Error("couldn't find id route parameter"));
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this._category = response.data!;
-        },
-        error: (error) => {
-          if (error instanceof HttpErrorResponse) {
-            this._snackBarService.open(
-              'Failed to fetch category.\n' +
-                (error.error?.message ?? 'Unknown error.'),
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          } else {
-            this._snackBarService.open(
-              'Failed to fetch category.\nUnknown error.',
-              undefined,
-              {
-                duration: SnackBarConfig.ERROR_DURATIONS,
-              }
-            );
-          }
-        },
-      });
+  ngOnInit(): void {
+    this._category = this._activatedRouteService.snapshot.data.category;
   }
 
-  get categoryUid(): string {
-    return this._categoryUid!;
+  get category(): CategoryDetailed | null {
+    return this._category;
+  }
+}
+
+export abstract class CommonCategoryModifierPage extends CategoryShowPage {
+  protected _routerService: Router;
+  protected _matDialogService: MatDialog;
+  protected _snackBarService: MatSnackBar;
+  protected _categoryService: CategoryService;
+
+  protected _submitting: boolean;
+
+  constructor(
+    activatedRouteService: ActivatedRoute,
+    routerService: Router,
+    matDialogService: MatDialog,
+    snackBarService: MatSnackBar,
+    categoryService: CategoryService
+  ) {
+    super(activatedRouteService);
+    this._routerService = routerService;
+    this._matDialogService = matDialogService;
+    this._snackBarService = snackBarService;
+    this._categoryService = categoryService;
+
+    this._submitting = false as boolean;
   }
 
-  get category(): CategoryDetailed {
-    return this._category!;
+  get submitting(): boolean {
+    return this._submitting;
   }
 }

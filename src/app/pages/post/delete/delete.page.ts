@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ObservableInput, of } from 'rxjs';
-import { finalize, mergeMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
@@ -12,7 +12,7 @@ import { Response } from 'src/app/types/response.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { PostDetailed } from 'src/app/types/post.type';
 import { PostService } from 'src/app/services/post.service';
-import { PostShowPage } from '../show/show.page';
+import { CommonPostModifierPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
@@ -20,11 +20,7 @@ import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dial
   templateUrl: './delete.page.html',
   styleUrls: ['./delete.page.scss'],
 })
-export class PostDeletePage extends PostShowPage {
-  private _routerService: Router;
-  private _matDialogService: MatDialog;
-  private _deleting: boolean;
-
+export class PostDeletePage extends CommonPostModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
@@ -32,15 +28,17 @@ export class PostDeletePage extends PostShowPage {
     snackBarService: MatSnackBar,
     postService: PostService
   ) {
-    super(activatedRouteService, snackBarService, postService);
-    this._routerService = routerService;
-    this._matDialogService = matDialogService;
-
-    this._deleting = false;
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      postService
+    );
   }
 
   public delete(post: PostDetailed | undefined) {
-    if (!this._deleting && this._postUid) {
+    if (!this._submitting && this._post?.uid) {
       const dialogRef = this._matDialogService.open(
         SharedBasicDialogComponent,
         {
@@ -52,27 +50,25 @@ export class PostDeletePage extends PostShowPage {
         }
       );
 
-      dialogRef.componentInstance.dialogResult
+      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
-                this._deleting = true;
-                return this._postService.submitDeletePost(this._postUid ?? '');
+                this._submitting = true;
+                return this._postService.submitDeletePost(
+                  this._post?.uid ?? ''
+                );
               } else {
                 return of(false);
               }
             }
-          ),
-          finalize(() => {
-            this._deleting = false;
-          })
+          )
         )
         .subscribe({
           next: (result) => {
             if (result !== false) {
-              dialogRef.close();
               this._snackBarService.open('Post deleted.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
               });
@@ -82,7 +78,6 @@ export class PostDeletePage extends PostShowPage {
             }
           },
           error: (error) => {
-            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -98,10 +93,12 @@ export class PostDeletePage extends PostShowPage {
             }
           },
         });
-    }
-  }
 
-  get deleting(): boolean {
-    return this._deleting;
+      dialogResultSubscriber.add(() => {
+        this._submitting = false;
+        dialogRef.close();
+        dialogResultSubscriber.unsubscribe();
+      });
+    }
   }
 }

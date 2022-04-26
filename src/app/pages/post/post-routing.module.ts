@@ -10,12 +10,46 @@ import { PostUpdatePage } from './update/update.page';
 import { PostDeletePage } from './delete/delete.page';
 import { PostRestorePage } from './restore/restore.page';
 
+import { PostTabDraftComponent } from 'src/app/components/post/tab-draft/tab-draft.component';
+import { PostTabPublishedComponent } from 'src/app/components/post/tab-published/tab-published.component';
+import { PostTabTrashComponent } from 'src/app/components/post/tab-trash/tab-trash.component';
+
+import {
+  IndexTabDraftResolver,
+  IndexTabPublishedResolver,
+  IndexTabTrashResolver,
+} from './index/index.resolver';
+import { PostShowResolver } from './show/show.resolver';
+import { PostUpdateResolver } from './update/update.resolver';
+import { PostDeleteResolver } from './delete/delete.resolver';
+import { PostRestoreResolver } from './restore/restore.resolver';
+
 const routes: Routes = [
   {
     path: 'post',
     component: DefaultLayout,
     children: [
-      { path: '', component: PostIndexPage },
+      {
+        path: '',
+        component: PostIndexPage,
+        children: [
+          {
+            path: '',
+            component: PostTabDraftComponent,
+            resolve: { posts: IndexTabDraftResolver },
+          },
+          {
+            path: 'published',
+            component: PostTabPublishedComponent,
+            resolve: { posts: IndexTabPublishedResolver },
+          },
+          {
+            path: 'trash',
+            component: PostTabTrashComponent,
+            resolve: { posts: IndexTabTrashResolver },
+          },
+        ],
+      },
       {
         path: 'create',
         component: PostCreatePage,
@@ -23,18 +57,22 @@ const routes: Routes = [
       {
         path: ':uid',
         component: PostShowPage,
+        resolve: { post: PostShowResolver },
       },
       {
         path: ':uid/update',
         component: PostUpdatePage,
+        resolve: { post: PostUpdateResolver },
       },
       {
         path: ':uid/delete',
         component: PostDeletePage,
+        resolve: { post: PostDeleteResolver },
       },
       {
         path: ':uid/restore',
         component: PostRestorePage,
+        resolve: { post: PostRestoreResolver },
       },
     ],
   },

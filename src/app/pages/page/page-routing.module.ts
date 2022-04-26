@@ -10,28 +10,69 @@ import { PageUpdatePage } from './update/update.page';
 import { PageDeletePage } from './delete/delete.page';
 import { PageRestorePage } from './restore/restore.page';
 
+import { PageTabDraftComponent } from 'src/app/components/page/tab-draft/tab-draft.component';
+import { PageTabPublishedComponent } from 'src/app/components/page/tab-published/tab-published.component';
+import { PageTabTrashComponent } from 'src/app/components/page/tab-trash/tab-trash.component';
+
+import {
+  PageIndexTabDraftResolver,
+  PageIndexTabPublishedResolver,
+  PageIndexTabTrashResolver,
+} from './index/index.resolver';
+import { PageShowResolver } from './show/show.resolver';
+import { PageUpdateResolver } from './update/update.resolver';
+import { PageDeleteResolver } from './delete/delete.resolver';
+import { PageRestoreResolver } from './restore/restore.resolver';
+
 const routes: Routes = [
   {
     path: 'page',
     component: DefaultLayout,
     children: [
-      { path: '', component: PageIndexPage },
+      {
+        path: '',
+        component: PageIndexPage,
+        children: [
+          {
+            path: '',
+            component: PageTabDraftComponent,
+            resolve: { pages: PageIndexTabDraftResolver },
+          },
+          {
+            path: 'published',
+            component: PageTabPublishedComponent,
+            resolve: { pages: PageIndexTabPublishedResolver },
+          },
+          {
+            path: 'trash',
+            component: PageTabTrashComponent,
+            resolve: { pages: PageIndexTabTrashResolver },
+          },
+        ],
+      },
       {
         path: 'create',
         component: PageCreatePage,
       },
-      { path: ':uid', component: PageShowPage },
+      {
+        path: ':uid',
+        component: PageShowPage,
+        resolve: { page: PageShowResolver },
+      },
       {
         path: ':uid/update',
         component: PageUpdatePage,
+        resolve: { page: PageUpdateResolver },
       },
       {
         path: ':uid/delete',
         component: PageDeletePage,
+        resolve: { page: PageDeleteResolver },
       },
       {
         path: ':uid/restore',
         component: PageRestorePage,
+        resolve: { page: PageRestoreResolver },
       },
     ],
   },

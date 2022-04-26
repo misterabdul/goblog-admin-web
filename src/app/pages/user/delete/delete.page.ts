@@ -8,10 +8,10 @@ import { mergeMap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 import { Response } from 'src/app/types/response.type';
-import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { UserDetailed } from 'src/app/types/user.type';
+import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { UserService } from 'src/app/services/user.service';
-import { UserShowPage } from '../show/show.page';
+import { CommonUserModifierPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
@@ -19,43 +19,46 @@ import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dial
   templateUrl: './delete.page.html',
   styleUrls: ['./delete.page.scss'],
 })
-export class UserDeletePage extends UserShowPage {
-  private _routerService: Router;
-  private _dialogService: MatDialog;
-  private _deleting: boolean;
-
+export class UserDeletePage extends CommonUserModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
-    dialogService: MatDialog,
+    matDialogService: MatDialog,
     snackBarService: MatSnackBar,
     userService: UserService
   ) {
-    super(activatedRouteService, snackBarService, userService);
-    this._routerService = routerService;
-    this._dialogService = dialogService;
-
-    this._deleting = false;
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      userService
+    );
   }
 
   public delete(user: UserDetailed | undefined) {
-    if (!this._deleting && this._userUid) {
-      const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
-        data: new BasicDialogData(
-          'Delete User',
-          'Are you sure to delete this user ?',
-          'Deleting user'
-        ),
-      });
+    if (!this._submitting && this._user?.uid) {
+      const dialogRef = this._matDialogService.open(
+        SharedBasicDialogComponent,
+        {
+          data: new BasicDialogData(
+            'Delete User',
+            'Are you sure to delete this user ?',
+            'Deleting user'
+          ),
+        }
+      );
 
-      dialogRef.componentInstance.dialogResult
+      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
-                this._deleting = true;
-                return this._userService.submitDeleteUser(this._userUid ?? '');
+                this._submitting = true;
+                return this._userService.submitDeleteUser(
+                  this._user?.uid ?? ''
+                );
               } else {
                 return of(false);
               }
@@ -65,7 +68,6 @@ export class UserDeletePage extends UserShowPage {
         .subscribe({
           next: (result) => {
             if (result !== false) {
-              dialogRef.close();
               this._snackBarService.open('User deleted.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
               });
@@ -75,8 +77,6 @@ export class UserDeletePage extends UserShowPage {
             }
           },
           error: (error) => {
-            this._deleting = false;
-            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -92,10 +92,12 @@ export class UserDeletePage extends UserShowPage {
             }
           },
         });
-    }
-  }
 
-  get deleting(): boolean {
-    return this._deleting;
+      dialogResultSubscriber.add(() => {
+        this._submitting = false;
+        dialogRef.close();
+        dialogResultSubscriber.unsubscribe();
+      });
+    }
   }
 }

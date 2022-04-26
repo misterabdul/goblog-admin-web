@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-
-import { UserService } from 'src/app/services/user.service';
-import { UserDetailed } from 'src/app/types/user.type';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-page-user-index',
@@ -11,113 +8,52 @@ import { UserDetailed } from 'src/app/types/user.type';
   styleUrls: ['./index.page.scss'],
 })
 export class UserIndexPage implements OnInit {
-  private _active: Array<UserDetailed> | null;
-  private _isLoadingActive: boolean;
-  private _trash: Array<UserDetailed> | null;
-  private _isLoadingTrash: boolean;
-  private _selectedTabIndex: number;
-
   private _routerService: Router;
-  private _activatedRouteService: ActivatedRoute;
-  private _userService: UserService;
 
-  constructor(
-    routerService: Router,
-    activatedRouteService: ActivatedRoute,
-    userService: UserService
-  ) {
-    this._active = null;
-    this._isLoadingActive = true;
-    this._trash = null;
-    this._isLoadingTrash = true;
-    this._selectedTabIndex = 0;
+  private _activeLink: number;
+  private _tabLinks: Array<TabLinks>;
 
+  constructor(routerService: Router) {
     this._routerService = routerService;
-    this._activatedRouteService = activatedRouteService;
-    this._userService = userService;
+
+    this._activeLink = -1;
+    this._tabLinks = [
+      new TabLinks('Active', '/user'),
+      new TabLinks('Trash', '/user/trash'),
+    ];
   }
 
   ngOnInit(): void {
-    this._activatedRouteService.queryParams.subscribe({
-      next: (params) => {
-        const tab = params?.tab ?? null;
-        switch (true) {
-          default:
-            break;
-          case tab === 'trash':
-            this._selectedTabIndex = 1;
-            break;
-        }
-      },
-    });
+    this._activeLink = this._tabLinks.findIndex(
+      (tabLink) => tabLink.slug === this._routerService.url
+    );
+
+    this._routerService.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe({
+        next: (event) => {
+          if (event instanceof NavigationEnd) {
+            this._activeLink = this._tabLinks.findIndex(
+              (tabLink) => tabLink.slug === event.url
+            );
+          }
+        },
+      });
   }
 
-  private async changeRouteQuery(tabQuery: string): Promise<void> {
-    await this._routerService.navigate([], {
-      relativeTo: this._activatedRouteService,
-      queryParams: {
-        tab: tabQuery,
-      },
-      queryParamsHandling: 'merge',
-    });
+  public navigate(url: string) {
+    this._routerService.navigateByUrl(url);
   }
 
-  public loadActive(isActiveTabDisplayed: boolean) {
-    this.changeRouteQuery('active');
-    if (this._active === null && isActiveTabDisplayed) {
-      this._isLoadingActive = true;
-      this._userService
-        .getUsers()
-        .pipe(
-          finalize(() => {
-            this._isLoadingActive = false;
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this._active = response?.data ?? null;
-          },
-          error: (error) => {},
-        });
-    }
+  get activeLink(): number {
+    return this._activeLink;
   }
 
-  public loadTrash(isTrashTabDisplayed: boolean) {
-    this.changeRouteQuery('trash');
-    if (this._trash === null && isTrashTabDisplayed) {
-      this._isLoadingTrash = true;
-      this._userService
-        .getTrashed()
-        .pipe(
-          finalize(() => {
-            this._isLoadingTrash = false;
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this._trash = response?.data ?? null;
-          },
-        });
-    }
+  get tabLinks(): Array<TabLinks> {
+    return this._tabLinks;
   }
+}
 
-  get active(): Array<UserDetailed> {
-    return this._active!;
-  }
-
-  get isLoadingActive(): boolean {
-    return this._isLoadingActive;
-  }
-
-  get trash(): Array<UserDetailed> {
-    return this._trash!;
-  }
-
-  get isLoadingTrash(): boolean {
-    return this._isLoadingTrash;
-  }
-
-  get selectedTabIndex(): number {
-    return this._selectedTabIndex;
-  }
+class TabLinks {
+  constructor(public name: string, public slug: string) {}
 }

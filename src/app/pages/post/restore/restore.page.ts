@@ -12,7 +12,7 @@ import { Response } from 'src/app/types/response.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
 import { PostDetailed } from 'src/app/types/post.type';
 import { PostService } from 'src/app/services/post.service';
-import { PostShowPage } from '../show/show.page';
+import { CommonPostModifierPage, PostShowPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
@@ -20,11 +20,7 @@ import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dial
   templateUrl: './restore.page.html',
   styleUrls: ['./restore.page.scss'],
 })
-export class PostRestorePage extends PostShowPage {
-  private _routerService: Router;
-  private _matDialogService: MatDialog;
-  private _restoring: boolean;
-
+export class PostRestorePage extends CommonPostModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
@@ -32,15 +28,18 @@ export class PostRestorePage extends PostShowPage {
     snackBarService: MatSnackBar,
     postService: PostService
   ) {
-    super(activatedRouteService, snackBarService, postService);
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      postService
+    );
     this._routerService = routerService;
-    this._matDialogService = matDialogService;
-
-    this._restoring = false;
   }
 
   public restore(post: PostDetailed | undefined) {
-    if (!this._restoring && this._postUid) {
+    if (!this._submitting && this._post?.uid) {
       const dialogRef = this._matDialogService.open(
         SharedBasicDialogComponent,
         {
@@ -52,27 +51,25 @@ export class PostRestorePage extends PostShowPage {
         }
       );
 
-      dialogRef.componentInstance.dialogResult
+      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
-                this._restoring = true;
-                return this._postService.submitRestorePost(this._postUid ?? '');
+                this._submitting = true;
+                return this._postService.submitRestorePost(
+                  this._post?.uid ?? ''
+                );
               } else {
                 return of(false);
               }
             }
-          ),
-          finalize(() => {
-            this._restoring = false;
-          })
+          )
         )
         .subscribe({
           next: (result) => {
             if (result !== false) {
-              dialogRef.close();
               this._snackBarService.open('Post restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
               });
@@ -86,7 +83,6 @@ export class PostRestorePage extends PostShowPage {
             }
           },
           error: (error) => {
-            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -102,10 +98,12 @@ export class PostRestorePage extends PostShowPage {
             }
           },
         });
-    }
-  }
 
-  get restoring(): boolean {
-    return this._restoring;
+      dialogResultSubscriber.add(() => {
+        this._submitting = false;
+        dialogRef.close();
+        dialogResultSubscriber.unsubscribe();
+      });
+    }
   }
 }

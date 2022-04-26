@@ -10,7 +10,7 @@ import { CategoryService } from 'src/app/services/category.service';
 import { Response } from 'src/app/types/response.type';
 import { CategoryDetailed } from 'src/app/types/category.type';
 import { BasicDialogData } from 'src/app/types/dialog-data.type';
-import { CategoryShowPage } from '../show/show.page';
+import { CommonCategoryModifierPage } from '../show/show.page';
 import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dialog/basic-dialog.component';
 
 @Component({
@@ -18,44 +18,45 @@ import { SharedBasicDialogComponent } from 'src/app/components/shared/basic-dial
   templateUrl: './delete.page.html',
   styleUrls: ['./delete.page.scss'],
 })
-export class CategoryDeletePage extends CategoryShowPage {
-  private _routerService: Router;
-  private _dialogService: MatDialog;
-  private _deleting: boolean;
-
+export class CategoryDeletePage extends CommonCategoryModifierPage {
   constructor(
     activatedRouteService: ActivatedRoute,
     routerService: Router,
-    dialogService: MatDialog,
+    matDialogService: MatDialog,
     snackBarService: MatSnackBar,
     categoryService: CategoryService
   ) {
-    super(activatedRouteService, snackBarService, categoryService);
-    this._routerService = routerService;
-    this._dialogService = dialogService;
-
-    this._deleting = false;
+    super(
+      activatedRouteService,
+      routerService,
+      matDialogService,
+      snackBarService,
+      categoryService
+    );
   }
 
   public delete(category: CategoryDetailed | undefined) {
-    if (!this._deleting && this._categoryUid) {
-      const dialogRef = this._dialogService.open(SharedBasicDialogComponent, {
-        data: new BasicDialogData(
-          'Delete Category',
-          'Are you sure to delete this category ?',
-          'Deleting category'
-        ),
-      });
+    if (!this._submitting && this._category?.uid) {
+      const dialogRef = this._matDialogService.open(
+        SharedBasicDialogComponent,
+        {
+          data: new BasicDialogData(
+            'Delete Category',
+            'Are you sure to delete this category ?',
+            'Deleting category'
+          ),
+        }
+      );
 
-      dialogRef.componentInstance.dialogResult
+      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
               if (dialogResult === SharedBasicDialogComponent.RESULT_APPROVED) {
                 dialogRef.componentInstance.isProcessing = true;
-                this._deleting = true;
+                this._submitting = true;
                 return this._categoryService.submitDeleteCategory(
-                  this._categoryUid ?? ''
+                  this._category?.uid ?? ''
                 );
               } else {
                 return of(false);
@@ -66,7 +67,6 @@ export class CategoryDeletePage extends CategoryShowPage {
         .subscribe({
           next: (result) => {
             if (result !== false) {
-              dialogRef.close();
               this._snackBarService.open('Category deleted.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
               });
@@ -76,8 +76,6 @@ export class CategoryDeletePage extends CategoryShowPage {
             }
           },
           error: (error) => {
-            this._deleting = false;
-            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -93,10 +91,12 @@ export class CategoryDeletePage extends CategoryShowPage {
             }
           },
         });
-    }
-  }
 
-  get deleting(): boolean {
-    return this._deleting;
+      dialogResultSubscriber.add(() => {
+        this._submitting = false;
+        dialogRef.close();
+        dialogResultSubscriber.unsubscribe();
+      });
+    }
   }
 }
