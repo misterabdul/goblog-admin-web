@@ -1,10 +1,6 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { PostDetailed } from 'src/app/types/post.type';
 
 @Component({
@@ -12,41 +8,22 @@ import { PostDetailed } from 'src/app/types/post.type';
   templateUrl: './tab-draft.component.html',
   styleUrls: ['./tab-draft.component.scss'],
 })
-export class PostTabDraftComponent implements AfterViewInit {
-  private _isLoading: boolean;
+export class PostTabDraftComponent implements OnInit {
+  private _activatedRouteService: ActivatedRoute;
+
   private _posts: Array<PostDetailed> | null;
 
-  @Output()
-  public isDisplayed = new EventEmitter<boolean>();
+  constructor(activatedRouteService: ActivatedRoute) {
+    this._activatedRouteService = activatedRouteService;
 
-  constructor() {
-    this._isLoading = false;
     this._posts = null;
   }
 
-  ngAfterViewInit(): void {
-    this.isDisplayed.emit(true);
+  ngOnInit(): void {
+    this._posts = this._activatedRouteService.snapshot.data.posts ?? null;
   }
 
-  @Input()
-  set isLoading(isLoading: boolean) {
-    this._isLoading = isLoading;
-  }
-
-  @Input()
-  set posts(posts: Array<PostDetailed>) {
-    this._posts = posts;
-  }
-
-  get isLoading(): boolean {
-    return this._isLoading;
-  }
-
-  get posts(): Array<PostDetailed> {
-    return this._posts!;
-  }
-
-  get hasContents(): boolean {
-    return this._posts !== null;
+  get posts(): Array<PostDetailed> | null {
+    return this._posts;
   }
 }

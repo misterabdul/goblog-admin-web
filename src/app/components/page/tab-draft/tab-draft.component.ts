@@ -1,10 +1,5 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { PageDetailed } from 'src/app/types/page.type';
 
 @Component({
@@ -12,41 +7,22 @@ import { PageDetailed } from 'src/app/types/page.type';
   templateUrl: './tab-draft.component.html',
   styleUrls: ['./tab-draft.component.scss'],
 })
-export class PageTabDraftComponent implements AfterViewInit {
-  private _isLoading: boolean;
+export class PageTabDraftComponent implements OnInit {
+  private _activatedRouteService: ActivatedRoute;
+
   private _pages: Array<PageDetailed> | null;
 
-  @Output()
-  public isDisplayed = new EventEmitter<boolean>();
+  constructor(activatedRouteService: ActivatedRoute) {
+    this._activatedRouteService = activatedRouteService;
 
-  constructor() {
-    this._isLoading = false;
     this._pages = null;
   }
 
-  ngAfterViewInit(): void {
-    this.isDisplayed.emit(true);
-  }
-
-  @Input()
-  set isLoading(isLoading: boolean) {
-    this._isLoading = isLoading;
-  }
-
-  @Input()
-  set pages(pages: Array<PageDetailed>) {
-    this._pages = pages;
-  }
-
-  get isLoading(): boolean {
-    return this._isLoading;
+  ngOnInit(): void {
+    this._pages = this._activatedRouteService.snapshot.data.pages ?? null;
   }
 
   get pages(): Array<PageDetailed> {
     return this._pages!;
-  }
-
-  get hasContents(): boolean {
-    return this._pages !== null;
   }
 }

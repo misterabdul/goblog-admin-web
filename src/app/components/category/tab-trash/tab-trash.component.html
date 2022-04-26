@@ -1,16 +1,9 @@
-<div *ngIf="!isLoading; else loadingBar">
-  <div *ngIf="hasContents; else emptyContent">
-    <app-component-category-table
-      [categories]="categories"
-      [isTrash]="true"
-    ></app-component-category-table>
-  </div>
-  <ng-template #emptyContent>
-    <div class="spinner-container">Trash is empty.</div>
-  </ng-template>
+<div *ngIf="categories !== null; else emptyContent">
+  <app-component-category-table
+    [categories]="categories"
+    [isTrash]="true"
+  ></app-component-category-table>
 </div>
-<ng-template #loadingBar>
-  <div class="spinner-container">
-    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-  </div>
+<ng-template #emptyContent>
+  <div class="spinner-container">Trash is empty.</div>
 </ng-template>

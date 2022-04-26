@@ -1,10 +1,5 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { UserDetailed } from 'src/app/types/user.type';
 
@@ -13,41 +8,22 @@ import { UserDetailed } from 'src/app/types/user.type';
   templateUrl: './tab-active.component.html',
   styleUrls: ['./tab-active.component.scss'],
 })
-export class UserTabActiveComponent implements AfterViewInit {
-  private _isLoading: boolean;
+export class UserTabActiveComponent implements OnInit {
+  private _activatedRouteService: ActivatedRoute;
+
   private _users: Array<UserDetailed> | null;
 
-  @Output()
-  public isDisplayed = new EventEmitter<boolean>();
+  constructor(activatedRouteService: ActivatedRoute) {
+    this._activatedRouteService = activatedRouteService;
 
-  constructor() {
-    this._isLoading = false;
     this._users = null;
   }
 
-  ngAfterViewInit(): void {
-    this.isDisplayed.emit(true);
+  ngOnInit(): void {
+    this._users = this._activatedRouteService.snapshot.data.users ?? null;
   }
 
-  @Input()
-  set isLoading(isLoading: boolean) {
-    this._isLoading = isLoading;
-  }
-
-  @Input()
-  set users(users: Array<UserDetailed>) {
-    this._users = users;
-  }
-
-  get isLoading(): boolean {
-    return this._isLoading;
-  }
-
-  get users(): Array<UserDetailed> {
-    return this._users!;
-  }
-
-  get hasContents(): boolean {
-    return this._users !== null;
+  get users(): Array<UserDetailed> | null {
+    return this._users;
   }
 }
