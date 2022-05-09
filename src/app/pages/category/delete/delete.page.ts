@@ -48,7 +48,7 @@ export class CategoryDeletePage extends CommonCategoryModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -66,6 +66,8 @@ export class CategoryDeletePage extends CommonCategoryModifierPage {
         )
         .subscribe({
           next: (result) => {
+            this._submitting = false;
+            dialogRef.close();
             if (result !== false) {
               this._snackBarService.open('Category deleted.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -76,6 +78,8 @@ export class CategoryDeletePage extends CommonCategoryModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
+            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -91,12 +95,6 @@ export class CategoryDeletePage extends CommonCategoryModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogRef.close();
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

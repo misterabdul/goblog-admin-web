@@ -50,7 +50,7 @@ export class UserRestorePage extends CommonUserModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -68,6 +68,8 @@ export class UserRestorePage extends CommonUserModifierPage {
         )
         .subscribe({
           next: (result) => {
+            this._submitting = false;
+            dialogRef.close();
             if (result !== false) {
               this._snackBarService.open('User restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -82,6 +84,8 @@ export class UserRestorePage extends CommonUserModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
+            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -97,12 +101,6 @@ export class UserRestorePage extends CommonUserModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogRef.close();
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

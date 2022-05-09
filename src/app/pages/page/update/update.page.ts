@@ -34,35 +34,30 @@ export class PageUpdatePage extends CommonPageModifierPage {
   public update(page: PageFormData | undefined) {
     if (!this._submitting && page && this._page?.uid) {
       this._submitting = true;
-      const submitUpdatePageSubscriber = this._pageService
-        .submitUpdatePage(this._page.uid, page)
-        .subscribe({
-          next: (response) => {
-            this._snackBarService.open('Page updated.', undefined, {
-              duration: SnackBarConfig.SUCCESS_DURATIONS,
-            });
-            this._routerService.navigate(['/page']);
-          },
-          error: (error) => {
-            if (error instanceof HttpErrorResponse) {
-              this._snackBarService.open(
-                error.error?.message ?? 'Unknown error.',
-                undefined,
-                {
-                  duration: SnackBarConfig.ERROR_DURATIONS,
-                }
-              );
-            } else {
-              this._snackBarService.open('Unknown error.', undefined, {
+      this._pageService.submitUpdatePage(this._page.uid, page).subscribe({
+        next: (response) => {
+          this._submitting = false;
+          this._snackBarService.open('Page updated.', undefined, {
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
+          });
+          this._routerService.navigate(['/page']);
+        },
+        error: (error) => {
+          this._submitting = false;
+          if (error instanceof HttpErrorResponse) {
+            this._snackBarService.open(
+              error.error?.message ?? 'Unknown error.',
+              undefined,
+              {
                 duration: SnackBarConfig.ERROR_DURATIONS,
-              });
-            }
-          },
-        });
-
-      submitUpdatePageSubscriber.add(() => {
-        this._submitting = false;
-        submitUpdatePageSubscriber.unsubscribe();
+              }
+            );
+          } else {
+            this._snackBarService.open('Unknown error.', undefined, {
+              duration: SnackBarConfig.ERROR_DURATIONS,
+            });
+          }
+        },
       });
     }
   }

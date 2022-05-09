@@ -49,7 +49,7 @@ export class PageDeletePage extends CommonPageModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -67,6 +67,8 @@ export class PageDeletePage extends CommonPageModifierPage {
         )
         .subscribe({
           next: (result) => {
+            this._submitting = false;
+            dialogRef.close();
             if (result !== false) {
               this._snackBarService.open('Page deleted.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -77,6 +79,8 @@ export class PageDeletePage extends CommonPageModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
+            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -92,12 +96,6 @@ export class PageDeletePage extends CommonPageModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogRef.close();
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

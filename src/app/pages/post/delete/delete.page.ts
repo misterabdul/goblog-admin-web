@@ -50,7 +50,7 @@ export class PostDeletePage extends CommonPostModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -68,6 +68,8 @@ export class PostDeletePage extends CommonPostModifierPage {
         )
         .subscribe({
           next: (result) => {
+            this._submitting = false;
+            dialogRef.close();
             if (result !== false) {
               this._snackBarService.open('Post deleted.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -78,6 +80,8 @@ export class PostDeletePage extends CommonPostModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
+            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -93,12 +97,6 @@ export class PostDeletePage extends CommonPostModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogRef.close();
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

@@ -35,37 +35,32 @@ export class UserUpdatePage extends CommonUserModifierPage {
   public update(user: UserFormData | undefined) {
     if (!this._submitting && user && this._user?.uid) {
       this._submitting = true;
-      const submitUpdateUserSubscriber = this._userService
-        .submitUpdateUser(this._user.uid, user)
-        .subscribe({
-          next: (response) => {
-            this._snackBarService.open('User updated.', undefined, {
-              duration: SnackBarConfig.SUCCESS_DURATIONS,
-            });
-            setTimeout(() => {
-              this._routerService.navigate(['/user']);
-            }, 100);
-          },
-          error: (error) => {
-            if (error instanceof HttpErrorResponse) {
-              this._snackBarService.open(
-                error.error?.message ?? 'Unknown error.',
-                undefined,
-                {
-                  duration: SnackBarConfig.ERROR_DURATIONS,
-                }
-              );
-            } else {
-              this._snackBarService.open('Unknown error.', undefined, {
+      this._userService.submitUpdateUser(this._user.uid, user).subscribe({
+        next: (response) => {
+          this._submitting = false;
+          this._snackBarService.open('User updated.', undefined, {
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
+          });
+          setTimeout(() => {
+            this._routerService.navigate(['/user']);
+          }, 100);
+        },
+        error: (error) => {
+          this._submitting = false;
+          if (error instanceof HttpErrorResponse) {
+            this._snackBarService.open(
+              error.error?.message ?? 'Unknown error.',
+              undefined,
+              {
                 duration: SnackBarConfig.ERROR_DURATIONS,
-              });
-            }
-          },
-        });
-
-      submitUpdateUserSubscriber.add(() => {
-        this._submitting = false;
-        submitUpdateUserSubscriber.unsubscribe();
+              }
+            );
+          } else {
+            this._snackBarService.open('Unknown error.', undefined, {
+              duration: SnackBarConfig.ERROR_DURATIONS,
+            });
+          }
+        },
       });
     }
   }

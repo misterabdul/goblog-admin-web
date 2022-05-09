@@ -49,7 +49,7 @@ export class CommentRestorePage extends CommonCommentModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -67,6 +67,8 @@ export class CommentRestorePage extends CommonCommentModifierPage {
         )
         .subscribe({
           next: (result) => {
+            this._submitting = false;
+            dialogRef.close();
             if (result !== false) {
               this._snackBarService.open('Comment restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -81,6 +83,8 @@ export class CommentRestorePage extends CommonCommentModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
+            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -96,12 +100,6 @@ export class CommentRestorePage extends CommonCommentModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogRef.close();
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

@@ -48,7 +48,7 @@ export class CategoryRestorePage extends CommonCategoryModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -67,6 +67,7 @@ export class CategoryRestorePage extends CommonCategoryModifierPage {
         .subscribe({
           next: (result) => {
             if (result !== false) {
+              this._submitting = false;
               dialogRef.close();
               this._snackBarService.open('Category restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -81,6 +82,7 @@ export class CategoryRestorePage extends CommonCategoryModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
             dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
@@ -97,11 +99,6 @@ export class CategoryRestorePage extends CommonCategoryModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

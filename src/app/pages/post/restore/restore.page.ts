@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ObservableInput, of } from 'rxjs';
-import { finalize, mergeMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 import { SnackBarConfig } from 'src/app/configs/snackbar.config';
 
@@ -51,7 +51,7 @@ export class PostRestorePage extends CommonPostModifierPage {
         }
       );
 
-      const dialogResultSubscriber = dialogRef.componentInstance.dialogResult
+      dialogRef.componentInstance.dialogResult
         .pipe(
           mergeMap<number, ObservableInput<false | Response<any>>>(
             (dialogResult) => {
@@ -69,6 +69,8 @@ export class PostRestorePage extends CommonPostModifierPage {
         )
         .subscribe({
           next: (result) => {
+            this._submitting = false;
+            dialogRef.close();
             if (result !== false) {
               this._snackBarService.open('Post restored.', undefined, {
                 duration: SnackBarConfig.SUCCESS_DURATIONS,
@@ -83,6 +85,8 @@ export class PostRestorePage extends CommonPostModifierPage {
             }
           },
           error: (error) => {
+            this._submitting = false;
+            dialogRef.close();
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -98,12 +102,6 @@ export class PostRestorePage extends CommonPostModifierPage {
             }
           },
         });
-
-      dialogResultSubscriber.add(() => {
-        this._submitting = false;
-        dialogRef.close();
-        dialogResultSubscriber.unsubscribe();
-      });
     }
   }
 }

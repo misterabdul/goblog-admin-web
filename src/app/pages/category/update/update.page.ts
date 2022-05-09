@@ -34,10 +34,11 @@ export class CategoryUpdatePage extends CommonCategoryModifierPage {
   public update(category: CategoryFormData | undefined) {
     if (!this._submitting && category && this._category?.uid) {
       this._submitting = true;
-      const submitUpdateCategorySubscriber = this._categoryService
+      this._categoryService
         .submitUpdateCategory(this._category.uid, category)
         .subscribe({
           next: (response) => {
+            this._submitting = false;
             this._snackBarService.open('Category updated.', undefined, {
               duration: SnackBarConfig.SUCCESS_DURATIONS,
             });
@@ -46,6 +47,7 @@ export class CategoryUpdatePage extends CommonCategoryModifierPage {
             }, 100);
           },
           error: (error) => {
+            this._submitting = false;
             if (error instanceof HttpErrorResponse) {
               this._snackBarService.open(
                 error.error?.message ?? 'Unknown error.',
@@ -61,11 +63,6 @@ export class CategoryUpdatePage extends CommonCategoryModifierPage {
             }
           },
         });
-
-      submitUpdateCategorySubscriber.add(() => {
-        this._submitting = false;
-        submitUpdateCategorySubscriber.unsubscribe();
-      });
     }
   }
 }

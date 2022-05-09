@@ -35,35 +35,30 @@ export class PostUpdatePage extends CommonPostModifierPage {
   public update(post: PostFormData | undefined) {
     if (!this._submitting && post && this._post?.uid) {
       this._submitting = true;
-      const submitUpdatePostSubscriber = this._postService
-        .submitUpdatePost(this._post.uid, post)
-        .subscribe({
-          next: () => {
-            this._snackBarService.open('Draft saved.', undefined, {
-              duration: SnackBarConfig.SUCCESS_DURATIONS,
-            });
-            this._routerService.navigate(['/post']);
-          },
-          error: (error) => {
-            if (error instanceof HttpErrorResponse) {
-              this._snackBarService.open(
-                error.error?.message ?? 'Unknown error.',
-                undefined,
-                {
-                  duration: SnackBarConfig.ERROR_DURATIONS,
-                }
-              );
-            } else {
-              this._snackBarService.open('Unknown error.', undefined, {
+      this._postService.submitUpdatePost(this._post.uid, post).subscribe({
+        next: (response) => {
+          this._submitting = false;
+          this._snackBarService.open('Draft saved.', undefined, {
+            duration: SnackBarConfig.SUCCESS_DURATIONS,
+          });
+          this._routerService.navigate(['/post']);
+        },
+        error: (error) => {
+          this._submitting = false;
+          if (error instanceof HttpErrorResponse) {
+            this._snackBarService.open(
+              error.error?.message ?? 'Unknown error.',
+              undefined,
+              {
                 duration: SnackBarConfig.ERROR_DURATIONS,
-              });
-            }
-          },
-        });
-
-      submitUpdatePostSubscriber.add(() => {
-        this._submitting = false;
-        submitUpdatePostSubscriber.unsubscribe();
+              }
+            );
+          } else {
+            this._snackBarService.open('Unknown error.', undefined, {
+              duration: SnackBarConfig.ERROR_DURATIONS,
+            });
+          }
+        },
       });
     }
   }
