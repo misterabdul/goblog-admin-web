@@ -1,6 +1,6 @@
 <div *ngIf="comments !== null; else emptyContent">
   <app-component-comment-table
-    [comments]="comments"
+    [resources]="comments"
     [isTrash]="true"
   ></app-component-comment-table>
   <app-component-shared-table-paginator></app-component-shared-table-paginator>

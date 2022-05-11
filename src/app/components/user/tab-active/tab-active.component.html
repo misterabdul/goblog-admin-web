@@ -1,5 +1,5 @@
 <div *ngIf="users !== null; else emptyContent">
-  <app-component-user-table [users]="users"></app-component-user-table>
+  <app-component-user-table [resources]="users"></app-component-user-table>
   <app-component-shared-table-paginator></app-component-shared-table-paginator>
 </div>
 <ng-template #emptyContent>

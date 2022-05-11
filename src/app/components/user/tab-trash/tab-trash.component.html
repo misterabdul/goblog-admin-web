@@ -1,6 +1,6 @@
 <div *ngIf="users !== null; else emptyContent">
   <app-component-user-table
-    [users]="users"
+    [resources]="users"
     [isTrash]="true"
   ></app-component-user-table>
   <app-component-shared-table-paginator></app-component-shared-table-paginator>

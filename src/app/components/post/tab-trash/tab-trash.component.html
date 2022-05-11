@@ -1,6 +1,6 @@
 <div *ngIf="posts !== null; else emptyContent">
   <app-component-post-table
-    [posts]="posts"
+    [resources]="posts"
     [isTrash]="true"
   ></app-component-post-table>
   <app-component-shared-table-paginator></app-component-shared-table-paginator>
