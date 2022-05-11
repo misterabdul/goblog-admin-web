@@ -7,6 +7,7 @@ import { HttpConfig } from '../configs/http.config';
 
 import { Response } from '../types/response.type';
 import { UserDetailed, UserFormData } from '../types/user.type';
+import { ResourceStats } from '../types/resource-stats.type';
 import { AuthService, CommonAuthResourceService } from './auth.service';
 
 @Injectable({
@@ -17,19 +18,51 @@ export class UserService extends CommonAuthResourceService {
     super(httpClientService, authService);
   }
 
-  public getUsers(): Observable<Response<Array<UserDetailed>>> {
+  public getUsers(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<UserDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<UserDetailed>>>(
-        UrlConfig.users,
+        UrlConfig.users + '?' + this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );
   }
 
-  public getTrashed(): Observable<Response<Array<UserDetailed>>> {
+  public getUsersStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.usersStats + '?' + this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getTrashed(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<UserDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<UserDetailed>>>(
-        UrlConfig.users + '?type=trash',
+        UrlConfig.users + '?type=trash&' + this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getTrashedStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.usersStats +
+          '?type=trash&' +
+          this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );

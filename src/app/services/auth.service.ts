@@ -144,4 +144,8 @@ export abstract class CommonAuthResourceService {
       switchMap((authToken) => handler(authToken))
     );
   }
+
+  protected commonShowPageQuery(show?: number, page?: number): string {
+    return 'show=' + (show ?? 25) + '&page=' + (page ?? 1);
+  }
 }

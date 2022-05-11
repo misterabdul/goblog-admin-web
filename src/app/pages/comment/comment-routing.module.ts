@@ -13,7 +13,9 @@ import { CommentTabTrashComponent } from 'src/app/components/comment/tab-trash/t
 
 import {
   CommentIndexTabCommentResolver,
+  CommentIndexTabCommentStatsResolver,
   CommentIndexTabTrashResolver,
+  CommentIndexTabTrashStatsResolver,
 } from './index/index.resolver';
 import { CommentShowResolver } from './show/show.resolver';
 import { CommentDeleteResolver } from './delete/delete.resolver';
@@ -31,12 +33,20 @@ const routes: Routes = [
           {
             path: '',
             component: CommentTabCommentComponent,
-            resolve: { comments: CommentIndexTabCommentResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              comments: CommentIndexTabCommentResolver,
+              stats: CommentIndexTabCommentStatsResolver,
+            },
           },
           {
             path: 'trash',
             component: CommentTabTrashComponent,
-            resolve: { comments: CommentIndexTabTrashResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              comments: CommentIndexTabTrashResolver,
+              stats: CommentIndexTabTrashStatsResolver,
+            },
           },
         ],
       },

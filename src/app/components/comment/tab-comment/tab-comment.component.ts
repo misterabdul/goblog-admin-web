@@ -21,6 +21,12 @@ export class CommentTabCommentComponent implements OnInit {
 
   ngOnInit(): void {
     this._comments = this._activatedRouteService.snapshot.data.comments ?? null;
+
+    this._activatedRouteService.data.subscribe({
+      next: (data) => {
+        this._comments = data.comments;
+      },
+    });
   }
 
   get comments(): Array<CommentDetailed> | null {

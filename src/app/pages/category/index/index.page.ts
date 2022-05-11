@@ -25,7 +25,7 @@ export class CategoryIndexPage implements OnInit {
 
   ngOnInit(): void {
     this._activeLink = this._tabLinks.findIndex(
-      (tabLink) => tabLink.slug === this._routerService.url
+      (tabLink) => tabLink.slug === this._routerService.url.split('?')[0]
     );
 
     this._routerService.events
@@ -34,7 +34,7 @@ export class CategoryIndexPage implements OnInit {
         next: (event) => {
           if (event instanceof NavigationEnd) {
             this._activeLink = this._tabLinks.findIndex(
-              (tabLink) => tabLink.slug === event.url
+              (tabLink) => tabLink.slug === event.url.split('?')[0]
             );
           }
         },

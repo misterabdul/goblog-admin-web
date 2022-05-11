@@ -15,9 +15,12 @@ import { PostTabPublishedComponent } from 'src/app/components/post/tab-published
 import { PostTabTrashComponent } from 'src/app/components/post/tab-trash/tab-trash.component';
 
 import {
-  IndexTabDraftResolver,
-  IndexTabPublishedResolver,
-  IndexTabTrashResolver,
+  PostIndexTabDraftResolver,
+  PostIndexTabDraftStatsResolver,
+  PostIndexTabPublishedResolver,
+  PostIndexTabPublishedStatsResolver,
+  PostIndexTabTrashResolver,
+  PostIndexTabTrashStatsResolver,
 } from './index/index.resolver';
 import { PostShowResolver } from './show/show.resolver';
 import { PostUpdateResolver } from './update/update.resolver';
@@ -36,17 +39,29 @@ const routes: Routes = [
           {
             path: '',
             component: PostTabDraftComponent,
-            resolve: { posts: IndexTabDraftResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              posts: PostIndexTabDraftResolver,
+              stats: PostIndexTabDraftStatsResolver,
+            },
           },
           {
             path: 'published',
             component: PostTabPublishedComponent,
-            resolve: { posts: IndexTabPublishedResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              posts: PostIndexTabPublishedResolver,
+              stats: PostIndexTabPublishedStatsResolver,
+            },
           },
           {
             path: 'trash',
             component: PostTabTrashComponent,
-            resolve: { posts: IndexTabTrashResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              posts: PostIndexTabTrashResolver,
+              stats: PostIndexTabTrashStatsResolver,
+            },
           },
         ],
       },

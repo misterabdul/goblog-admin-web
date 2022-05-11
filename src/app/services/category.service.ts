@@ -7,6 +7,7 @@ import { UrlConfig } from '../configs/url.config';
 
 import { Response } from '../types/response.type';
 import { CategoryDetailed, CategoryFormData } from '../types/category.type';
+import { ResourceStats } from '../types/resource-stats.type';
 import { AuthService, CommonAuthResourceService } from './auth.service';
 
 @Injectable({
@@ -17,19 +18,53 @@ export class CategoryService extends CommonAuthResourceService {
     super(httpClientService, authService);
   }
 
-  public getCategories(): Observable<Response<Array<CategoryDetailed>>> {
+  public getCategories(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<CategoryDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<CategoryDetailed>>>(
-        UrlConfig.categories,
+        UrlConfig.categories + '?' + this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );
   }
 
-  public getTrashed(): Observable<Response<Array<CategoryDetailed>>> {
+  public getCategoriesStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.categoriesStats + '?' + this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getTrashed(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<CategoryDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<CategoryDetailed>>>(
-        UrlConfig.categories + '?type=trash',
+        UrlConfig.categories +
+          '?type=trash&' +
+          this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getTrashedStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.categoriesStats +
+          '?type=trash&' +
+          this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );

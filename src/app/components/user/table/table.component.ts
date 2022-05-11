@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as dayjs from 'dayjs';
 
 import { UserDetailed } from 'src/app/types/user.type';
@@ -8,14 +9,20 @@ import { UserDetailed } from 'src/app/types/user.type';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class UserTableComponent {
+export class UserTableComponent implements OnInit {
+  private _activatedRouteService: ActivatedRoute;
+
   private _isTrash: boolean;
   private _users: Array<UserDetailed> | null;
+  private _affix: number;
   private _displayedColumns: Array<String>;
 
-  constructor() {
+  constructor(activatedRouteService: ActivatedRoute) {
+    this._activatedRouteService = activatedRouteService;
+
     this._isTrash = false;
     this._users = null;
+    this._affix = 0;
     this._displayedColumns = [
       'no',
       'username',
@@ -25,6 +32,14 @@ export class UserTableComponent {
       'created-at',
       'action',
     ];
+  }
+
+  ngOnInit(): void {
+    this._activatedRouteService.queryParams.subscribe((queryParams) => {
+      const page = queryParams.page ?? 1;
+      const show = queryParams.show ?? 25;
+      this._affix = (page - 1) * show;
+    });
   }
 
   public properDate(rawDate: string): string {
@@ -62,6 +77,10 @@ export class UserTableComponent {
 
   get users(): Array<UserDetailed> {
     return this._users!;
+  }
+
+  get affix(): number {
+    return this._affix;
   }
 
   get displayedColumns(): Array<String> {

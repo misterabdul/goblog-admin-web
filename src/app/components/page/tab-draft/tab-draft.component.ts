@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { PageDetailed } from 'src/app/types/page.type';
 
 @Component({
@@ -20,6 +21,12 @@ export class PageTabDraftComponent implements OnInit {
 
   ngOnInit(): void {
     this._pages = this._activatedRouteService.snapshot.data.pages ?? null;
+
+    this._activatedRouteService.data.subscribe({
+      next: (data) => {
+        this._pages = data.pages;
+      },
+    });
   }
 
   get pages(): Array<PageDetailed> {

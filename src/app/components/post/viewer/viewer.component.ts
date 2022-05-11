@@ -24,6 +24,7 @@ export class PostViewerComponent {
   }
 
   get selectedCategory(): string | null {
-    return this._post?.categories![0].uid ?? null;
+    if (this._post?.categories) return this._post.categories[0].uid ?? null;
+    return null;
   }
 }

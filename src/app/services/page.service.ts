@@ -8,6 +8,7 @@ import { HttpConfig } from '../configs/http.config';
 import { Response } from '../types/response.type';
 import { PageDetailed, PageFormData } from '../types/page.type';
 import { AuthService, CommonAuthResourceService } from './auth.service';
+import { ResourceStats } from '../types/resource-stats.type';
 
 @Injectable({
   providedIn: 'root',
@@ -17,37 +18,105 @@ export class PageService extends CommonAuthResourceService {
     super(httpClientService, authService);
   }
 
-  public getPages(): Observable<Response<Array<PageDetailed>>> {
+  public getPages(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<PageDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<PageDetailed>>>(
-        UrlConfig.pages,
+        UrlConfig.pages + '?' + this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );
   }
 
-  public getDrafts(): Observable<Response<Array<PageDetailed>>> {
+  public getPagesStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
     return this.getAuthToken((authToken) =>
-      this._httpClientService.get<Response<Array<PageDetailed>>>(
-        UrlConfig.pages + '?type=draft',
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.pagesStats + '?' + this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );
   }
 
-  public getPublished(): Observable<Response<Array<PageDetailed>>> {
+  public getDrafts(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<PageDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<PageDetailed>>>(
-        UrlConfig.pages + '?type=published',
+        UrlConfig.pages + '?type=draft&' + this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );
   }
 
-  public getTrashed(): Observable<Response<Array<PageDetailed>>> {
+  public getDraftsStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.pagesStats +
+          '?type=draft&' +
+          this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getPublished(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<PageDetailed>>> {
     return this.getAuthToken((authToken) =>
       this._httpClientService.get<Response<Array<PageDetailed>>>(
-        UrlConfig.pages + '?type=trash',
+        UrlConfig.pages +
+          '?type=published&' +
+          this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getPublishedStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.pagesStats +
+          '?type=published&' +
+          this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getTrashed(
+    show?: number,
+    page?: number
+  ): Observable<Response<Array<PageDetailed>>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<Array<PageDetailed>>>(
+        UrlConfig.pages + '?type=trash&' + this.commonShowPageQuery(show, page),
+        HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
+      )
+    );
+  }
+
+  public getTrashedStats(
+    show?: number,
+    page?: number
+  ): Observable<Response<ResourceStats>> {
+    return this.getAuthToken((authToken) =>
+      this._httpClientService.get<Response<ResourceStats>>(
+        UrlConfig.pagesStats +
+          '?type=trash&' +
+          this.commonShowPageQuery(show, page),
         HttpConfig.getDefaultAuthenticatedOptions(authToken?.toString() ?? '')
       )
     );

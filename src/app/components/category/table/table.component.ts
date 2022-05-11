@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as dayjs from 'dayjs';
 
 import { CategoryDetailed } from 'src/app/types/category.type';
@@ -8,15 +9,29 @@ import { CategoryDetailed } from 'src/app/types/category.type';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class CategoryTableComponent {
+export class CategoryTableComponent implements OnInit {
+  private _activatedRouteService: ActivatedRoute;
+
   private _isTrash: boolean;
   private _categories: Array<CategoryDetailed> | null;
+  private _affix: number;
   private _displayedColumns: Array<String>;
 
-  constructor() {
+  constructor(activatedRouteService: ActivatedRoute) {
+    this._activatedRouteService = activatedRouteService;
+
     this._isTrash = false;
     this._categories = null;
+    this._affix = 0;
     this._displayedColumns = ['no', 'slug', 'name', 'created-at', 'action'];
+  }
+
+  ngOnInit(): void {
+    this._activatedRouteService.queryParams.subscribe((queryParams) => {
+      const page = queryParams.page ?? 1;
+      const show = queryParams.show ?? 25;
+      this._affix = (page - 1) * show;
+    });
   }
 
   public properDate(rawDate: string): string {
@@ -45,6 +60,10 @@ export class CategoryTableComponent {
 
   get categories(): Array<CategoryDetailed> {
     return this._categories!;
+  }
+
+  get affix(): number {
+    return this._affix;
   }
 
   get displayedColumns(): Array<String> {

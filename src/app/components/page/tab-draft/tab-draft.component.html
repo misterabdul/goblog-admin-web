@@ -1,5 +1,6 @@
 <div *ngIf="pages !== null; else emptyContent">
   <app-component-page-table [pages]="pages"></app-component-page-table>
+  <app-component-shared-table-paginator></app-component-shared-table-paginator>
 </div>
 <ng-template #emptyContent>
   <div class="spinner-container">No draft</div>

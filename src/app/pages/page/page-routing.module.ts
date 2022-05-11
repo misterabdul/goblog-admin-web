@@ -16,8 +16,11 @@ import { PageTabTrashComponent } from 'src/app/components/page/tab-trash/tab-tra
 
 import {
   PageIndexTabDraftResolver,
+  PageIndexTabDraftStatsResolver,
   PageIndexTabPublishedResolver,
+  PageIndexTabPublishedStatsResolver,
   PageIndexTabTrashResolver,
+  PageIndexTabTrashStatsResolver,
 } from './index/index.resolver';
 import { PageShowResolver } from './show/show.resolver';
 import { PageUpdateResolver } from './update/update.resolver';
@@ -36,17 +39,29 @@ const routes: Routes = [
           {
             path: '',
             component: PageTabDraftComponent,
-            resolve: { pages: PageIndexTabDraftResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              pages: PageIndexTabDraftResolver,
+              stats: PageIndexTabDraftStatsResolver,
+            },
           },
           {
             path: 'published',
             component: PageTabPublishedComponent,
-            resolve: { pages: PageIndexTabPublishedResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              pages: PageIndexTabPublishedResolver,
+              stats: PageIndexTabPublishedStatsResolver,
+            },
           },
           {
             path: 'trash',
             component: PageTabTrashComponent,
-            resolve: { pages: PageIndexTabTrashResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              pages: PageIndexTabTrashResolver,
+              stats: PageIndexTabTrashStatsResolver,
+            },
           },
         ],
       },

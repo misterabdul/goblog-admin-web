@@ -14,7 +14,9 @@ import { CategoryTabTrashComponent } from 'src/app/components/category/tab-trash
 
 import {
   CategoryIndexTabCategoryResolver,
+  CategoryIndexTabCategoryStatsResolver,
   CategoryIndexTabTrashResolver,
+  CategoryIndexTabTrashStatsResolver,
 } from './index/index.resolver';
 import { CategoryShowResolver } from './show/show.resolver';
 import { CategoryUpdateResolver } from './update/update.resolver';
@@ -33,12 +35,20 @@ const routes: Routes = [
           {
             path: '',
             component: CategoryTabActiveComponent,
-            resolve: { categories: CategoryIndexTabCategoryResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              categories: CategoryIndexTabCategoryResolver,
+              stats: CategoryIndexTabCategoryStatsResolver,
+            },
           },
           {
             path: 'trash',
             component: CategoryTabTrashComponent,
-            resolve: { categories: CategoryIndexTabTrashResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              categories: CategoryIndexTabTrashResolver,
+              stats: CategoryIndexTabTrashStatsResolver,
+            },
           },
         ],
       },

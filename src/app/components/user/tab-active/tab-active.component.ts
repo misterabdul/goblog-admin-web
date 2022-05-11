@@ -21,6 +21,12 @@ export class UserTabActiveComponent implements OnInit {
 
   ngOnInit(): void {
     this._users = this._activatedRouteService.snapshot.data.users ?? null;
+
+    this._activatedRouteService.data.subscribe({
+      next: (data) => {
+        this._users = data.users;
+      },
+    });
   }
 
   get users(): Array<UserDetailed> | null {

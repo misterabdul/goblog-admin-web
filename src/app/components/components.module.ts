@@ -18,6 +18,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MarkdownModule } from '@misterabdul/ngx-markdown';
 import { CodemirrorModule } from '@misterabdul/ngx-codemirror';
 
@@ -32,6 +33,7 @@ import { SharedContentMarkdownComponent } from './shared/content-markdown/conten
 import { SharedEditorMarkdownComponent } from './shared/editor-markdown/editor-markdown.component';
 import { SharedCloakComponent } from './shared/cloak/cloak.component';
 import { SharedBasicDialogComponent } from './shared/basic-dialog/basic-dialog.component';
+import { SharedTablePaginatorComponent } from './shared/table-paginator/table-paginator.component';
 
 import { LoginLoginFormComponent } from './login/login-form/login-form.component';
 
@@ -85,6 +87,7 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     SharedEditorMarkdownComponent,
     SharedCloakComponent,
     SharedBasicDialogComponent,
+    SharedTablePaginatorComponent,
 
     LoginLoginFormComponent,
 
@@ -149,6 +152,7 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     MatSnackBarModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    MatPaginatorModule,
     MatDialogModule,
   ],
   exports: [
@@ -160,6 +164,7 @@ import { UserViewerTrashComponent } from './user/viewer-trash/viewer-trash.compo
     SharedEditorMarkdownComponent,
     SharedCloakComponent,
     SharedBasicDialogComponent,
+    SharedTablePaginatorComponent,
 
     LoginLoginFormComponent,
 

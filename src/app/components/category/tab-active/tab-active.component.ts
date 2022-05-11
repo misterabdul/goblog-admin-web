@@ -22,6 +22,12 @@ export class CategoryTabActiveComponent implements OnInit {
   ngOnInit(): void {
     this._categories =
       this._activatedRouteService.snapshot.data.categories ?? null;
+
+    this._activatedRouteService.data.subscribe({
+      next: (data) => {
+        this._categories = data.categories;
+      },
+    });
   }
 
   get categories(): Array<CategoryDetailed> | null {

@@ -2,7 +2,7 @@
   <ng-container matColumnDef="no">
     <th class="text-center" mat-header-cell *matHeaderCellDef>No.</th>
     <td class="text-center" mat-cell *matCellDef="let page; let i = index">
-      {{ i + 1 }}
+      {{ affix + (i + 1) }}
     </td>
   </ng-container>
   <ng-container matColumnDef="title">

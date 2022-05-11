@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as dayjs from 'dayjs';
 
 import { PageDetailed } from 'src/app/types/page.type';
@@ -8,15 +9,29 @@ import { PageDetailed } from 'src/app/types/page.type';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class PageTableComponent {
+export class PageTableComponent implements OnInit {
+  private _activatedRouteService: ActivatedRoute;
+
   private _isTrash: boolean;
   private _pages: Array<PageDetailed> | null;
+  private _affix: number;
   private _displayedColumns: Array<String>;
 
-  constructor() {
+  constructor(activatedRouteService: ActivatedRoute) {
+    this._activatedRouteService = activatedRouteService;
+
     this._isTrash = false;
     this._pages = null;
+    this._affix = 0;
     this._displayedColumns = ['no', 'title', 'created-at', 'action'];
+  }
+
+  ngOnInit(): void {
+    this._activatedRouteService.queryParams.subscribe((queryParams) => {
+      const page = queryParams.page ?? 1;
+      const show = queryParams.show ?? 25;
+      this._affix = (page - 1) * show;
+    });
   }
 
   public properDate(rawDate: string): string {
@@ -54,6 +69,10 @@ export class PageTableComponent {
 
   get pages(): Array<PageDetailed> {
     return this._pages!;
+  }
+
+  get affix(): number {
+    return this._affix;
   }
 
   get isTrash(): boolean {

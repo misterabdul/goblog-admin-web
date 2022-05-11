@@ -15,7 +15,9 @@ import { UserTabTrashComponent } from 'src/app/components/user/tab-trash/tab-tra
 
 import {
   UserIndexTabActiveResolver,
+  UserIndexTabActiveStatsResolver,
   UserIndexTabTrashResolver,
+  UserIndexTabTrashStatsResolver,
 } from './index/index.resolver';
 import { UserShowResolver } from './show/show.resolver';
 import { UserUpdateResolver } from './update/update.resolver';
@@ -34,12 +36,20 @@ const routes: Routes = [
           {
             path: '',
             component: UserTabActiveComponent,
-            resolve: { users: UserIndexTabActiveResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              users: UserIndexTabActiveResolver,
+              stats: UserIndexTabActiveStatsResolver,
+            },
           },
           {
             path: 'trash',
             component: UserTabTrashComponent,
-            resolve: { users: UserIndexTabTrashResolver },
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            resolve: {
+              users: UserIndexTabTrashResolver,
+              stats: UserIndexTabTrashStatsResolver,
+            },
           },
         ],
       },
