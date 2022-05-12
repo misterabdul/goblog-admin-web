@@ -29,7 +29,7 @@ import { PageRestoreResolver } from './restore/restore.resolver';
 
 const routes: Routes = [
   {
-    path: 'page',
+    path: '',
     component: DefaultLayout,
     children: [
       {

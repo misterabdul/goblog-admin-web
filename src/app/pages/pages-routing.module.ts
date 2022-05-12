@@ -16,35 +16,35 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then((m) => m.HomeModule),
   },
   {
-    path: '',
+    path: 'login',
     canActivate: [LoginGuardService],
     loadChildren: () =>
       import('./login/login.module').then((m) => m.LoginModule),
   },
   {
-    path: '',
+    path: 'post',
     canActivate: [AuthGuardService, WriterGuardService],
     loadChildren: () => import('./post/post.module').then((m) => m.PostModule),
   },
   {
-    path: '',
+    path: 'comment',
     canActivate: [AuthGuardService, WriterGuardService],
     loadChildren: () =>
       import('./comment/comment.module').then((m) => m.CommentModule),
   },
   {
-    path: '',
+    path: 'category',
     canActivate: [AuthGuardService, EditorGuardService],
     loadChildren: () =>
       import('./category/category.module').then((m) => m.CategoryModule),
   },
   {
-    path: '',
+    path: 'page',
     canActivate: [AuthGuardService, EditorGuardService],
     loadChildren: () => import('./page/page.module').then((m) => m.PageModule),
   },
   {
-    path: '',
+    path: 'user',
     canActivate: [AuthGuardService, AdminGuardService],
     loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
   },

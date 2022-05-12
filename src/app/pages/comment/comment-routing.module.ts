@@ -23,7 +23,7 @@ import { CommentRestoreResolver } from './restore/restore.resolver';
 
 const routes: Routes = [
   {
-    path: 'comment',
+    path: '',
     component: DefaultLayout,
     children: [
       {

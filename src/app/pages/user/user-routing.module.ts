@@ -26,7 +26,7 @@ import { UserRestoreResolver } from './restore/restore.resolver';
 
 const routes: Routes = [
   {
-    path: 'user',
+    path: '',
     component: DefaultLayout,
     children: [
       {

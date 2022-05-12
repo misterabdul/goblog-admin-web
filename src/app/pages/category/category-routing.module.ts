@@ -25,7 +25,7 @@ import { CategoryDeleteResolver } from './delete/delete.resolver';
 
 const routes: Routes = [
   {
-    path: 'category',
+    path: '',
     component: DefaultLayout,
     children: [
       {

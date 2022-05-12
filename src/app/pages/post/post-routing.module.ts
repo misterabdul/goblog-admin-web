@@ -29,7 +29,7 @@ import { PostRestoreResolver } from './restore/restore.resolver';
 
 const routes: Routes = [
   {
-    path: 'post',
+    path: '',
     component: DefaultLayout,
     children: [
       {
