@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { MarkedOptions, MarkedRenderer } from '@misterabdul/ngx-markdown';
+import { MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 
 import { MarkedRendererHelpers } from '../utils/marked-renderer.util';
 

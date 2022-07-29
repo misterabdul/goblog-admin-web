@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { MarkedRenderer } from '@misterabdul/ngx-markdown';
+import { MarkedRenderer } from 'ngx-markdown';
 
 export class MarkedRendererHelpers {
   private nonWordAndColonTest = /[^\w:]/g;
@@ -17,7 +17,7 @@ export class MarkedRendererHelpers {
       if (href === null) {
         return text;
       }
-      let out = '<a class="md-link" href="' + escape(href) + '"';
+      let out = '<a class="md-link" href="' + this.escape(href) + '"';
       if (title) {
         out += ' title="' + title + '"';
       }
@@ -110,7 +110,7 @@ export class MarkedRendererHelpers {
       let prot;
       try {
         if (href === null) throw new Error('href is null');
-        prot = decodeURIComponent(unescape(href))
+        prot = decodeURIComponent(this.unescape(href))
           .replace(this.nonWordAndColonTest, '')
           .toLowerCase();
       } catch (e) {
@@ -193,7 +193,7 @@ export class MarkedRendererHelpers {
       }
     }
 
-    return str.substr(0, l - suffLen);
+    return str.slice(0, l - suffLen);
   }
 
   private escapeTest = /[&<>"']/;
@@ -211,7 +211,7 @@ export class MarkedRendererHelpers {
   private getEscapeReplacement = (ch: string): string =>
     this.escapeReplacements[ch];
 
-  public escape(html: string, encode: boolean): string {
+  public escape(html: string, encode: boolean = false): string {
     if (encode) {
       if (this.escapeTest.test(html)) {
         return html.replace(this.escapeReplace, this.getEscapeReplacement);
@@ -226,5 +226,21 @@ export class MarkedRendererHelpers {
     }
 
     return html;
+  }
+
+  private unescapeTest: RegExp = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/gi;
+
+  public unescape(html: string) {
+    // explicitly match decimal, hex, and named HTML entities
+    return html.replace(this.unescapeTest, (_, n) => {
+      n = n.toLowerCase();
+      if (n === 'colon') return ':';
+      if (n.charAt(0) === '#') {
+        return n.charAt(1) === 'x'
+          ? String.fromCharCode(parseInt(n.substring(2), 16))
+          : String.fromCharCode(+n.substring(1));
+      }
+      return '';
+    });
   }
 }

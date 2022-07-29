@@ -19,7 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MarkdownModule } from '@misterabdul/ngx-markdown';
+import { MarkdownModule } from 'ngx-markdown';
 import { CodemirrorModule } from '@misterabdul/ngx-codemirror';
 
 import {

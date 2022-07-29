@@ -10,7 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { MarkdownModule, MarkedOptions } from '@misterabdul/ngx-markdown';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { catchError, of, take } from 'rxjs';
 
 import { MarkedConfig } from './configs/marked.config';
