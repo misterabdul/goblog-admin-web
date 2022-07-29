@@ -199,6 +199,7 @@
   },
   "defaultProject": "goblog-admin-web",
   "cli": {
+    "analytics": "fc86f37e-bab6-4a86-bf7f-d7349228e861",
     "defaultCollection": "@angular-eslint/schematics"
   }
 }
